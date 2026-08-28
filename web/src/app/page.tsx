@@ -1,76 +1,71 @@
 import { StatsCard } from '@/components/StatsCard';
 
 /**
- * Dashboard analytics — daily collections, levy, active wallets.
+ * Dashboard Overview — 6 metric cards + restaurant Donut/Pie chart.
+ * Metrics: Verified Students, Unverified Students, New Users, Total Disbursement, Total Amount Spent, Total Transactions
  */
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-[#1A153B]">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Real-time feeding transactions • 10% platform levy tracked</p>
+        <p className="text-sm text-gray-500 mt-1">Feeding wallet overview • Restaurant distribution</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard title="Today Collections" value="₦482,500" hint="1,240 meals • +8% vs yesterday" accent="↑ 8.2%" />
-        <StatsCard title="Platform Levy (10%)" value="₦48,250" hint="Auto-split to third-party" />
-        <StatsCard title="Vendor Payout (90%)" value="₦434,250" hint="Cafeteria disbursements" />
-        <StatsCard title="Active Wallets" value="1,842" hint="Avg balance ₦6,420" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StatsCard title="Verified Students" value="1,842" hint=" bursary-verified" accent="↑ 4.2%" />
+        <StatsCard title="Unverified Students" value="217" hint="pending docs" />
+        <StatsCard title="New Users" value="84" hint="this week" accent="↑ 12%" />
+        <StatsCard title="Total Disbursement" value="₦12,450,000" hint="semester allocation" />
+        <StatsCard title="Total Amount Spent" value="₦6,820,000" hint="54.8% utilized" />
+        <StatsCard title="Total Transactions" value="18,420" hint="avg ₦370 • levy 10%" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="font-bold text-[#1A153B]">Revenue — Last 7 Days</h2>
-          <p className="text-xs text-gray-500 mt-1">Gross vs levy vs net vendor payout</p>
-          {/* Placeholder chart — replace with Recharts BarChart */}
-          <div className="mt-6 h-48 rounded-xl bg-gradient-to-br from-indigo-50 to-white border border-dashed border-indigo-200 flex items-center justify-center text-sm text-gray-500">
-            Recharts BarChart — gross / levy / payout
-          </div>
-          <div className="mt-4 flex gap-4 text-xs">
-            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-[#1A153B]" /> Gross</span>
-            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-amber-400" /> Levy 10%</span>
-            <span className="flex items-center gap-2"><span className="w-3 h-3 rounded bg-emerald-500" /> Vendor 90%</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="font-bold text-[#1A153B]">By Hostel</h2>
-          <div className="mt-4 space-y-3 text-sm">
-            {[
-              { name: 'Faith Hall', amt: '₦142,000', pct: 34 },
-              { name: 'Hope Hall', amt: '₦118,500', pct: 28 },
-              { name: 'Unity Hall', amt: '₦92,000', pct: 22 },
-              { name: 'Grace Hall', amt: '₦68,000', pct: 16 },
-            ].map((h) => (
-              <div key={h.name} className="flex items-center justify-between">
-                <span className="text-gray-700">{h.name}</span>
-                <span className="font-semibold text-[#1A153B]">{h.amt}</span>
+          <h2 className="font-bold text-[#1A153B]">Restaurant Sales Breakdown</h2>
+          <p className="text-xs text-gray-500 mt-1">Donut / Pie distribution — Recharts</p>
+          <div className="mt-6 flex flex-col md:flex-row gap-6 items-center">
+            {/* Donut placeholder — replace with Recharts PieChart */}
+            <div className="w-48 h-48 rounded-full border-[16px] border-[#1A153B] relative flex items-center justify-center" style={{ borderTopColor: '#4338CA', borderRightColor: '#F59E0B', borderBottomColor: '#10B981' }}>
+              <div className="absolute w-24 h-24 bg-white rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-[#1A153B]">18,420 tx</span>
               </div>
-            ))}
-          </div>
-          <div className="mt-6 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800">
-            Today levy held: <b>₦48,250</b> → auto-settle at 18:00
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Recent Transactions</h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-xs text-gray-500 uppercase tracking-widest">
-              <tr><th className="text-left py-2">Student</th><th className="text-left">Vendor</th><th className="text-right">Amount</th><th className="text-right">Levy</th><th className="text-right">Status</th></tr>
-            </thead>
-            <tbody>
+            </div>
+            <div className="flex-1 space-y-3 text-sm w-full">
               {[
-                ['CRA/2023/001', 'Main Cafe', '₦1,200', '₦120', 'Success'],
-                ['CRA/2023/042', 'Faith Cafe', '₦950', '₦95', 'Success'],
-                ['CRA/2022/118', 'Main Cafe', '₦1,500', '₦150', 'Success'],
-              ].map(([id, vendor, amt, levy, s]) => (
-                <tr key={id} className="border-t border-gray-100"><td className="py-3">{id}</td><td>{vendor}</td><td className="text-right font-semibold">{amt}</td><td className="text-right text-amber-600">{levy}</td><td className="text-right"><span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">{s}</span></td></tr>
+                { name: 'Burger & Bread', pct: 34, color: '#1A153B' },
+                { name: 'Tasty Vine Kitchen', pct: 28, color: '#4338CA' },
+                { name: 'Cresta', pct: 18, color: '#F59E0B' },
+                { name: 'Mama Cass', pct: 12, color: '#10B981' },
+                { name: 'Others', pct: 8, color: '#9CA3AF' },
+              ].map((r) => (
+                <div key={r.name} className="flex items-center justify-between">
+                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ background: r.color }} /> {r.name}</span>
+                  <span className="font-bold text-[#1A153B]">{r.pct}%</span>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-4">Chart: Recharts PieChart with Cell colors — gross, levy 10% split logged.</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6">
+            <h3 className="font-bold text-[#1A153B] text-sm">By Hostel (today)</h3>
+            <div className="mt-4 space-y-2 text-sm">
+              {[
+                ['Faith Hall', '₦142,000'],
+                ['Hope Hall', '₦118,500'],
+                ['Unity Hall', '₦92,000'],
+              ].map(([h, amt]) => (
+                <div key={h} className="flex justify-between"><span className="text-gray-600">{h}</span><span className="font-bold text-[#1A153B]">{amt}</span></div>
+              ))}
+            </div>
+          </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800">
+            Today levy held: <b>₦48,250</b> → auto-settle 18:00. Vendor 90% = ₦434,250.
+          </div>
         </div>
       </div>
     </div>

@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout — dark sidebar (#1A153B) + light content area.
+ * Root layout — fixed dark sidebar #1A153B + light grey #F4F5F7 background.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-[#F5F5F7] text-gray-900 antialiased">
+      <body className="bg-[#F4F5F7] text-gray-900 antialiased">
         <div className="flex min-h-screen">
           <Sidebar />
           <main className="flex-1 min-w-0">
