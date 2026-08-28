@@ -5,7 +5,7 @@ import axios from 'axios';
  * All wallet/ledger calls go through /api/v1 with JWT bearer.
  */
 export const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL ?? 'https://crufeeding-backend-production.up.railway.app/api/v1',
+  baseURL: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1',
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
