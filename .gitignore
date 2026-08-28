@@ -35,3 +35,8 @@ isolate/
 # Env / secrets
 .env
 .env.local
+
+# backup of nested repo - do not commit
+.git.bak/
+Default Project/.git.bak/
+
