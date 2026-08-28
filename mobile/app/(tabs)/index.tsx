@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, ScrollView, FlatList, TouchableOpacity, SafeAreaView, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { RESTAURANTS } from "../constants/restaurants";
+import { RESTAURANTS } from "../../src/constants/restaurants";
 
 /**
  * HomeScreen.tsx — production-ready
