@@ -6,8 +6,7 @@ Monorepo for Crawford University feeding wallet — mobile QR payments, web burs
 /
 ├── mobile/   # Expo React Native — Home, QR Pay, Transactions, Profile
 ├── web/      # Next.js 14 Admin Portal — sidebar, dashboard, hostels/levels, admins, logs
-├── backend/  # Express + Mongoose — wallet, ledger, 10% levy splits, RBAC
-└── Default Project/ # Legacy portfolio (preserved)
+├── backend/  # Express + Mongoose — wallet, ledger, RBAC
 ```
 
 ## Quick Start
