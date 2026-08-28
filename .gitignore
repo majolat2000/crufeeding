@@ -31,10 +31,24 @@ dist/
 isolate/
 .Default Project/node_modules
 .Default Project/dist
+mobile/node_modules/
+mobile/dist/
+mobile/.expo/
+web/node_modules/
+web/.next/
+web/out/
+backend/node_modules/
+backend/dist/
 
 # Env / secrets
 .env
 .env.local
+backend/.env
+
+# Expo / Next / OS
+.expo/
+.next/
+*.tsbuildinfo
 
 # backup of nested repo - do not commit
 .git.bak/
