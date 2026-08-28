@@ -1,0 +1,37 @@
+# OS / Editor
+Thumbs.db
+desktop.ini
+*.lnk
+.DS_Store
+
+# Large binaries - GitHub rejects files >100MB, repo ~50GB total would fail
+*.zip
+*.rpa
+*.pak
+*.levelstream
+*.xxx
+*.scx
+*.iso
+
+# Huge game/media folders (each >500MB)
+Blur/
+Injustice 2/
+summertime-saga-0-20-13/
+Rockstar Games/
+KONAMI/
+CPY_SAVES/
+WPSDrive/
+
+# Adobe installer (3.5GB)
+Adobe After Effects 2024.zip
+
+# Node / build artifacts
+node_modules/
+dist/
+isolate/
+.Default Project/node_modules
+.Default Project/dist
+
+# Env / secrets
+.env
+.env.local

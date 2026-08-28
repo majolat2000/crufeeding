@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/credentials", "destination": "/index.html" },
+    { "source": "/auth", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/index.html" }
+  ]
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covenant University Portal - Login</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5; /* very light gray - common clean bg */
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #EA5D01; /* Covenant orange branding color */
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.1rem;
+        }
+
+        .login-box {
+            max-width: 420px;
+            width: 90%;
+            margin: 60px auto;
+            background-color: white;
+            padding: 40px 35px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        h2 {
+            text-align: center;
+            color: #EA5D01;
+            margin-bottom: 35px;
+            font-size: 1.8rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 12px;
+            margin-bottom: 22px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #EA5D01;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #d44f00; /* slightly darker orange on hover */
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .links a {
+            color: #EA5D01;
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 0.95rem;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 18px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Covenant University</h1>
+        <p>Student / Staff Portal</p>
+    </header>
+
+    <div class="login-box">
+        <h2>Portal Login</h2>
+
+        <form>
+            <label for="username">Username / Matric Number / Staff ID</label>
+            <input type="text" id="username" placeholder="Enter your ID">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+
+            <button type="submit">Sign In</button>
+        </form>
+
+        <div class="links">
+            <a href="#">Forgot Password?</a>
+            <a href="#">Help / Support</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; Covenant University - All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
