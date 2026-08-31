@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Sidebar } from '@/components/Sidebar';
+import { Shell } from '@/components/Shell';
 
 export const metadata: Metadata = {
   title: 'Crawford Feeding — Admin Portal',
@@ -8,18 +8,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout — fixed dark sidebar #1A153B + light grey #F4F5F7 background.
+ * Root layout — Shell handles collapsible sidebar + login-only guard.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-[#F4F5F7] text-gray-900 antialiased">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 min-w-0">
-            <div className="max-w-[1280px] mx-auto p-6 md:p-8">{children}</div>
-          </main>
-        </div>
+        <Shell>{children}</Shell>
       </body>
     </html>
   );

@@ -5,9 +5,9 @@ import { useState } from 'react';
  * Transactions & Logs Table — searchable, Filter Table, date range, balances.
  */
 const ROWS = [
-  { id: 'TX-88421', student: 'LCU/UG/20/17109', merchant: 'Burger & Bread', amount: '₦50', balance: '₦70.00', date: '2026-08-28 12:34' },
-  { id: 'TX-88420', student: 'LCU/UG/20/17122', merchant: 'Tasty Vine Kitchen', amount: '₦10', balance: '₦45.00', date: '2026-08-28 09:12' },
-  { id: 'TX-88419', student: 'LCU/UG/20/17109', merchant: 'Cresta', amount: '₦50', balance: '₦75.00', date: '2026-08-27 19:45' },
+  { id: 'TX-88421', student: 'CRU1234567', merchant: 'The Cafeteria', amount: '₦50', balance: '₦70.00', date: '2026-08-28 12:34' },
+  { id: 'TX-88420', student: '21234567', merchant: 'The Cafeteria', amount: '₦10', balance: '₦45.00', date: '2026-08-28 09:12' },
+  { id: 'TX-88419', student: 'CRU1234567', merchant: 'The Cafeteria', amount: '₦50', balance: '₦75.00', date: '2026-08-27 19:45' },
 ];
 
 export default function TransactionsPage() {

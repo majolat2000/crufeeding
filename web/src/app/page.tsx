@@ -1,71 +1,53 @@
 import { StatsCard } from '@/components/StatsCard';
+import { getCurrentSession } from '@/lib/session';
 
 /**
- * Dashboard Overview — 6 metric cards + restaurant Donut/Pie chart.
- * Metrics: Verified Students, Unverified Students, New Users, Total Disbursement, Total Amount Spent, Total Transactions
+ * Dashboard — Updated metrics per spec:
+ * Total Users, Subscribers, New Users (week), Total disbursement (session), Total transactions (month)
+ * Removed: Total amount spent, By Hostel, Restaurant Sales Breakdown (single restaurant now)
  */
 export default function DashboardPage() {
+  const session = getCurrentSession();
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold text-[#1A153B]">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Feeding wallet overview • Restaurant distribution</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold text-[#1A153B]">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Session {session} • Single restaurant: The Cafeteria • 100% direct payout</p>
+        </div>
+        <span className="bg-[#1A153B] text-white text-xs font-bold px-3 py-1.5 rounded-full">{session}</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatsCard title="Verified Students" value="1,842" hint=" bursary-verified" accent="↑ 4.2%" />
-        <StatsCard title="Unverified Students" value="217" hint="pending docs" />
-        <StatsCard title="New Users" value="84" hint="this week" accent="↑ 12%" />
-        <StatsCard title="Total Disbursement" value="₦12,450,000" hint="semester allocation" />
-        <StatsCard title="Total Amount Spent" value="₦6,820,000" hint="54.8% utilized" />
-        <StatsCard title="Total Transactions" value="18,420" hint="avg ₦370 • 100% to vendor" />
+        <StatsCard title="Total Users" value="2,143" hint="all registered" accent="↑ 3.1%" />
+        <StatsCard title="Subscribers" value="1,210" hint="active meal plans" accent="↑ 5.4%" />
+        <StatsCard title="New Users (week)" value="47" hint="last 7 days" />
+        <StatsCard title="Total Disbursement (session)" value="₦18,250,000" hint={`${session} so far`} />
+        <StatsCard title="Total Transactions (month)" value="3,842" hint="users + subscribers" />
+        <StatsCard title="The Cafeteria — Purchases" value="3,842" hint="single cafeteria • 100% payout" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6">
-          <h2 className="font-bold text-[#1A153B]">Restaurant Sales Breakdown</h2>
-          <p className="text-xs text-gray-500 mt-1">Donut / Pie distribution — Recharts</p>
-          <div className="mt-6 flex flex-col md:flex-row gap-6 items-center">
-            {/* Donut placeholder — replace with Recharts PieChart */}
-            <div className="w-48 h-48 rounded-full border-[16px] border-[#1A153B] relative flex items-center justify-center" style={{ borderTopColor: '#4338CA', borderRightColor: '#F59E0B', borderBottomColor: '#10B981' }}>
-              <div className="absolute w-24 h-24 bg-white rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-[#1A153B]">18,420 tx</span>
-              </div>
-            </div>
-            <div className="flex-1 space-y-3 text-sm w-full">
-              {[
-                { name: 'Burger & Bread', pct: 34, color: '#1A153B' },
-                { name: 'Tasty Vine Kitchen', pct: 28, color: '#4338CA' },
-                { name: 'Cresta', pct: 18, color: '#F59E0B' },
-                { name: 'Mama Cass', pct: 12, color: '#10B981' },
-                { name: 'Others', pct: 8, color: '#9CA3AF' },
-              ].map((r) => (
-                <div key={r.name} className="flex items-center justify-between">
-                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ background: r.color }} /> {r.name}</span>
-                  <span className="font-bold text-[#1A153B]">{r.pct}%</span>
-                </div>
-              ))}
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <h2 className="font-bold text-[#1A153B]">Session Disbursement Trend</h2>
+          <p className="text-xs text-gray-500 mt-1">Cumulative funding for {session}</p>
+          <div className="mt-6 h-40 rounded-xl bg-gradient-to-br from-indigo-50 to-white border border-dashed border-indigo-200 flex items-center justify-center text-sm text-gray-500">
+            Recharts Area — disbursement over time
           </div>
-          <p className="text-xs text-gray-500 mt-4">Chart: Recharts PieChart — gross = vendor payout (levy removed).</p>
         </div>
-
-        <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-gray-100 p-6">
-            <h3 className="font-bold text-[#1A153B] text-sm">By Hostel (today)</h3>
-            <div className="mt-4 space-y-2 text-sm">
-              {[
-                ['Faith Hall', '₦142,000'],
-                ['Hope Hall', '₦118,500'],
-                ['Unity Hall', '₦92,000'],
-              ].map(([h, amt]) => (
-                <div key={h} className="flex justify-between"><span className="text-gray-600">{h}</span><span className="font-bold text-[#1A153B]">{amt}</span></div>
-              ))}
-            </div>
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <h2 className="font-bold text-[#1A153B]">Subscribers by Plan</h2>
+          <div className="mt-4 space-y-3 text-sm">
+            {[
+              ['Breakfast only', '420'],
+              ['Lunch only', '310'],
+              ['Dinner only', '180'],
+              ['All Three', '300'],
+            ].map(([k,v]) => (
+              <div key={k} className="flex justify-between"><span className="text-gray-600">{k}</span><span className="font-bold text-[#1A153B]">{v}</span></div>
+            ))}
           </div>
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-800">
-            Today direct payout: <b>₦482,500</b> → 100% to vendors (levy removed).
-          </div>
+          <p className="text-xs text-gray-500 mt-4">Breakfast ₦1,500 • Lunch ₦2,000 • Dinner ₦1,500 • All Three ₦5,000/day</p>
         </div>
       </div>
     </div>

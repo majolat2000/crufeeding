@@ -10,23 +10,31 @@ datasource db {
 }
 
 enum Role {
-  super_admin
+  user
+  subscriber
   bursar
-  hostel_admin
-  student
+  super_admin
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  matricNo  String?  @unique
-  role      Role     @default(student)
-  hostel    String?
-  level     String?
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  wallet    Wallet?
+  id           String   @id @default(cuid())
+  email        String   @unique
+  matricNo     String?  @unique // CRU******* or 2********; null for Visitor
+  // Visitor: only email+password, level= Visitor
+  role         Role     @default(user)
+  // JUPEB, 100 LEVEL, 200 LEVEL, 300 LEVEL, 500 LEVEL, Visitor
+  level        String?
+  isVisitor    Boolean  @default(false)
+  // Subscriber plan tickers
+  mealBreakfast Boolean @default(false)
+  mealLunch     Boolean @default(false)
+  mealDinner    Boolean @default(false)
+  // Legacy hostel kept nullable but not used
+  hostel       String?
+  verified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  wallet       Wallet?
   activityLogs ActivityLog[]
 }
 
@@ -65,10 +73,17 @@ model Level {
 }
 
 model GlobalConfig {
-  id            String @id @default(cuid())
-  feedingAmount Decimal @db.Decimal(12,2) // global amount for Fund Valid Students
-  updatedBy     String?
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(cuid())
+  // Granular daily rates — Fund Valid Students calculates: days * rate
+  breakfastRate  Decimal  @db.Decimal(12,2) @default(1500)
+  lunchRate      Decimal  @db.Decimal(12,2) @default(2000)
+  dinnerRate     Decimal  @db.Decimal(12,2) @default(1500)
+  allThreeRate   Decimal  @db.Decimal(12,2) @default(5000)
+  // legacy single amount kept for migration
+  feedingAmount  Decimal? @db.Decimal(12,2)
+  session        String?  @default("2026/2027")
+  updatedBy      String?
+  updatedAt      DateTime @updatedAt
 }
 
 model Transaction {

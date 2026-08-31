@@ -1,12 +1,14 @@
 /**
- * Levels settings — 100L..500L with meal plan caps and bursary rules.
+ * Levels — per spec: JUPEB, 100/200/300/500 LEVEL, Visitor
+ * Editing via Settings (hostel removed)
  */
 const LEVELS = [
-  { id: '100', name: '100 Level', plan: 'Standard (3 meals/day)', cap: '₦1,500/day', students: 420 },
-  { id: '200', name: '200 Level', plan: 'Standard (3 meals/day)', cap: '₦1,500/day', students: 380 },
-  { id: '300', name: '300 Level', plan: 'Premium (4 meals/day)', cap: '₦2,000/day', students: 340 },
-  { id: '400', name: '400 Level', plan: 'Premium (4 meals/day)', cap: '₦2,000/day', students: 310 },
-  { id: '500', name: '500 Level', plan: 'Premium (4 meals/day)', cap: '₦2,200/day', students: 180 },
+  { id: 'JUPEB', name: 'JUPEB', plan: 'All meals', cap: '₦5,000/day', students: 120 },
+  { id: '100', name: '100 LEVEL', plan: 'All meals', cap: '₦5,000/day', students: 420 },
+  { id: '200', name: '200 LEVEL', plan: 'All meals', cap: '₦5,000/day', students: 380 },
+  { id: '300', name: '300 LEVEL', plan: 'All meals', cap: '₦5,000/day', students: 340 },
+  { id: '500', name: '500 LEVEL', plan: 'All meals', cap: '₦5,000/day', students: 180 },
+  { id: 'Visitor', name: 'Visitor', plan: 'Pay-as-you-go', cap: '—', students: 45 },
 ];
 
 export default function LevelsPage() {
