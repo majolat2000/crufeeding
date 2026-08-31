@@ -4,24 +4,22 @@ import { colors, spacing, radius } from '../theme/colors';
 import { Card } from '../components/Card';
 
 /**
- * QRPaymentScreen — Scanner placeholder + manual amount + levy preview.
- * 10% levy is split at backend (payment.service), preview shown here.
+ * QRPaymentScreen — Scanner placeholder + manual amount (levy removed, 100% direct payout).
  */
 export function QRPaymentScreen() {
   const [amount, setAmount] = useState('1500');
   const [vendorId, setVendorId] = useState('CAF-Main-01');
   const numericAmount = parseFloat(amount) || 0;
-  const levy = +(numericAmount * 0.1).toFixed(2);
-  const vendorReceives = +(numericAmount * 0.9).toFixed(2);
+  const vendorReceives = numericAmount; // 100% to vendor
 
   const handlePay = () => {
     if (!numericAmount || numericAmount < 100) {
       Alert.alert('Invalid amount', 'Minimum payment is ₦100');
       return;
     }
-    Alert.alert('Confirm Payment', `Pay ₦${numericAmount.toLocaleString()} to ${vendorId}?\nVendor: ₦${vendorReceives}\nPlatform levy (10%): ₦${levy}`, [
+    Alert.alert('Confirm Payment', `Pay ₦${numericAmount.toLocaleString()} to ${vendorId}?\nVendor receives: ₦${vendorReceives.toLocaleString()} (100% direct payout)`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Pay', onPress: () => Alert.alert('Success', 'Payment processed — ledger updated') },
+      { text: 'Pay', onPress: () => Alert.alert('Success', 'Payment processed — 100% to vendor, ledger updated') },
     ]);
   };
 
@@ -55,11 +53,10 @@ export function QRPaymentScreen() {
           <Text style={[styles.label, { marginTop: spacing.md }]}>Amount (₦)</Text>
           <TextInput value={amount} onChangeText={setAmount} keyboardType="numeric" placeholder="0.00" style={styles.input} placeholderTextColor={colors.textSecondary} />
 
-          {/* Levy breakdown */}
+          {/* Direct payout breakdown */}
           <View style={styles.breakdown}>
             <View style={styles.breakdownRow}><Text style={styles.breakdownLabel}>You pay</Text><Text style={styles.breakdownValue}>₦{numericAmount.toLocaleString()}</Text></View>
-            <View style={styles.breakdownRow}><Text style={styles.breakdownLabel}>Vendor receives (90%)</Text><Text style={styles.breakdownValue}>₦{vendorReceives.toLocaleString()}</Text></View>
-            <View style={styles.breakdownRow}><Text style={styles.breakdownLabel}>Platform levy (10%)</Text><Text style={[styles.breakdownValue, { color: colors.warning }]}>₦{levy.toLocaleString()}</Text></View>
+            <View style={styles.breakdownRow}><Text style={styles.breakdownLabel}>Vendor receives (100%)</Text><Text style={styles.breakdownValue}>₦{vendorReceives.toLocaleString()}</Text></View>
           </View>
 
           <TouchableOpacity style={styles.payBtn} onPress={handlePay}>

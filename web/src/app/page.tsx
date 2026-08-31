@@ -18,7 +18,7 @@ export default function DashboardPage() {
         <StatsCard title="New Users" value="84" hint="this week" accent="↑ 12%" />
         <StatsCard title="Total Disbursement" value="₦12,450,000" hint="semester allocation" />
         <StatsCard title="Total Amount Spent" value="₦6,820,000" hint="54.8% utilized" />
-        <StatsCard title="Total Transactions" value="18,420" hint="avg ₦370 • levy 10%" />
+        <StatsCard title="Total Transactions" value="18,420" hint="avg ₦370 • 100% to vendor" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -47,7 +47,7 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-          <p className="text-xs text-gray-500 mt-4">Chart: Recharts PieChart with Cell colors — gross, levy 10% split logged.</p>
+          <p className="text-xs text-gray-500 mt-4">Chart: Recharts PieChart — gross = vendor payout (levy removed).</p>
         </div>
 
         <div className="space-y-4">
@@ -63,8 +63,8 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800">
-            Today levy held: <b>₦48,250</b> → auto-settle 18:00. Vendor 90% = ₦434,250.
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-sm text-emerald-800">
+            Today direct payout: <b>₦482,500</b> → 100% to vendors (levy removed).
           </div>
         </div>
       </div>

@@ -5,9 +5,9 @@ import { useState } from 'react';
  * Transactions & Logs Table — searchable, Filter Table, date range, balances.
  */
 const ROWS = [
-  { id: 'TX-88421', student: 'LCU/UG/20/17109', merchant: 'Burger & Bread', amount: '₦50', levy: '₦5', balance: '₦70.00', date: '2026-08-28 12:34' },
-  { id: 'TX-88420', student: 'LCU/UG/20/17122', merchant: 'Tasty Vine Kitchen', amount: '₦10', levy: '₦1', balance: '₦45.00', date: '2026-08-28 09:12' },
-  { id: 'TX-88419', student: 'LCU/UG/20/17109', merchant: 'Cresta', amount: '₦50', levy: '₦5', balance: '₦75.00', date: '2026-08-27 19:45' },
+  { id: 'TX-88421', student: 'LCU/UG/20/17109', merchant: 'Burger & Bread', amount: '₦50', balance: '₦70.00', date: '2026-08-28 12:34' },
+  { id: 'TX-88420', student: 'LCU/UG/20/17122', merchant: 'Tasty Vine Kitchen', amount: '₦10', balance: '₦45.00', date: '2026-08-28 09:12' },
+  { id: 'TX-88419', student: 'LCU/UG/20/17109', merchant: 'Cresta', amount: '₦50', balance: '₦75.00', date: '2026-08-27 19:45' },
 ];
 
 export default function TransactionsPage() {
@@ -21,7 +21,7 @@ export default function TransactionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-[#1A153B]">Transactions</h1>
-          <p className="text-sm text-gray-500 mt-1">Filter Table • date range, balances, levy</p>
+          <p className="text-sm text-gray-500 mt-1">Filter Table • date range, balances • 100% to vendor</p>
         </div>
         <button className="border border-gray-200 bg-white px-4 py-2 rounded-xl text-sm font-semibold">Export CSV</button>
       </div>
@@ -46,7 +46,7 @@ export default function TransactionsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500">
-              <tr><th className="text-left px-4 py-3">Date</th><th className="text-left px-4 py-3">Student</th><th className="text-left px-4 py-3">Merchant</th><th className="text-right px-4 py-3">Amount</th><th className="text-right px-4 py-3">Levy</th><th className="text-right px-4 py-3">Balance</th><th className="text-left px-4 py-3">ID</th></tr>
+              <tr><th className="text-left px-4 py-3">Date</th><th className="text-left px-4 py-3">Student</th><th className="text-left px-4 py-3">Merchant</th><th className="text-right px-4 py-3">Amount (100% to vendor)</th><th className="text-right px-4 py-3">Balance</th><th className="text-left px-4 py-3">ID</th></tr>
             </thead>
             <tbody>
               {filtered.map((r) => (
@@ -55,7 +55,6 @@ export default function TransactionsPage() {
                   <td className="px-4 py-3 font-mono text-xs">{r.student}</td>
                   <td className="px-4 py-3 font-semibold text-[#1A153B]">{r.merchant}</td>
                   <td className="px-4 py-3 text-right font-bold text-[#4338CA]">{r.amount}</td>
-                  <td className="px-4 py-3 text-right text-amber-600 text-xs">{r.levy}</td>
                   <td className="px-4 py-3 text-right font-semibold">{r.balance}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-500">{r.id}</td>
                 </tr>

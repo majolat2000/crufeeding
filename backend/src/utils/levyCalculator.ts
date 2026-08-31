@@ -1,17 +1,17 @@
 import type { LevySplit } from '../types/index.js';
 
 /**
- * 10% third-party revenue levy — single source of truth.
- * All payment flows must use this to ensure ledger consistency.
- *
- * @param gross - total amount student pays
- * @param rate - default 0.10 from env
+ * @deprecated Levy removed — direct 100% payout to vendor.
+ * This helper now always returns levy=0 and vendorPayout=gross to keep call-sites working
+ * while the levy concept is sunset. New code should not call it — just use gross directly.
  */
-export function calculateLevySplit(gross: number, rate = 0.10): LevySplit {
+export function calculateLevySplit(gross: number, _rate = 0): LevySplit {
   if (gross <= 0) throw new Error('Gross amount must be positive');
-  if (rate < 0 || rate > 1) throw new Error('Invalid levy rate');
-  // Round to kobo (2 decimals) to avoid floating errors
-  const levy = Math.round(gross * rate * 100) / 100;
-  const vendorPayout = Math.round((gross - levy) * 100) / 100;
-  return { gross, levy, vendorPayout };
+  return { gross, levy: 0, vendorPayout: gross };
+}
+
+/** Direct payout — 100% to vendor, no institutional cut */
+export function calculateDirectPayout(gross: number) {
+  if (gross <= 0) throw new Error('Gross amount must be positive');
+  return { gross, vendorPayout: gross };
 }

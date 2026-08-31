@@ -95,7 +95,7 @@ export function HomeScreen() {
         {/* Quick note */}
         <View className="mx-5 mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex-row items-center gap-2">
           <Text className="text-amber-600">⚡</Text>
-          <Text className="text-xs text-amber-800 flex-1">Tap any restaurant to generate your QR payment. 10% platform levy applied.</Text>
+          <Text className="text-xs text-emerald-800 flex-1">Tap any restaurant to generate your QR payment. 100% direct payout to vendor.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

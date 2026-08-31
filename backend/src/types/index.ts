@@ -9,8 +9,9 @@ export interface JwtPayload {
   email: string;
 }
 
+/** @deprecated Levy removed — 100% direct payout to vendor. Kept for migration compat. */
 export interface LevySplit {
   gross: number;
-  levy: number; // 10% platform
-  vendorPayout: number; // 90%
+  levy: number; // always 0
+  vendorPayout: number; // equals gross
 }

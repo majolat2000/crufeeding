@@ -37,14 +37,14 @@ export function PaymentScreen() {
   const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
   const ss = String(seconds % 60).padStart(2, "0");
 
-  // Dynamic QR value — in prod sign with JWT/backend; here encode payment intent
+  // Dynamic QR value — 100% direct payout to vendor (levy removed)
   const qrValue = JSON.stringify({
     studentId: "STU-LCU-17109",
     matric: "LCU/UG/20/17109",
     merchant,
     amount: Number(amount),
     ts: Date.now(),
-    levySplit: { gross: Number(amount), levy: Number(amount) * 0.1, payout: Number(amount) * 0.9 },
+    directPayout: { gross: Number(amount), vendorPayout: Number(amount) },
   });
 
   return (
@@ -62,7 +62,7 @@ export function PaymentScreen() {
             Present this QR code to complete your payment of <Text className="text-white font-extrabold">₦{amount}</Text> to{" "}
             <Text className="font-extrabold">{merchant}</Text>
           </Text>
-          <Text className="text-indigo-200 text-xs mt-2 text-center">Vendor will scan • 10% levy auto-split</Text>
+          <Text className="text-indigo-200 text-xs mt-2 text-center">Vendor will scan • 100% direct payout</Text>
         </View>
 
         {/* Centered white QR container */}
@@ -73,7 +73,7 @@ export function PaymentScreen() {
               <QRCode value={qrValue} size={200} color="#1A153B" backgroundColor="#FFFFFF" />
             </View>
             <Text className="text-[#1A153B] font-extrabold text-sm mt-4">{merchant}</Text>
-            <Text className="text-gray-500 text-xs mt-1">Amount: ₦{amount} • Levy 10% included</Text>
+            <Text className="text-gray-500 text-xs mt-1">Amount: ₦{amount} • 100% to vendor</Text>
             <View className="mt-3 bg-[#F4F5F7] rounded-full px-3 py-1.5">
               <Text className="text-[#1A153B] text-xs font-bold tracking-widest">LCU/UG/20/17109</Text>
             </View>
