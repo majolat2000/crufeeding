@@ -43,17 +43,19 @@ export async function loginRequest(email: string, password: string) {
     localStorage.setItem('token', token);
     return { token, role };
   } catch (e: any) {
-    // Fallback for Vercel live when backend is unreachable (failed to fetch) — allow default Super Admin offline
-    const isNetworkError = e.message?.includes('Failed to fetch') || e.message?.includes('fetch') || e.name === 'TypeError';
-    if (email === 'majesty.olatimilehin@crawforduniversity.edu.ng' && password === 'CRUFEED@1#1') {
-      const token = `mock-${btoa(email)}-${Date.now()}`;
+    // Offline fallback — Vercel live: allow default Super Admin even when backend is down (404 or Failed to fetch)
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPass = password.trim();
+    const isSuperAdmin = normalizedEmail === 'majesty.olatimilehin@crawforduniversity.edu.ng' && normalizedPass === 'CRUFEED@1#1';
+    if (isSuperAdmin) {
+      const token = `mock-${btoa(normalizedEmail)}-${Date.now()}`;
       const role: Role = 'super_admin';
-      setSession({ token, email, role });
+      setSession({ token, email: normalizedEmail, role });
       localStorage.setItem('token', token);
       return { token, role };
     }
-    // Also allow any super_admin/bursar offline if they were previously seeded? Check isNetworkError
-    if (isNetworkError) throw new Error('Backend unreachable — please try again or use Super Admin offline login');
+    const isNetworkError = e.message?.includes('Failed to fetch') || e.message?.includes('fetch') || e.name === 'TypeError' || e.message?.includes('Application not found') || e.message?.includes('Login failed');
+    if (isNetworkError) throw new Error('Login failed — backend not reachable. Please check your connection or contact support.');
     throw e;
   }
 }
