@@ -36,11 +36,11 @@ export default function LoginPage() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Email</label>
-            <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="majesty.olatimilehin@crawforduniversity.edu.ng" className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm" required />
+            <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Enter your email" className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm" required />
           </div>
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Password</label>
-            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm" required />
+            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter your password" className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm" required />
           </div>
           {err && <p className="text-xs bg-red-50 border border-red-200 text-red-700 rounded-xl p-2">{err}</p>}
           <button disabled={loading} className="w-full bg-[#1A153B] text-white rounded-xl py-3 font-bold text-sm disabled:opacity-60">
@@ -48,7 +48,6 @@ export default function LoginPage() {
           </button>
           <p className="text-xs text-gray-400 text-center">No sign-up on web • Students register via mobile app</p>
         </form>
-        <p className="text-[11px] text-gray-400 text-center mt-4">Default Super Admin seeded: majesty.olatimilehin@crawforduniversity.edu.ng / CRUFEED@1#1</p>
       </div>
     </div>
   );
