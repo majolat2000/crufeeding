@@ -52,7 +52,7 @@ const start = async () => {
   } catch {
     if (env.nodeEnv !== 'test') await connectDB().catch((e) => console.warn('[db] failed', (e as Error).message));
   }
-  app.listen(env.port, () => console.log(`[backend] listening on http://localhost:${env.port} (direct 100% payout)`));
+  app.listen(env.port, '0.0.0.0', () => console.log(`[backend] listening on 0.0.0.0:${env.port} (direct 100% payout)`));
 };
 
 start();
