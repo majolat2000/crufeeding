@@ -1,7 +1,7 @@
 #!/bin/bash
 # Lightweight deploy hook trigger — run: bash scripts/deploy.sh
 set -e
-HOOK="https://api.render.com/deploy/srv-daf7jaon74is738nb1d0?key=rlOXPD7NHas"
+HOOK="https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM"
 echo "Triggering Render deploy..."
 curl -X POST "$HOOK"
-echo "Deploy triggered. Check https://dashboard.render.com/web/srv-daf7jaon74is738nb1d0/logs"
+echo "Deploy triggered. Check https://dashboard.render.com/web/srv-daf8o2id0e5s73bavkag/logs"

@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Trigger Render Deploy Hook
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-daf7jaon74is738nb1d0?key=rlOXPD7NHas"
+          curl -X POST "https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM"
       - name: Verify Health
         run: |
           sleep 30
