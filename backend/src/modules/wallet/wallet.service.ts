@@ -1,28 +1,31 @@
-import { Wallet } from './wallet.model.js';
+import { prisma } from '../../config/db.pg.js';
 
-/**
- * Wallet service — balance reads, top-ups, and debits with ledger hooks.
- */
-export async function getWallet(studentId: string) {
-  const wallet = await Wallet.findOne({ studentId });
+export async function getWallet(userId: string) {
+  const wallet = await prisma.wallet.findUnique({ where: { userId } });
   if (!wallet) throw Object.assign(new Error('Wallet not found'), { statusCode: 404 });
   return wallet;
 }
 
-export async function topUp(studentId: string, amount: number) {
+export async function getWalletByStudentId(studentId: string) {
+  const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }] } });
+  if (!user) throw Object.assign(new Error('Student not found'), { statusCode: 404 });
+  const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
+  if (!wallet) throw Object.assign(new Error('Wallet not found'), { statusCode: 404 });
+  return { ...wallet, user: { id: user.id, email: user.email, fullname: user.fullname, matricNo: user.matricNo, level: user.level } };
+}
+
+export async function topUp(userId: string, amount: number) {
   if (amount <= 0) throw Object.assign(new Error('Amount must be positive'), { statusCode: 400 });
-  const wallet = await Wallet.findOneAndUpdate({ studentId }, { $inc: { balance: amount } }, { new: true, upsert: false });
+  const wallet = await prisma.wallet.findUnique({ where: { userId } });
   if (!wallet) throw Object.assign(new Error('Wallet not found'), { statusCode: 404 });
-  return wallet;
+  const newBalance = Number(wallet.balance) + amount;
+  return prisma.wallet.update({ where: { userId }, data: { balance: newBalance } });
 }
 
-export async function debit(studentId: string, amount: number) {
-  // Atomic check: only debit if balance >= amount
-  const wallet = await Wallet.findOneAndUpdate(
-    { studentId, balance: { $gte: amount } },
-    { $inc: { balance: -amount } },
-    { new: true }
-  );
-  if (!wallet) throw Object.assign(new Error('Insufficient balance'), { statusCode: 400 });
-  return wallet;
+export async function debit(userId: string, amount: number) {
+  const wallet = await prisma.wallet.findUnique({ where: { userId } });
+  if (!wallet) throw Object.assign(new Error('Wallet not found'), { statusCode: 404 });
+  if (Number(wallet.balance) < amount) throw Object.assign(new Error('Insufficient balance'), { statusCode: 400 });
+  const newBalance = Number(wallet.balance) - amount;
+  return prisma.wallet.update({ where: { userId }, data: { balance: newBalance } });
 }

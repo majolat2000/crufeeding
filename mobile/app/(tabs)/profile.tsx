@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useAuthStore } from '../../src/store/authStore';
 import { colors, radius } from '../../src/theme/theme';
 import { FlashyCard } from '../../src/components/FlashyCard';
 import { GoldButton } from '../../src/components/GoldButton';
@@ -15,6 +16,40 @@ const Field = ({ label, value }: { label: string; value: string }) => (
 );
 
 export function ProfileScreen() {
+  const { user, logout, changePassword, setPin, toggleBiometric } = useAuthStore();
+  const [showChangePw, setShowChangePw] = useState(false);
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [showPinSetup, setShowPinSetup] = useState(false);
+  const [pinCode, setPinCode] = useState('');
+  const [pinPw, setPinPw] = useState('');
+
+  const handleChangePassword = async () => {
+    if (!currentPw || !newPw) return Alert.alert('Error', 'Fill in both fields');
+    try {
+      await changePassword(currentPw, newPw);
+      Alert.alert('Success', 'Password changed');
+      setShowChangePw(false);
+      setCurrentPw('');
+      setNewPw('');
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    }
+  };
+
+  const handleSetPin = async () => {
+    if (!pinCode || !pinPw) return Alert.alert('Error', 'Enter PIN and current password');
+    try {
+      await setPin(pinCode, pinPw);
+      Alert.alert('Success', 'Transaction PIN set');
+      setShowPinSetup(false);
+      setPinCode('');
+      setPinPw('');
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
@@ -23,34 +58,54 @@ export function ProfileScreen() {
             <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
           </View>
           <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 12 }}>Crawford University</Text>
-          <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>Majesty Olatimilehin</Text>
-          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>LCU/UG/20/17109 \u2014 300 Level \u2014 Faith Hall</Text>
-          <StatusBadge label="Active Student" variant="success" />
-          <GoldButton title="Sign Out" onPress={() => {}} style={{ marginTop: 16 }} />
+          <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>{user?.fullname || 'Student'}</Text>
+          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || user?.level || 'N/A'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>
+          <StatusBadge label={user?.role === 'subscriber' ? 'Subscriber' : 'Student'} variant="success" />
         </View>
 
         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-          <Field label="Firstname" value="Majesty" />
-          <Field label="Lastname" value="Olatimilehin" />
-          <Field label="Middlename" value="Oluwakolade" />
-          <Field label="Email" value="majesty.olat@crawford.edu.ng" />
-          <Field label="Next Funding Date" value="01 Sept 2026" />
-          <Field label="Total Feeding Amount" value={'\u20A675,000'} />
-          <Field label="Total Amount Funded" value={'\u20A668,500'} />
+          <Field label="Email" value={user?.email || ''} />
+          <Field label="Level" value={user?.level || 'N/A'} />
+          <Field label="Matric No" value={user?.matricNo || 'N/A'} />
 
           <FlashyCard style={{ marginTop: 8 }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: colors.goldText, textTransform: 'uppercase', letterSpacing: 1 }}>Feeding Summary</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
-              <Text style={{ color: colors.textMuted, fontSize: 13 }}>Balance</Text>
-              <Text style={{ fontWeight: '800', color: colors.gold, fontSize: 14 }}>{'\u20A6'}75.00</Text>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-              <Text style={{ color: colors.textMuted, fontSize: 13 }}>Spent this semester</Text>
-              <Text style={{ fontWeight: '700', color: colors.textPrimary, fontSize: 14 }}>{'\u20A6'}6,500</Text>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: colors.goldText, textTransform: 'uppercase', letterSpacing: 1 }}>Meal Plan</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+              {user?.mealBreakfast && <StatusBadge label="Breakfast" variant="warning" />}
+              {user?.mealLunch && <StatusBadge label="Lunch" variant="warning" />}
+              {user?.mealDinner && <StatusBadge label="Dinner" variant="warning" />}
             </View>
           </FlashyCard>
 
-          <Text style={{ fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 20 }}>v1.0.0 \u2014 #090D16 \u2014 Bursary: bursary@crawford.edu.ng</Text>
+          {/* Change Password */}
+          <TouchableOpacity onPress={() => setShowChangePw(!showChangePw)} style={{ marginTop: 16 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>{showChangePw ? 'Cancel' : 'Change Password'}</Text>
+          </TouchableOpacity>
+          {showChangePw && (
+            <View style={{ marginTop: 8 }}>
+              <TextInput value={currentPw} onChangeText={setCurrentPw} placeholder="Current password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
+              <TextInput value={newPw} onChangeText={setNewPw} placeholder="New password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
+              <GoldButton title="Update Password" onPress={handleChangePassword} />
+            </View>
+          )}
+
+          {/* Set Transaction PIN */}
+          <TouchableOpacity onPress={() => setShowPinSetup(!showPinSetup)} style={{ marginTop: 16 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>{showPinSetup ? 'Cancel' : 'Set Transaction PIN'}</Text>
+          </TouchableOpacity>
+          {showPinSetup && (
+            <View style={{ marginTop: 8 }}>
+              <TextInput value={pinCode} onChangeText={setPinCode} placeholder="4-6 digit PIN" placeholderTextColor={colors.textMuted} keyboardType="number-pad" maxLength={6} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
+              <TextInput value={pinPw} onChangeText={setPinPw} placeholder="Current password to confirm" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
+              <GoldButton title="Set PIN" onPress={handleSetPin} />
+            </View>
+          )}
+
+          <TouchableOpacity onPress={logout} style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingVertical: 16, alignItems: 'center', marginTop: 24, borderWidth: 1, borderColor: colors.border }}>
+            <Text style={{ color: colors.gold, fontWeight: '700', fontSize: 14 }}>Sign Out</Text>
+          </TouchableOpacity>
+
+          <Text style={{ fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 20 }}>v1.0.0 \u2014 #090D16</Text>
         </View>
       </ScrollView>
     </View>

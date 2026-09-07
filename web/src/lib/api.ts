@@ -1,6 +1,6 @@
 /**
- * Centralized API client — single source of truth (PostgreSQL backend).
- * All web admin actions go through here and are immediately reflected in mobile via same DB.
+ * Centralized API client — PostgreSQL backend.
+ * All web admin actions go through here.
  */
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 
@@ -15,22 +15,37 @@ async function req(path: string, opts: RequestInit = {}) {
   return res.json();
 }
 
-// Config / Fund
-export const getConfig = () => req('/config');
-export const updateFeedingAmount = (amount: number) => req('/config/feeding-amount', { method: 'PUT', body: JSON.stringify({ amount }) });
-export const fundValidStudents = () => req('/config/fund-valid', { method: 'POST' });
+// Auth
+export const loginApi = (email: string, password: string) => req('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+export const changePassword = (currentPassword: string, newPassword: string) => req('/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) });
 
-// Hostels / Levels
-export const getHostels = () => req('/hostels');
-export const createHostel = (data: any) => req('/hostels', { method: 'POST', body: JSON.stringify(data) });
-export const deleteHostel = (id: string) => req(`/hostels/${id}`, { method: 'DELETE' });
+// Dashboard
+export const getDashboard = () => req('/admin/dashboard');
+
+// Users
+export const getUsers = () => req('/admin/users');
+export const updateUser = (id: string, data: any) => req(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const deleteUser = (id: string) => req(`/admin/${id}`, { method: 'DELETE' });
+export const updateRole = (id: string, role: string) => req(`/admin/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }) });
+
+// Config / Meal Rates
+export const getConfig = () => req('/config');
+export const updateMealRates = (data: { breakfastRate?: number; lunchRate?: number; dinnerRate?: number }) => req('/config/feeding-amount', { method: 'PUT', body: JSON.stringify(data) });
+export const fundValidStudents = (days: number) => req('/config/fund-valid', { method: 'POST', body: JSON.stringify({ days }) });
+
+// Levels
 export const getLevels = () => req('/levels');
 export const createLevel = (data: any) => req('/levels', { method: 'POST', body: JSON.stringify(data) });
 export const deleteLevel = (id: string) => req(`/levels/${id}`, { method: 'DELETE' });
 
-// Activity Logs — chronological audit
+// Transactions
+export const getTransactions = (params = '') => req(`/payments/transactions${params}`);
+
+// Activity Logs
 export const getActivityLogs = () => req('/activity-logs');
 
-// Wallet / Ledger (shared with mobile)
-export const getWallet = (studentId: string) => req(`/wallet/${studentId}`);
-export const getLedger = (params = '') => req(`/payments/ledger${params}`);
+// Session
+export const getSessionInfo = () => req('/config/session');
+
+// Admins
+export const getAdmins = () => req('/admin');

@@ -1,12 +1,29 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
+import { useAuthStore } from '../src/store/authStore';
 import '../global.css';
 
 export default function RootLayout() {
-  React.useEffect(() => {
+  const router = useRouter();
+  const segments = useSegments();
+  const { token, hydrated, hydrate } = useAuthStore();
+
+  useEffect(() => { hydrate(); }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const inAuthGroup = segments[0] === 'login' || segments[0] === 'signup' || segments[0] === 'forgot-password';
+    if (!token && !inAuthGroup) {
+      router.replace('/login');
+    } else if (token && inAuthGroup) {
+      router.replace('/(tabs)');
+    }
+  }, [token, hydrated, segments]);
+
+  useEffect(() => {
     if (__DEV__) return;
     async function checkUpdate() {
       try {
@@ -15,12 +32,12 @@ export default function RootLayout() {
           await Updates.fetchUpdateAsync();
           await Updates.reloadAsync();
         }
-      } catch (e) {
-        console.warn('[OTA] update check failed', e);
-      }
+      } catch {}
     }
     checkUpdate();
   }, []);
+
+  if (!hydrated) return null;
 
   return (
     <SafeAreaProvider>
@@ -32,14 +49,14 @@ export default function RootLayout() {
           animation: 'slide_from_right',
         }}
       >
+        <Stack.Screen name="login" />
+        <Stack.Screen name="signup" />
+        <Stack.Screen name="forgot-password" />
+        <Stack.Screen name="pin-verify" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="payment"
-          options={{
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
-            headerShown: false,
-          }}
+          options={{ presentation: 'modal', animation: 'slide_from_bottom', headerShown: false }}
         />
       </Stack>
     </SafeAreaProvider>

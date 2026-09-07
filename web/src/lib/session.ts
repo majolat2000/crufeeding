@@ -1,20 +1,15 @@
 /**
- * Academic Session automation
- * Default: 2026/2027, auto-rollover every Oct 1st
- * e.g. before 2027-10-01 => 2026/2027, after => 2027/2028
+ * Academic Session automation — Nigeria WAT (GMT+1)
+ * Base: 2025/2026, auto-rollover every Oct 1st.
+ * After Oct 1, 2025 => 2025/2026
+ * After Oct 1, 2026 => 2026/2027
+ * etc.
  */
 export function getCurrentSession(date = new Date()): string {
   const year = date.getFullYear();
-  const month = date.getMonth(); // 0-11
-  // Oct = 9
-  // If month >= Oct (9), session starts this year; else previous year
+  const month = date.getMonth(); // 0-11, Oct = 9
   const startYear = month >= 9 ? year : year - 1;
-  // But clamp to start at 2026/2027 base
-  const baseStart = 2026;
-  const effectiveStart = Math.max(startYear, baseStart);
-  // If we are before 2026-10-01, still return 2026/2027
-  if (effectiveStart < baseStart) return '2026/2027';
-  return `${effectiveStart}/${effectiveStart + 1}`;
+  return `${startYear}/${startYear + 1}`;
 }
 
 export function getSessionForDate(d: Date) { return getCurrentSession(d); }

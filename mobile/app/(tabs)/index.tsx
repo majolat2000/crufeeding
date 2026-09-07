@@ -1,43 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { RESTAURANTS } from '../../src/constants/restaurants';
 import { colors, radius } from '../../src/theme/theme';
-import { FlashyCard } from '../../src/components/FlashyCard';
+import { useAuthStore } from '../../src/store/authStore';
 import { StatusBadge } from '../../src/components/StatusBadge';
+import { FlashyCard } from '../../src/components/FlashyCard';
+import { api } from '../../src/api/client';
 
 export function HomeScreen() {
   const router = useRouter();
+  const { user, refreshUser } = useAuthStore();
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    fetchBalance();
+    const interval = setInterval(fetchBalance, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchBalance = async () => {
+    try {
+      if (!user?.id) return;
+      const { data } = await api.get(`/wallet/${user.id}`);
+      setBalance(Number(data.data?.balance ?? 0));
+    } catch {}
+  };
+
+  const handleRestaurantPress = (merchant: string, amount: string) => {
+    router.push({ pathname: '/pin-verify', params: { merchant, amount } });
+  };
 
   const renderRestaurant = ({ item }: { item: (typeof RESTAURANTS)[0] }) => (
     <TouchableOpacity
-      onPress={() => router.push({ pathname: '/payment', params: { merchant: item.name, amount: '5' } })}
+      onPress={() => handleRestaurantPress(item.name, '5')}
       activeOpacity={0.85}
       style={{
-        flex: 1,
-        margin: 6,
-        minHeight: 110,
-        backgroundColor: colors.surface,
-        borderRadius: radius.lg,
-        borderWidth: 1,
-        borderColor: colors.border,
-        padding: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        shadowOffset: { width: 0, height: 4 },
+        flex: 1, margin: 6, minHeight: 110,
+        backgroundColor: colors.surface, borderRadius: radius.lg,
+        borderWidth: 1, borderColor: colors.border, padding: 16,
+        alignItems: 'center', justifyContent: 'center',
+        elevation: 4, shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 8, shadowOffset: { width: 0, height: 4 },
       }}
     >
       <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.goldGlow, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
         <Text style={{ fontSize: 24 }}>{item.icon}</Text>
       </View>
-      <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }} numberOfLines={2}>
-        {item.name}
-      </Text>
+      <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }} numberOfLines={2}>{item.name}</Text>
       <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>Tap to pay</Text>
     </TouchableOpacity>
   );
@@ -45,7 +55,6 @@ export function HomeScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
@@ -53,32 +62,28 @@ export function HomeScreen() {
             </View>
             <View>
               <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase' }}>Crawford University</Text>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: colors.textPrimary }}>Majesty Olat</Text>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: colors.textPrimary }}>{user?.fullname || 'Student'}</Text>
             </View>
           </View>
           <StatusBadge label="Active" variant="success" />
         </View>
 
-        {/* Balance Card */}
         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
           <LinearGradient
             colors={[colors.bg, colors.surfaceOverlay, '#1a2744']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={{ borderRadius: radius.lg, padding: 24, borderWidth: 1, borderColor: colors.border }}
           >
             <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' }}>Feeding Balance</Text>
-            <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', marginTop: 8, letterSpacing: -1 }}>{'\u20A6'}75.00</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', marginTop: 8, letterSpacing: -1 }}>{'\u20A6'}{balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
-              <Text style={{ color: colors.textMuted, fontSize: 11 }}>LCU/UG/20/17109 - Faith Hall</Text>
+              <Text style={{ color: colors.textMuted, fontSize: 11 }}>{user?.matricNo || user?.level || 'Student'}</Text>
               <StatusBadge label="Active" variant="success" />
             </View>
             <View style={{ position: 'absolute', right: -20, top: -20, width: 96, height: 96, borderRadius: 48, backgroundColor: colors.goldGlow }} />
-            <View style={{ position: 'absolute', right: -8, top: 32, width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(245,158,11,0.05)' }} />
           </LinearGradient>
         </View>
 
-        {/* Restaurants Grid */}
         <View style={{ paddingHorizontal: 12, marginTop: 24 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 12 }}>
             <Text style={{ fontSize: 13, fontWeight: '800', color: colors.goldText, letterSpacing: 1, textTransform: 'uppercase' }}>Available Restaurants</Text>
@@ -95,7 +100,6 @@ export function HomeScreen() {
           />
         </View>
 
-        {/* Quick note */}
         <FlashyCard glow style={{ marginHorizontal: 20, marginTop: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Text style={{ color: colors.gold, fontSize: 16 }}>{'\u26A1'}</Text>
