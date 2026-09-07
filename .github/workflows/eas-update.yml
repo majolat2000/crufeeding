@@ -40,8 +40,8 @@ jobs:
 
       - name: Production OTA (push to main)
         if: github.event_name == 'push'
-        run: eas update --branch production --message "Production update from main" --non-interactive --no-git
+        run: eas update --branch production --message "Production update from main" --non-interactive
 
       - name: PR Preview OTA (pull request)
         if: github.event_name == 'pull_request'
-        run: eas update --branch pr-${{ github.event.number }} --message "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }}" --non-interactive --no-git
+        run: eas update --branch pr-${{ github.event.number }} --message "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }}" --non-interactive
