@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { getTransactions } from '@/lib/api';
 
-type Tx = { id: string; studentId: string; vendorName: string; type: string; gross: number; balanceAfter: number; status: string; reference?: string; createdAt: string };
+type Tx = { id: string; studentId: string; vendorId: string; vendorName: string; type: string; gross: number; balanceAfter: number; status: string; reference?: string; createdAt: string };
 
 export default function TransactionsPage() {
   const [txs, setTxs] = useState<Tx[]>([]);
