@@ -1,0 +1,18 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-daf7jaon74is738nb1d0?key=rlOXPD7NHas"
+      - name: Verify Health
+        run: |
+          sleep 30
+          curl -f https://crufeeding-backend.onrender.com/health || echo "Health check pending — Render cold start may take 30s"

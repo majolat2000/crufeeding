@@ -5,8 +5,8 @@ dotenv.config();
  * Typed env — fails fast if required secrets missing.
  */
 export const env = {
-  port: parseInt(process.env.PORT ?? '4000', 10),
-  // PostgreSQL is now the single source of truth (replaces Mongo URI if DATABASE_URL is set)
+  port: parseInt(process.env.PORT ?? '10000', 10), // Render: process.env.PORT || 10000
+  // PostgreSQL single source — must read from process.env.DATABASE_URL
   databaseUrl: process.env.DATABASE_URL ?? process.env.MONGO_URI ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding',
   mongoUri: process.env.MONGO_URI ?? 'mongodb://localhost:27017/crawford_feeding', // kept for backward compat during migration
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
