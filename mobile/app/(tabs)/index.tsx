@@ -1,85 +1,88 @@
-import React from "react";
-import { View, Text, ScrollView, FlatList, TouchableOpacity, SafeAreaView, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { RESTAURANTS } from "../../src/constants/restaurants";
+import React from 'react';
+import { View, Text, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { RESTAURANTS } from '../../src/constants/restaurants';
+import { colors, radius } from '../../src/theme/theme';
+import { FlashyCard } from '../../src/components/FlashyCard';
+import { StatusBadge } from '../../src/components/StatusBadge';
 
-/**
- * HomeScreen.tsx — production-ready
- * - Header: university logo + "Majesty Olat"
- * - Dark navy gradient Feeding Balance card: large bold ₦75.00
- * - 2-col responsive grid of white cards (bg-white rounded-xl) for restaurants
- *
- * NativeWind classes used alongside StyleSheet fallback for gradient container.
- */
 export function HomeScreen() {
   const router = useRouter();
 
   const renderRestaurant = ({ item }: { item: (typeof RESTAURANTS)[0] }) => (
     <TouchableOpacity
-      onPress={() => router.push({ pathname: "/payment", params: { merchant: item.name, amount: "5" } })}
+      onPress={() => router.push({ pathname: '/payment', params: { merchant: item.name, amount: '5' } })}
       activeOpacity={0.85}
-      className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm items-center justify-center"
-      style={{ flex: 1, margin: 6, minHeight: 110, elevation: 2, shadowColor: "#000", shadowOpacity: 0.06, shadowRadius: 8 }}
+      style={{
+        flex: 1,
+        margin: 6,
+        minHeight: 110,
+        backgroundColor: colors.surface,
+        borderRadius: radius.lg,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+      }}
     >
-      <View className="w-12 h-12 rounded-full bg-[#F4F5F7] items-center justify-center mb-2">
-        <Text className="text-2xl">{item.icon}</Text>
+      <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.goldGlow, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
+        <Text style={{ fontSize: 24 }}>{item.icon}</Text>
       </View>
-      <Text className="text-[13px] font-bold text-[#1A153B] text-center" numberOfLines={2}>
+      <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }} numberOfLines={2}>
         {item.name}
       </Text>
-      <Text className="text-[11px] text-gray-400 mt-1">Tap to pay</Text>
+      <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>Tap to pay</Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F4F5F7]">
-      <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
-        {/* Header — logo + student name */}
-        <View className="flex-row items-center justify-between px-5 pt-3 pb-4 bg-white border-b border-gray-100">
-          <View className="flex-row items-center gap-3">
-            {/* University crest placeholder — replace with <Image source={require('@/assets/crest.png')} /> */}
-            <View className="w-9 h-9 rounded-full bg-[#1A153B] items-center justify-center">
-              <Text className="text-white font-extrabold text-sm">CU</Text>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 14 }}>CU</Text>
             </View>
             <View>
-              <Text className="text-xs text-gray-500 font-semibold tracking-widest uppercase">Crawford University</Text>
-              <Text className="text-base font-extrabold text-[#1A153B]">Majesty Olat</Text>
+              <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase' }}>Crawford University</Text>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: colors.textPrimary }}>Majesty Olat</Text>
             </View>
           </View>
-          <View className="w-8 h-8 rounded-full bg-gray-100 items-center justify-center">
-            <Text className="text-gray-500">◐</Text>
-          </View>
+          <StatusBadge label="Active" variant="success" />
         </View>
 
-        {/* Feeding Balance — dark navy gradient */}
-        <View className="px-5 mt-4">
+        {/* Balance Card */}
+        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
           <LinearGradient
-            colors={["#1A153B", "#2E2960", "#3B3486"]}
+            colors={[colors.bg, colors.surfaceOverlay, '#1a2744']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="rounded-2xl p-5"
-            style={{ borderRadius: 16, padding: 20 }}
+            style={{ borderRadius: radius.lg, padding: 24, borderWidth: 1, borderColor: colors.border }}
           >
-            <Text className="text-indigo-200 text-xs font-bold tracking-[1.5px] uppercase">Feeding Balance</Text>
-            <Text className="text-white text-[36px] font-extrabold mt-2 tracking-tight">₦75.00</Text>
-            <View className="flex-row items-center justify-between mt-4">
-              <Text className="text-indigo-200 text-xs">Matric: LCU/UG/20/17109 • Faith Hall</Text>
-              <View className="bg-white/15 px-3 py-1.5 rounded-full">
-                <Text className="text-white text-xs font-bold">Active</Text>
-              </View>
+            <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' }}>Feeding Balance</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', marginTop: 8, letterSpacing: -1 }}>{'\u20A6'}75.00</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
+              <Text style={{ color: colors.textMuted, fontSize: 11 }}>LCU/UG/20/17109 - Faith Hall</Text>
+              <StatusBadge label="Active" variant="success" />
             </View>
-            {/* Decorative circles */}
-            <View className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10" />
-            <View className="absolute -right-2 top-8 w-16 h-16 rounded-full bg-white/5" />
+            <View style={{ position: 'absolute', right: -20, top: -20, width: 96, height: 96, borderRadius: 48, backgroundColor: colors.goldGlow }} />
+            <View style={{ position: 'absolute', right: -8, top: 32, width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(245,158,11,0.05)' }} />
           </LinearGradient>
         </View>
 
-        {/* Available Restaurants — 2-col grid */}
-        <View className="px-3 mt-6">
-          <View className="flex-row items-center justify-between px-2 mb-2">
-            <Text className="text-sm font-extrabold text-[#1A153B] tracking-wide uppercase">Available Restaurants</Text>
-            <Text className="text-xs text-gray-400">6 vendors</Text>
+        {/* Restaurants Grid */}
+        <View style={{ paddingHorizontal: 12, marginTop: 24 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 12 }}>
+            <Text style={{ fontSize: 13, fontWeight: '800', color: colors.goldText, letterSpacing: 1, textTransform: 'uppercase' }}>Available Restaurants</Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted }}>{RESTAURANTS.length} vendors</Text>
           </View>
           <FlatList
             data={RESTAURANTS}
@@ -87,20 +90,23 @@ export function HomeScreen() {
             numColumns={2}
             scrollEnabled={false}
             renderItem={renderRestaurant}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-            contentContainerStyle={{ paddingHorizontal: 2 }}
+            columnWrapperStyle={{ justifyContent: 'space-between' }}
+            contentContainerStyle={{ paddingHorizontal: 8 }}
           />
         </View>
 
         {/* Quick note */}
-        <View className="mx-5 mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex-row items-center gap-2">
-          <Text className="text-amber-600">⚡</Text>
-          <Text className="text-xs text-emerald-800 flex-1">Tap any restaurant to generate your QR payment. 100% direct payout to vendor.</Text>
-        </View>
+        <FlashyCard glow style={{ marginHorizontal: 20, marginTop: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={{ color: colors.gold, fontSize: 16 }}>{'\u26A1'}</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 12, flex: 1 }}>
+              Tap any restaurant to generate your QR payment. 100% direct payout to vendor.
+            </Text>
+          </View>
+        </FlashyCard>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
-// Default export for expo-router direct import
 export default HomeScreen;

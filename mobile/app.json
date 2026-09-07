@@ -6,9 +6,17 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "crawford-feeding",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/000dbe92-926b-4680-89c9-bc825251a904",
+      "fallbackToCacheTimeout": 0,
+      "checkAutomatically": "ON_LOAD"
+    },
     "splash": {
-      "backgroundColor": "#1A153B",
+      "backgroundColor": "#090D16",
       "resizeMode": "contain",
       "image": "./assets/splash.png"
     },
@@ -24,7 +32,7 @@
       "package": "com.majolat2000.crawfordfeeding",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1A153B"
+        "backgroundColor": "#090D16"
       }
     },
     "web": {

@@ -1,61 +1,59 @@
-import React from "react";
-import { View, Text, ScrollView, TextInput, TouchableOpacity, SafeAreaView } from "react-native";
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { colors, radius } from '../../src/theme/theme';
+import { FlashyCard } from '../../src/components/FlashyCard';
+import { GoldButton } from '../../src/components/GoldButton';
+import { StatusBadge } from '../../src/components/StatusBadge';
 
-/**
- * ProfileScreen — crest, matric LCU/UG/20/17109, Sign Out, read-only inputs.
- * Light-grey card inputs matching spec.
- */
 const Field = ({ label, value }: { label: string; value: string }) => (
-  <View className="mb-3">
-    <Text className="text-[11px] font-bold text-gray-500 tracking-widest uppercase mb-1.5">{label}</Text>
-    <View className="bg-[#F4F5F7] rounded-xl px-4 py-3.5 border border-gray-100">
-      <Text className="text-[14px] font-semibold text-[#1A153B]">{value}</Text>
+  <View style={{ marginBottom: 12 }}>
+    <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{label}</Text>
+    <View style={{ backgroundColor: colors.surfaceOverlay, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, borderWidth: 1, borderColor: colors.borderSubtle }}>
+      <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textPrimary }}>{value}</Text>
     </View>
   </View>
 );
 
 export function ProfileScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-[#F4F5F7]">
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
-        {/* Header — crest + matric */}
-        <View className="bg-white px-5 pt-4 pb-5 border-b border-gray-100 items-center">
-          <View className="w-16 h-16 rounded-full bg-[#1A153B] items-center justify-center">
-            <Text className="text-white font-extrabold">CU</Text>
+        <View style={{ backgroundColor: colors.surface, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle, alignItems: 'center' }}>
+          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
           </View>
-          <Text className="text-[11px] font-bold text-gray-400 tracking-widest uppercase mt-3">Crawford University</Text>
-          <Text className="text-lg font-extrabold text-[#1A153B] mt-1">Majesty Olatimilehin</Text>
-          <Text className="text-xs text-gray-500 mt-1">LCU/UG/20/17109 • 300 Level • Faith Hall</Text>
-          <TouchableOpacity className="mt-4 bg-[#1A153B] rounded-full px-6 py-2.5">
-            <Text className="text-white font-bold text-sm">Sign Out</Text>
-          </TouchableOpacity>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 12 }}>Crawford University</Text>
+          <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>Majesty Olatimilehin</Text>
+          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>LCU/UG/20/17109 \u2014 300 Level \u2014 Faith Hall</Text>
+          <StatusBadge label="Active Student" variant="success" />
+          <GoldButton title="Sign Out" onPress={() => {}} style={{ marginTop: 16 }} />
         </View>
 
-        <View className="px-5 mt-5">
+        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
           <Field label="Firstname" value="Majesty" />
           <Field label="Lastname" value="Olatimilehin" />
           <Field label="Middlename" value="Oluwakolade" />
           <Field label="Email" value="majesty.olat@crawford.edu.ng" />
           <Field label="Next Funding Date" value="01 Sept 2026" />
-          <Field label="Total Feeding Amount" value="₦75,000" />
-          <Field label="Total Amount Funded" value="₦68,500" />
+          <Field label="Total Feeding Amount" value={'\u20A675,000'} />
+          <Field label="Total Amount Funded" value={'\u20A668,500'} />
 
-          <View className="bg-white rounded-xl p-4 border border-gray-100 mt-2">
-            <Text className="text-xs font-bold text-[#1A153B] uppercase tracking-wide">Feeding Summary</Text>
-            <View className="flex-row justify-between mt-3">
-              <Text className="text-gray-500 text-xs">Balance</Text>
-              <Text className="font-extrabold text-[#1A153B]">₦75.00</Text>
+          <FlashyCard style={{ marginTop: 8 }}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: colors.goldText, textTransform: 'uppercase', letterSpacing: 1 }}>Feeding Summary</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+              <Text style={{ color: colors.textMuted, fontSize: 13 }}>Balance</Text>
+              <Text style={{ fontWeight: '800', color: colors.gold, fontSize: 14 }}>{'\u20A6'}75.00</Text>
             </View>
-            <View className="flex-row justify-between mt-2">
-              <Text className="text-gray-500 text-xs">Spent this semester</Text>
-              <Text className="font-bold text-gray-700">₦6,500</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+              <Text style={{ color: colors.textMuted, fontSize: 13 }}>Spent this semester</Text>
+              <Text style={{ fontWeight: '700', color: colors.textPrimary, fontSize: 14 }}>{'\u20A6'}6,500</Text>
             </View>
-          </View>
+          </FlashyCard>
 
-          <Text className="text-[11px] text-gray-400 text-center mt-4">v1.0.0 • #1A153B • Bursary support: bursary@crawford.edu.ng</Text>
+          <Text style={{ fontSize: 11, color: colors.textMuted, textAlign: 'center', marginTop: 20 }}>v1.0.0 \u2014 #090D16 \u2014 Bursary: bursary@crawford.edu.ng</Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
