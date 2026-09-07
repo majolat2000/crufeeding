@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
@@ -40,8 +40,8 @@ jobs:
 
       - name: Production OTA (push to main)
         if: github.event_name == 'push'
-        run: eas update --branch production --message "Production update from main" --non-interactive
+        run: eas update --branch production --message "Production update from main" --non-interactive --no-git
 
       - name: PR Preview OTA (pull request)
         if: github.event_name == 'pull_request'
-        run: eas update --branch pr-${{ github.event.number }} --message "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }}" --non-interactive
+        run: eas update --branch pr-${{ github.event.number }} --message "PR #${{ github.event.number }}: ${{ github.event.pull_request.title }}" --non-interactive --no-git
