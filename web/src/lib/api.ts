@@ -2,7 +2,7 @@
  * Centralized API client — PostgreSQL backend.
  * All web admin actions go through here.
  */
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://crufeeding-backend.onrender.com/api/v1';
 
 async function req(path: string, opts: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
