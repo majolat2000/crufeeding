@@ -3,8 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import bcrypt from 'bcryptjs';
 import { env } from './config/env.js';
-import { connectPostgres } from './config/db.pg.js';
+import { prisma, connectPostgres } from './config/db.pg.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { walletRouter } from './modules/wallet/wallet.routes.js';
@@ -34,8 +35,45 @@ app.use('/api/v1/activity-logs', activityLogRouter);
 app.use(notFound);
 app.use(errorHandler);
 
+async function seedDatabase() {
+  try {
+    const userCount = await prisma.user.count();
+    if (userCount > 0) {
+      console.log(`[seed] ${userCount} users exist — skipping seed`);
+      return;
+    }
+    console.log('[seed] no users found — seeding database...');
+
+    const hash1 = await bcrypt.hash('CRUFEED@1#1', 10);
+    const hash2 = await bcrypt.hash('12345678', 10);
+
+    const superAdmin = await prisma.user.create({
+      data: { email: 'majesty.olatimilehin@crawforduniversity.edu.ng', password: hash1, fullname: 'Majesty Olatimilehin', role: 'super_admin', verified: true },
+    });
+    await prisma.wallet.create({ data: { userId: superAdmin.id, balance: 0 } });
+
+    const bursary = await prisma.user.create({
+      data: { email: 'bursary@crawforduniversity.edu.ng', password: hash2, fullname: 'Bursary Department', role: 'bursar', verified: true },
+    });
+    await prisma.wallet.create({ data: { userId: bursary.id, balance: 0 } });
+
+    await prisma.restaurant.upsert({ where: { name: 'The Cafeteria' }, update: {}, create: { name: 'The Cafeteria', isActive: true } });
+    await prisma.globalConfig.upsert({ where: { id: 'global' }, update: {}, create: { id: 'global', session: '2025/2026' } });
+
+    const levels = ['JUPEB', '100 LEVEL', '200 LEVEL', '300 LEVEL', '500 LEVEL', 'Visitor'];
+    for (const name of levels) {
+      await prisma.level.upsert({ where: { name }, update: {}, create: { name, cap: 2000, plan: name === 'Visitor' ? 'Basic' : 'Standard' } });
+    }
+
+    console.log('[seed] created Super Admin + Bursary + Cafeteria + Levels');
+  } catch (e) {
+    console.error('[seed] error:', e);
+  }
+}
+
 const start = async () => {
   await connectPostgres();
+  await seedDatabase();
   app.listen(env.port, '0.0.0.0', () => console.log(`[backend] listening on 0.0.0.0:${env.port}`));
 };
 
