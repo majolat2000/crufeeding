@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { getDashboard } from '@/lib/api';
-import { getCurrentSession } from '@/lib/session';
+import { useSession } from '@/lib/session-context';
 
 type DashboardData = {
   totalUsers: number;
@@ -22,7 +22,7 @@ type DashboardData = {
 };
 
 export default function DashboardPage() {
-  const session = getCurrentSession();
+  const { session } = useSession();
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState('');
 
@@ -51,8 +51,8 @@ export default function DashboardPage() {
         <Stat title="Subscribers" value={d?.totalSubscribers ?? '—'} hint="active meal plans" />
         <Stat title="New Users (week)" value={d?.newUsersWeek ?? '—'} hint="last 7 days" />
         <Stat title="Total Disbursement (session)" value={d ? `₦${d.totalDisbursement.toLocaleString()}` : '—'} hint={`${session} so far`} />
-        <Stat title="Total Transactions (month)" value={d?.monthlyTransactions ?? '\u2014'} hint="users + subscribers" />
-        <Stat title="The Cafeteria \u2014 Purchases" value={d?.cafeteriaPurchases ?? '\u2014'} hint="single cafeteria \u2022 100% payout" />
+        <Stat title="Total Transactions (month)" value={d?.monthlyTransactions ?? '—'} hint="users + subscribers" />
+        <Stat title="The Cafeteria — Purchases" value={d?.cafeteriaPurchases ?? '—'} hint="single cafeteria • 100% payout" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -60,7 +60,7 @@ export default function DashboardPage() {
           <h2 className="font-bold text-[#1A153B]">Session Disbursement Trend</h2>
           <p className="text-xs text-gray-500 mt-1">Cumulative funding for {session}</p>
           <div className="mt-6 h-40 rounded-xl bg-gradient-to-br from-amber-50 to-white border border-dashed border-amber-200 flex items-center justify-center text-sm text-gray-500">
-            Chart placeholder \u2014 disbursement over time
+            Chart placeholder — disbursement over time
           </div>
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -81,7 +81,7 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 mt-4">Breakfast ₦1,500 &bull; Lunch ₦2,000 &bull; Dinner ₦1,500 &bull; All Three ₦5,000/day</p>
+          <p className="text-xs text-gray-500 mt-4">Breakfast ₦1,500 • Lunch ₦2,000 • Dinner ₦1,500 • All Three ₦5,000/day</p>
         </div>
       </div>
     </div>

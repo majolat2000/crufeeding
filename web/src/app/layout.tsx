@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Shell } from '@/components/Shell';
+import { SessionProvider } from '@/lib/session-context';
 
 export const metadata: Metadata = {
   title: 'Crawford Feeding — Admin Portal',
@@ -14,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-[#F4F5F7] text-gray-900 antialiased">
-        <Shell>{children}</Shell>
+        <SessionProvider>
+          <Shell>{children}</Shell>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -1,10 +1,7 @@
-import React from "react";
-import { View, Text, ScrollView, TextInput, TouchableOpacity, SafeAreaView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from "react-native";
+import { getSession } from "../api/client";
 
-/**
- * ProfileScreen — crest, matric LCU/UG/20/17109, Sign Out, read-only inputs.
- * Light-grey card inputs matching spec.
- */
 const Field = ({ label, value }: { label: string; value: string }) => (
   <View className="mb-3">
     <Text className="text-[11px] font-bold text-gray-500 tracking-widest uppercase mb-1.5">{label}</Text>
@@ -15,10 +12,14 @@ const Field = ({ label, value }: { label: string; value: string }) => (
 );
 
 export function ProfileScreen() {
+  const [session, setSession] = useState("2025/2026");
+
+  useEffect(() => { getSession().then(setSession); }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-[#F4F5F7]">
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
-        {/* Header — crest + matric */}
+        {/* Header */}
         <View className="bg-white px-5 pt-4 pb-5 border-b border-gray-100 items-center">
           <View className="w-16 h-16 rounded-full bg-[#1A153B] items-center justify-center">
             <Text className="text-white font-extrabold">CU</Text>
@@ -26,12 +27,16 @@ export function ProfileScreen() {
           <Text className="text-[11px] font-bold text-gray-400 tracking-widest uppercase mt-3">Crawford University</Text>
           <Text className="text-lg font-extrabold text-[#1A153B] mt-1">Majesty Olatimilehin</Text>
           <Text className="text-xs text-gray-500 mt-1">LCU/UG/20/17109 • 300 Level • Faith Hall</Text>
-          <TouchableOpacity className="mt-4 bg-[#1A153B] rounded-full px-6 py-2.5">
-            <Text className="text-white font-bold text-sm">Sign Out</Text>
+          <View className="mt-3 bg-[#1A153B] px-4 py-1.5 rounded-full">
+            <Text className="text-white text-[11px] font-bold">Session {session}</Text>
+          </View>
+          <TouchableOpacity className="mt-3 bg-red-50 border border-red-200 rounded-full px-6 py-2.5">
+            <Text className="text-red-600 font-bold text-sm">Sign Out</Text>
           </TouchableOpacity>
         </View>
 
         <View className="px-5 mt-5">
+          <Field label="Academic Session" value={session} />
           <Field label="Firstname" value="Majesty" />
           <Field label="Lastname" value="Olatimilehin" />
           <Field label="Middlename" value="Oluwakolade" />
@@ -52,7 +57,7 @@ export function ProfileScreen() {
             </View>
           </View>
 
-          <Text className="text-[11px] text-gray-400 text-center mt-4">v1.0.0 • #1A153B • Bursary support: bursary@crawford.edu.ng</Text>
+          <Text className="text-[11px] text-gray-400 text-center mt-4">v1.0.0 • Bursary support: bursary@crawford.edu.ng</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

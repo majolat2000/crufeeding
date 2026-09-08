@@ -1,17 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getSessionInfo, updateSession } from '@/lib/api';
+import { updateSession } from '@/lib/api';
+import { useSession } from '@/lib/session-context';
 
 export default function SessionPage() {
-  const [session, setSession] = useState('2025/2026');
-  const [loading, setLoading] = useState(true);
+  const { session: currentSession, refresh } = useSession();
+  const [session, setSession] = useState(currentSession);
   const [msg, setMsg] = useState('');
 
-  useEffect(() => {
-    getSessionInfo()
-      .then(r => { setSession(r.data.session); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, []);
+  useEffect(() => { setSession(currentSession); }, [currentSession]);
 
   const startYear = parseInt(session.split('/')[0]) || 2025;
 
@@ -26,11 +23,10 @@ export default function SessionPage() {
   async function handleUpdate() {
     try {
       await updateSession(session);
+      await refresh();
       setMsg(`Session updated to ${session}`);
     } catch (e: any) { setMsg(e.message); }
   }
-
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading session...</div>;
 
   return (
     <div className="space-y-4">

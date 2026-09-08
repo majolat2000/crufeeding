@@ -30,3 +30,12 @@ api.interceptors.response.use(
     return Promise.reject(new Error(msg));
   }
 );
+
+export async function getSession(): Promise<string> {
+  try {
+    const res = await api.get('/config/session');
+    return res.data?.data?.session || '2025/2026';
+  } catch {
+    return '2025/2026';
+  }
+}
