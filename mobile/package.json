@@ -13,7 +13,7 @@
     "publish:ota": "eas update --branch production"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^3.1.1",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "ajv": "^8.17.1",
     "axios": "^1.7.0",
     "date-fns": "^4.1.0",
