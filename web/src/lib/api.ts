@@ -2,16 +2,38 @@
  * Centralized API client — PostgreSQL backend.
  * All web admin actions go through here.
  */
+
 const API = process.env.NEXT_PUBLIC_API_URL || 'https://crufeeding-backend.onrender.com/api/v1';
+
+function logoutAndRedirect() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('crawford_session');
+  localStorage.removeItem('token');
+  window.location.replace('/login');
+}
 
 async function req(path: string, opts: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const res = await fetch(`${API}${path}`, {
     ...opts,
-    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(opts.headers || {}) },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(opts.headers || {}),
+    },
     cache: 'no-store',
   });
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || `API ${res.status}`);
+
+  if (res.status === 401) {
+    logoutAndRedirect();
+    throw new Error('Session expired — please log in again');
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `API error ${res.status}`);
+  }
+
   return res.json();
 }
 

@@ -37,7 +37,14 @@ app.use(errorHandler);
 
 async function seedDatabase() {
   try {
-    const userCount = await prisma.user.count();
+    // Fix stale meal plans: non-subscribers should have no meals selected
+  const staleUsers = await prisma.user.updateMany({
+    where: { role: { not: 'subscriber' }, OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] },
+    data: { mealBreakfast: false, mealLunch: false, mealDinner: false },
+  });
+  if (staleUsers.count > 0) console.log(`[seed] reset ${staleUsers.count} non-subscriber users to no meal plan`);
+
+  const userCount = await prisma.user.count();
     if (userCount > 0) {
       console.log(`[seed] ${userCount} users exist — skipping seed`);
       return;

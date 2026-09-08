@@ -35,9 +35,17 @@ export default function UsersPage() {
   }
 
   async function save(u: User) {
+    const isSub = draftRole === 'subscriber';
+    const payload: any = { role: draftRole };
+    if (isSub) {
+      payload.mealBreakfast = draftMeals.breakfast;
+      payload.mealLunch = draftMeals.lunch;
+      payload.mealDinner = draftMeals.dinner;
+    }
     try {
-      await updateUser(u.id, { role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner });
-      setUsers(users.map(x => x.id === u.id ? { ...x, role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner } : x));
+      await updateUser(u.id, payload);
+      const updated = { ...u, role: draftRole, mealBreakfast: isSub ? draftMeals.breakfast : false, mealLunch: isSub ? draftMeals.lunch : false, mealDinner: isSub ? draftMeals.dinner : false };
+      setUsers(users.map(x => x.id === u.id ? updated : x));
       setMsg(`Updated ${u.email}`);
       setEditing(null);
     } catch (e: any) { setMsg(e.message); }

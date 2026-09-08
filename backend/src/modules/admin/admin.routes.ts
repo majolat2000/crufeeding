@@ -18,7 +18,7 @@ adminRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_r
   } catch (e) { next(e); }
 });
 
-/** PUT /api/v1/admin/:id/role — change user role (Bursar has full access) */
+/** PUT /api/v1/admin/:id/role — change user role */
 adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role } = req.body;
@@ -26,7 +26,13 @@ adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), a
     const target = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!target) return res.status(404).json({ success: false, message: 'User not found' });
 
-    const user = await prisma.user.update({ where: { id: req.params.id }, data: { role }, select: { id: true, email: true, role: true, fullname: true } });
+    const data: any = { role };
+    if (role !== 'subscriber') {
+      data.mealBreakfast = false;
+      data.mealLunch = false;
+      data.mealDinner = false;
+    }
+    const user = await prisma.user.update({ where: { id: req.params.id }, data, select: { id: true, email: true, role: true, fullname: true } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'UPDATE_ROLE', target: user.email, metadata: { from: target.role, to: role }, ip: req.ip });
     res.json({ success: true, data: user });
   } catch (e) { next(e); }
@@ -131,11 +137,20 @@ adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), 
     const data: any = {};
     if (role !== undefined) data.role = role;
     if (level !== undefined) data.level = level;
-    if (mealBreakfast !== undefined) data.mealBreakfast = mealBreakfast;
-    if (mealLunch !== undefined) data.mealLunch = mealLunch;
-    if (mealDinner !== undefined) data.mealDinner = mealDinner;
     if (hostel !== undefined) data.hostel = hostel;
     if (verified !== undefined) data.verified = verified;
+
+    const targetRole = role ?? (await prisma.user.findUnique({ where: { id: req.params.id } }))?.role;
+    if (targetRole === 'subscriber') {
+      if (mealBreakfast !== undefined) data.mealBreakfast = mealBreakfast;
+      if (mealLunch !== undefined) data.mealLunch = mealLunch;
+      if (mealDinner !== undefined) data.mealDinner = mealDinner;
+    } else if (role !== undefined && role !== 'subscriber') {
+      data.mealBreakfast = false;
+      data.mealLunch = false;
+      data.mealDinner = false;
+    }
+
     const user = await prisma.user.update({ where: { id: req.params.id }, data, select: { id: true, email: true, role: true, fullname: true } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'UPDATE_USER', target: user.email, metadata: data, ip: req.ip });
     res.json({ success: true, data: user });
