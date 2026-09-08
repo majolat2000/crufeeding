@@ -8,7 +8,6 @@ import * as Updates from 'expo-updates';
 import { useAuthStore } from '../src/store/authStore';
 import { colors } from '../src/theme/theme';
 import { api } from '../src/api/client';
-import '../global.css';
 
 SplashScreen.preventAutoHideAsync();
 
