@@ -197,3 +197,51 @@ authRouter.put('/biometric', authenticate, async (req: AuthRequest, res, next) =
     res.json({ success: true, message: `Biometric ${enabled ? 'enabled' : 'disabled'}` });
   } catch (e) { next(e); }
 });
+
+/** POST /api/v1/auth/forgot-pin — send OTP for PIN reset */
+authRouter.post('/forgot-pin', async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(200).json({ success: true, message: 'If the email exists, an OTP has been sent' });
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    await prisma.otpCode.create({ data: { email, code, purpose: 'pin_reset', expiresAt: new Date(Date.now() + 15 * 60 * 1000) } });
+    console.log(`[OTP-PIN] ${email} -> ${code}`);
+    res.json({ success: true, message: 'OTP sent to email', data: { code } });
+  } catch (e) { next(e); }
+});
+
+/** POST /api/v1/auth/verify-pin-otp — verify OTP for PIN reset */
+authRouter.post('/verify-pin-otp', async (req, res, next) => {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) return res.status(400).json({ success: false, message: 'Email and code required' });
+    const otp = await prisma.otpCode.findFirst({
+      where: { email, code, purpose: 'pin_reset', used: false, expiresAt: { gt: new Date() } },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!otp) return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    await prisma.otpCode.update({ where: { id: otp.id }, data: { used: true } });
+    const resetToken = jwt.sign({ email, purpose: 'pin_reset' }, env.jwtSecret, { expiresIn: '15m' });
+    res.json({ success: true, data: { resetToken } });
+  } catch (e) { next(e); }
+});
+
+/** POST /api/v1/auth/reset-pin — set new PIN with reset token */
+authRouter.post('/reset-pin', async (req, res, next) => {
+  try {
+    const { resetToken, newPin } = req.body;
+    if (!resetToken || !newPin) return res.status(400).json({ success: false, message: 'Token and new PIN required' });
+    if (!/^\d{4,6}$/.test(newPin)) return res.status(400).json({ success: false, message: 'PIN must be 4-6 digits' });
+    try {
+      const payload = jwt.verify(resetToken, env.jwtSecret) as any;
+      if (payload.purpose !== 'pin_reset') throw new Error();
+      const pinHash = await bcrypt.hash(newPin, 10);
+      await prisma.user.update({ where: { email: payload.email }, data: { pin: pinHash } });
+      res.json({ success: true, message: 'PIN reset successful' });
+    } catch {
+      res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
+    }
+  } catch (e) { next(e); }
+});

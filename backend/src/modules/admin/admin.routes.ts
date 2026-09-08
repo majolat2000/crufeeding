@@ -194,3 +194,36 @@ adminRouter.delete('/levels/:id', authenticate, authorize('super_admin', 'bursar
     res.json({ success: true, message: 'Level deleted' });
   } catch (e) { next(e); }
 });
+
+/** POST /api/v1/admin/deduct — deduct amount from user wallet */
+adminRouter.post('/deduct', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+  try {
+    const { studentId, amount, reason } = req.body;
+    if (!studentId || !amount) return res.status(400).json({ success: false, message: 'studentId and amount required' });
+    const deductAmount = Number(amount);
+    if (deductAmount <= 0) return res.status(400).json({ success: false, message: 'Amount must be positive' });
+    const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }] } });
+    if (!user) return res.status(404).json({ success: false, message: 'Student not found' });
+    const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
+    if (!wallet) return res.status(404).json({ success: false, message: 'Wallet not found' });
+    if (Number(wallet.balance) < deductAmount) return res.status(400).json({ success: false, message: 'Insufficient balance' });
+    const newBalance = Number(wallet.balance) - deductAmount;
+    await prisma.wallet.update({ where: { userId: user.id }, data: { balance: newBalance } });
+    await prisma.transaction.create({
+      data: {
+        studentId: user.id,
+        vendorId: 'ADMIN_DEDUCTION',
+        vendorName: reason || 'Admin deduction',
+        type: 'debit',
+        gross: deductAmount,
+        levy: 0,
+        vendorPayout: 0,
+        balanceAfter: newBalance,
+        status: 'success',
+        reference: `DEDUCT-${Date.now()}-${user.id.slice(0, 6)}`,
+      },
+    });
+    await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'WALLET_DEDUCTION', target: user.email, metadata: { amount: deductAmount, reason }, ip: req.ip });
+    res.json({ success: true, message: `Deducted ₦${deductAmount.toLocaleString()} from ${user.email}`, data: { newBalance } });
+  } catch (e) { next(e); }
+});

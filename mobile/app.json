@@ -48,7 +48,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-camera"
+      "expo-camera",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Crawford Feeding to use Face ID for biometric login."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

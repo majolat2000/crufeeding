@@ -77,3 +77,6 @@ export const getActivityLogs = () => req('/activity-logs');
 
 // Admins
 export const getAdmins = () => req('/admin');
+
+// Deductions
+export const deductFromWallet = (studentId: string, amount: number, reason: string) => req('/admin/deduct', { method: 'POST', body: JSON.stringify({ studentId, amount, reason }) });

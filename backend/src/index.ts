@@ -13,6 +13,7 @@ import { paymentRouter } from './modules/payment/payment.routes.js';
 import { adminRouter } from './modules/admin/admin.routes.js';
 import { configRouter } from './modules/config/config.routes.js';
 import { activityLogRouter } from './modules/activityLog/activityLog.routes.js';
+import { vendorRouter } from './modules/vendor/vendor.routes.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/config', configRouter);
 app.use('/api/v1/activity-logs', activityLogRouter);
+app.use('/api/v1/vendor', vendorRouter);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -64,6 +66,12 @@ async function seedDatabase() {
     });
     await prisma.wallet.create({ data: { userId: bursary.id, balance: 0 } });
 
+    const vendorHash = await bcrypt.hash('cafeteria', 4);
+    const vendor = await prisma.user.create({
+      data: { email: 'cafeteria@crawforduniversity.edu.ng', password: vendorHash, fullname: 'The Cafeteria', role: 'vendor', verified: true },
+    });
+    await prisma.wallet.create({ data: { userId: vendor.id, balance: 0 } });
+
     await prisma.restaurant.upsert({ where: { name: 'The Cafeteria' }, update: {}, create: { name: 'The Cafeteria', isActive: true } });
     await prisma.globalConfig.upsert({ where: { id: 'global' }, update: {}, create: { id: 'global', session: '2025/2026' } });
 
@@ -72,7 +80,7 @@ async function seedDatabase() {
       await prisma.level.upsert({ where: { name }, update: {}, create: { name, cap: 2000, plan: name === 'Visitor' ? 'Basic' : 'Standard' } });
     }
 
-    console.log('[seed] created Super Admin + Bursary + Cafeteria + Levels');
+    console.log('[seed] created Super Admin + Bursary + Vendor + Cafeteria + Levels');
   } catch (e) {
     console.error('[seed] error:', e);
   }

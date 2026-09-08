@@ -11,6 +11,7 @@ const NAV = [
   { href: '/transactions', label: 'Transactions', icon: '≡' },
   { href: '/fund-wallets', label: 'Fund Wallets', icon: '💳' },
   { href: '/admin', label: 'Admin', icon: '🛡' },
+  { href: '/admin#deductions', label: 'Deductions', icon: '💸' },
   { href: '/session', label: 'Session', icon: '📅' },
   { href: '/activity-logs', label: 'Activity Logs', icon: '📝' },
   { href: '/history', label: 'History', icon: '🕒' },

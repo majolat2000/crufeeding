@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { RESTAURANTS } from '../../src/constants/restaurants';
@@ -30,6 +30,10 @@ export function HomeScreen() {
 
   const handleRestaurantPress = (merchant: string, amount: string) => {
     router.push({ pathname: '/pin-verify', params: { merchant, amount } });
+  };
+
+  const handleFundWallet = () => {
+    Alert.alert('XpressPayments', 'Wallet funding via XpressPayments is coming soon. This feature will be available in a future update.', [{ text: 'OK' }]);
   };
 
   const renderRestaurant = ({ item }: { item: (typeof RESTAURANTS)[0] }) => (
@@ -84,10 +88,28 @@ export function HomeScreen() {
           </LinearGradient>
         </View>
 
+        {/* Fund Wallet Button */}
+        <View style={{ paddingHorizontal: 20, marginTop: 12 }}>
+          <TouchableOpacity
+            onPress={handleFundWallet}
+            activeOpacity={0.85}
+            style={{
+              backgroundColor: colors.emeraldGlow, borderRadius: radius.md, paddingVertical: 14,
+              alignItems: 'center', borderWidth: 1, borderColor: colors.emerald,
+              flexDirection: 'row', justifyContent: 'center', gap: 8,
+            }}
+          >
+            <Text style={{ color: colors.emerald, fontWeight: '800', fontSize: 14 }}>💳 Fund Wallet</Text>
+            <View style={{ backgroundColor: colors.goldGlow, borderRadius: radius.full, paddingHorizontal: 8, paddingVertical: 2, borderWidth: 1, borderColor: colors.border }}>
+              <Text style={{ color: colors.goldText, fontSize: 9, fontWeight: '700' }}>SOON</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
         <View style={{ paddingHorizontal: 12, marginTop: 24 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 12 }}>
             <Text style={{ fontSize: 13, fontWeight: '800', color: colors.goldText, letterSpacing: 1, textTransform: 'uppercase' }}>Available Restaurants</Text>
-            <Text style={{ fontSize: 11, color: colors.textMuted }}>{RESTAURANTS.length} vendors</Text>
+            <Text style={{ fontSize: 11, color: colors.textMuted }}>{RESTAURANTS.length} vendor</Text>
           </View>
           <FlatList
             data={RESTAURANTS}
@@ -104,7 +126,7 @@ export function HomeScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Text style={{ color: colors.gold, fontSize: 16 }}>{'\u26A1'}</Text>
             <Text style={{ color: colors.textPrimary, fontSize: 12, flex: 1 }}>
-              Tap any restaurant to generate your QR payment. 100% direct payout to vendor.
+              Tap The Cafeteria to generate your QR payment. 100% direct payout to vendor.
             </Text>
           </View>
         </FlashyCard>

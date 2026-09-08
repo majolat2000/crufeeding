@@ -14,32 +14,16 @@ export function SignupScreen() {
   const [password, setPassword] = useState('');
   const [matricNo, setMatricNo] = useState('');
   const [level, setLevel] = useState('300 LEVEL');
-  const [mealBreakfast, setMealBreakfast] = useState(false);
-  const [mealLunch, setMealLunch] = useState(true);
-  const [mealDinner, setMealDinner] = useState(false);
 
   const handleSignup = async () => {
     if (!fullname || !email || !password) return Alert.alert('Error', 'Name, email and password required');
     try {
-      await signup({ fullname, email: email.trim(), password, matricNo: matricNo || undefined, level, mealBreakfast, mealLunch, mealDinner });
+      await signup({ fullname, email: email.trim(), password, matricNo: matricNo || undefined, level });
       router.replace('/(tabs)');
     } catch (e: any) {
       Alert.alert('Signup Failed', e.message);
     }
   };
-
-  const ToggleMeal = ({ label, value, onToggle }: { label: string; value: boolean; onToggle: () => void }) => (
-    <TouchableOpacity
-      onPress={onToggle}
-      style={{
-        flex: 1, paddingVertical: 10, borderRadius: radius.sm, alignItems: 'center',
-        backgroundColor: value ? colors.goldGlow : colors.surfaceOverlay,
-        borderWidth: 1, borderColor: value ? colors.gold : colors.borderSubtle,
-      }}
-    >
-      <Text style={{ color: value ? colors.goldText : colors.textMuted, fontSize: 12, fontWeight: '700' }}>{label}</Text>
-    </TouchableOpacity>
-  );
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -54,7 +38,7 @@ export function SignupScreen() {
 
         <View style={{ marginTop: 16 }}>
           <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Email</Text>
-          <TextInput value={email} onChangeText={setEmail} placeholder="your.email@crawford.edu.ng" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
+          <TextInput value={email} onChangeText={setEmail} placeholder="your.email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
         </View>
 
         <View style={{ marginTop: 16 }}>
@@ -63,16 +47,26 @@ export function SignupScreen() {
         </View>
 
         <View style={{ marginTop: 16 }}>
-          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Matric Number (optional)</Text>
-          <TextInput value={matricNo} onChangeText={setMatricNo} placeholder="CRU*******" placeholderTextColor={colors.textMuted} autoCapitalize="characters" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
+          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Matric / Reg No</Text>
+          <TextInput value={matricNo} onChangeText={setMatricNo} placeholder="MATRIC NO/REG NO" placeholderTextColor={colors.textMuted} autoCapitalize="characters" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
         </View>
 
         <View style={{ marginTop: 16 }}>
-          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Meal Plan</Text>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <ToggleMeal label="Breakfast" value={mealBreakfast} onToggle={() => setMealBreakfast(!mealBreakfast)} />
-            <ToggleMeal label="Lunch" value={mealLunch} onToggle={() => setMealLunch(!mealLunch)} />
-            <ToggleMeal label="Dinner" value={mealDinner} onToggle={() => setMealDinner(!mealDinner)} />
+          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Level</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {LEVELS.map(l => (
+              <TouchableOpacity
+                key={l}
+                onPress={() => setLevel(l)}
+                style={{
+                  paddingVertical: 8, paddingHorizontal: 14, borderRadius: radius.sm,
+                  backgroundColor: level === l ? colors.goldGlow : colors.surfaceOverlay,
+                  borderWidth: 1, borderColor: level === l ? colors.gold : colors.borderSubtle,
+                }}
+              >
+                <Text style={{ color: level === l ? colors.goldText : colors.textMuted, fontSize: 12, fontWeight: '700' }}>{l}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 

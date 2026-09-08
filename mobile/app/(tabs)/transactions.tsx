@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, RefreshControl } from 'react-native';
 import { colors, radius } from '../../src/theme/theme';
 import { api } from '../../src/api/client';
+import { useAuthStore } from '../../src/store/authStore';
 
 type Tx = { id: string; vendorName: string; type: string; gross: number; status: string; createdAt: string; reference?: string };
 
 export function TransactionsScreen() {
+  const { user } = useAuthStore();
   const [txs, setTxs] = useState<Tx[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -50,7 +52,12 @@ export function TransactionsScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <View style={{ backgroundColor: colors.surface, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }}>
-        <Text style={{ fontSize: 20, fontWeight: '800', color: colors.textPrimary }}>Transactions</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 20, fontWeight: '800', color: colors.textPrimary }}>Transactions</Text>
+          <View style={{ backgroundColor: colors.goldGlow, borderRadius: radius.full, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: colors.border }}>
+            <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700' }}>{user?.matricNo || 'N/A'}</Text>
+          </View>
+        </View>
         <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>History \u2014 Real ledger-backed transactions</Text>
       </View>
       <FlatList

@@ -56,12 +56,28 @@ export default function RootLayout() {
   useEffect(() => {
     if (!hydrated) return;
     const inAuthGroup = segments[0] === 'login' || segments[0] === 'signup' || segments[0] === 'forgot-password';
+    const isVendorRoute = segments[0] === 'vendor';
     if (!token && !inAuthGroup) {
       router.replace('/login');
     } else if (token && inAuthGroup) {
-      router.replace('/(tabs)');
+      // Redirect vendor users to vendor screen, others to tabs
+      if (user?.role === 'vendor') {
+        router.replace('/vendor');
+      } else {
+        router.replace('/(tabs)');
+      }
+    } else if (token && !inAuthGroup && !isVendorRoute) {
+      // If vendor is on tabs, redirect to vendor
+      if (user?.role === 'vendor') {
+        router.replace('/vendor');
+      }
+    } else if (token && !inAuthGroup && isVendorRoute) {
+      // If non-vendor is on vendor, redirect to tabs
+      if (user?.role !== 'vendor') {
+        router.replace('/(tabs)');
+      }
     }
-  }, [token, hydrated, segments]);
+  }, [token, hydrated, segments, user?.role]);
 
   // Screen lock: track app state changes
   const handleAppStateChange = useCallback((nextState: AppStateStatus) => {
@@ -116,6 +132,7 @@ export default function RootLayout() {
         <Stack.Screen name="forgot-password" />
         <Stack.Screen name="pin-verify" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="vendor" options={{ headerShown: false }} />
         <Stack.Screen
           name="payment"
           options={{ presentation: 'modal', animation: 'slide_from_bottom', headerShown: false }}

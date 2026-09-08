@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 export function LoginScreen() {
   const router = useRouter();
-  const { login, loading } = useAuthStore();
+  const { login, loginPin, user, loading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+
+  useEffect(() => {
+    checkBiometric();
+  }, []);
+
+  const checkBiometric = async () => {
+    try {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      const storedUser = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_user'));
+      const parsed = storedUser ? JSON.parse(storedUser) : null;
+      setBiometricAvailable(compatible && enrolled && !!parsed?.biometricEnabled);
+    } catch {
+      setBiometricAvailable(false);
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) return Alert.alert('Error', 'Email and password required');
@@ -17,6 +35,29 @@ export function LoginScreen() {
       router.replace('/(tabs)');
     } catch (e: any) {
       Alert.alert('Login Failed', e.message);
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Authenticate to sign in',
+        cancelLabel: 'Cancel',
+        disableDeviceFallback: false,
+      });
+      if (result.success) {
+        const storedUser = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_user'));
+        const storedToken = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_token'));
+        if (storedUser && storedToken) {
+          const parsed = JSON.parse(storedUser);
+          if (parsed.email) {
+            await loginPin(parsed.email, 'biometric');
+            router.replace('/(tabs)');
+          }
+        }
+      }
+    } catch (e: any) {
+      Alert.alert('Biometric Error', e.message);
     }
   };
 
@@ -64,6 +105,18 @@ export function LoginScreen() {
         >
           <Text style={{ color: colors.surface, fontWeight: '800', fontSize: 15 }}>{loading ? 'Signing in...' : 'Sign In'}</Text>
         </TouchableOpacity>
+
+        {biometricAvailable && (
+          <TouchableOpacity
+            onPress={handleBiometricLogin}
+            activeOpacity={0.85}
+            style={{ backgroundColor: colors.surfaceOverlay, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center', marginTop: 12, borderWidth: 1, borderColor: colors.borderSubtle }}
+          >
+            <Text style={{ color: colors.gold, fontWeight: '700', fontSize: 14 }}>
+              {'\uD83D\uDD11'} Sign in with Biometrics
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity onPress={() => router.push('/forgot-password')} style={{ alignItems: 'center', marginTop: 16 }}>
           <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '600' }}>Forgot Password?</Text>

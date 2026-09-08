@@ -1,7 +1,7 @@
 /**
  * Shared domain types.
  */
-export type Role = 'super_admin' | 'bursar' | 'hostel_admin' | 'student';
+export type Role = 'super_admin' | 'bursar' | 'hostel_admin' | 'student' | 'vendor';
 
 export interface JwtPayload {
   sub: string; // user id
