@@ -41,7 +41,7 @@ export default function AdminPage() {
   }
 
   async function handleDeduct() {
-    if (!deductStudentId || !deductAmount) { setMsg('Student ID and amount required'); return; }
+    if (!deductStudentId || !deductAmount) { setMsg('Email/matric number and amount required'); return; }
     const amt = Number(deductAmount);
     if (amt <= 0) { setMsg('Amount must be positive'); return; }
     if (!confirm(`Deduct ₦${amt.toLocaleString()} from ${deductStudentId}?`)) return;
@@ -111,11 +111,11 @@ export default function AdminPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Student ID / Matric No</label>
+            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Email / Matric No</label>
             <input
               value={deductStudentId}
               onChange={e => setDeductStudentId(e.target.value)}
-              placeholder="Enter student ID or matric number"
+              placeholder="Enter email or matric number"
               className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
             />
           </div>

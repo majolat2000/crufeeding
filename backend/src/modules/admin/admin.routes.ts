@@ -199,10 +199,10 @@ adminRouter.delete('/levels/:id', authenticate, authorize('super_admin', 'bursar
 adminRouter.post('/deduct', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { studentId, amount, reason } = req.body;
-    if (!studentId || !amount) return res.status(400).json({ success: false, message: 'studentId and amount required' });
+    if (!studentId || !amount) return res.status(400).json({ success: false, message: 'Email, matric number, or student ID and amount required' });
     const deductAmount = Number(amount);
     if (deductAmount <= 0) return res.status(400).json({ success: false, message: 'Amount must be positive' });
-    const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }] } });
+    const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }, { email: studentId }] } });
     if (!user) return res.status(404).json({ success: false, message: 'Student not found' });
     const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
     if (!wallet) return res.status(404).json({ success: false, message: 'Wallet not found' });
