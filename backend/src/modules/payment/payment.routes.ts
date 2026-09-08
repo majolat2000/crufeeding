@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth.js';
+import { authorize } from '../../middleware/rbac.js';
 import { prisma } from '../../config/db.pg.js';
 import { logActivity } from '../activityLog/activityLog.service.js';
 
@@ -10,7 +11,7 @@ paymentRouter.post('/qr', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { studentId, vendorId, vendorName, amount, hostel, level } = req.body;
     if (!vendorId) return res.status(400).json({ success: false, message: 'vendorId required' });
-    if (!amount || amount < 100) return res.status(400).json({ success: false, message: 'Minimum payment \u20A6100' });
+    if (!amount || amount < 100) return res.status(400).json({ success: false, message: 'Minimum payment ₦100' });
     const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }] } });
     if (!user) return res.status(404).json({ success: false, message: 'Student not found' });
     const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
@@ -40,18 +41,91 @@ paymentRouter.post('/qr', authenticate, async (req: AuthRequest, res, next) => {
   } catch (e) { next(e); }
 });
 
-/** GET /api/v1/payments/transactions — real transactions */
+/** GET /api/v1/payments/transactions — real transactions with search */
 paymentRouter.get('/transactions', authenticate, async (req: AuthRequest, res, next) => {
   try {
-    const { studentId, limit = '50', offset = '0' } = req.query as any;
+    const { studentId, vendorId, type, search, limit = '100', offset = '0' } = req.query as any;
     const where: any = {};
     if (studentId) where.studentId = studentId;
-    else     if (req.user!.role === ('user' as any) || req.user!.role === ('subscriber' as any)) where.studentId = req.user!.sub;
+    if (vendorId) where.vendorId = vendorId;
+    if (type) where.type = type;
+    if (search) {
+      where.OR = [
+        { vendorName: { contains: search, mode: 'insensitive' } },
+        { reference: { contains: search, mode: 'insensitive' } },
+        { student: { email: { contains: search, mode: 'insensitive' } } },
+        { student: { matricNo: { contains: search, mode: 'insensitive' } } },
+        { student: { fullname: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+    if (!studentId && !vendorId && req.user!.role === ('user' as any) || req.user!.role === ('subscriber' as any)) {
+      where.studentId = req.user!.sub;
+    }
     const [rows, total] = await Promise.all([
-      prisma.transaction.findMany({ where, orderBy: { createdAt: 'desc' }, take: Number(limit), skip: Number(offset) }),
+      prisma.transaction.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: Number(limit),
+        skip: Number(offset),
+      }),
       prisma.transaction.count({ where }),
     ]);
-    res.json({ success: true, data: rows, total });
+
+    // Fetch student info for each transaction
+    const studentIds = [...new Set(rows.map((r: any) => r.studentId))];
+    const students = await prisma.user.findMany({
+      where: { id: { in: studentIds } },
+      select: { id: true, email: true, fullname: true, matricNo: true },
+    });
+    const studentMap = new Map(students.map((s: any) => [s.id, s]));
+    const enriched = rows.map((r: any) => ({ ...r, student: studentMap.get(r.studentId) || null }));
+
+    res.json({ success: true, data: enriched, total });
+  } catch (e) { next(e); }
+});
+
+/** POST /api/v1/payments/refund/:id — process refund */
+paymentRouter.post('/refund/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+  try {
+    const tx = await prisma.transaction.findUnique({ where: { id: req.params.id } });
+    if (!tx) return res.status(404).json({ success: false, message: 'Transaction not found' });
+    if (tx.type === 'refund') return res.status(400).json({ success: false, message: 'Already refunded' });
+
+    const student = await prisma.user.findUnique({ where: { id: tx.studentId }, select: { email: true, fullname: true } });
+    const wallet = await prisma.wallet.findUnique({ where: { userId: tx.studentId } });
+    if (!wallet) return res.status(404).json({ success: false, message: 'Wallet not found' });
+
+    const refundAmount = Number(tx.gross);
+    const newBalance = Number(wallet.balance) + refundAmount;
+    await prisma.wallet.update({ where: { userId: tx.studentId }, data: { balance: newBalance } });
+
+    const refundTx = await prisma.transaction.create({
+      data: {
+        studentId: tx.studentId,
+        vendorId: tx.vendorId,
+        vendorName: `Refund: ${tx.vendorName}`,
+        type: 'refund',
+        gross: refundAmount,
+        levy: 0,
+        vendorPayout: 0,
+        balanceAfter: newBalance,
+        status: 'success',
+        reference: `REFUND-${Date.now()}-${tx.id.slice(0, 6)}`,
+        hostel: tx.hostel,
+        level: tx.level,
+      },
+    });
+
+    await logActivity({
+      actorId: req.user!.sub,
+      actorEmail: req.user!.email,
+      action: 'REFUND',
+      target: student?.email || tx.studentId,
+      metadata: { originalTxId: tx.id, amount: refundAmount, vendorName: tx.vendorName },
+      ip: req.ip,
+    });
+
+    res.json({ success: true, message: `Refunded ₦${refundAmount.toLocaleString()} to ${student?.email}`, data: { refundTx, newBalance } });
   } catch (e) { next(e); }
 });
 

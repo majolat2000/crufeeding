@@ -30,8 +30,13 @@ export const updateRole = (id: string, role: string) => req(`/admin/${id}/role`,
 
 // Config / Meal Rates
 export const getConfig = () => req('/config');
-export const updateMealRates = (data: { breakfastRate?: number; lunchRate?: number; dinnerRate?: number }) => req('/config/feeding-amount', { method: 'PUT', body: JSON.stringify(data) });
+export const updateMealRates = (data: { breakfastRate?: number; lunchRate?: number; dinnerRate?: number; allThreeRate?: number }) => req('/config/feeding-amount', { method: 'PUT', body: JSON.stringify(data) });
 export const fundValidStudents = (days: number) => req('/config/fund-valid', { method: 'POST', body: JSON.stringify({ days }) });
+export const fundSelective = (days: number, studentIds: string[]) => req('/config/fund-selective', { method: 'POST', body: JSON.stringify({ days, studentIds }) });
+
+// Session
+export const getSessionInfo = () => req('/config/session');
+export const updateSession = (session: string) => req('/config/session', { method: 'PUT', body: JSON.stringify({ session }) });
 
 // Levels
 export const getLevels = () => req('/levels');
@@ -40,12 +45,13 @@ export const deleteLevel = (id: string) => req(`/levels/${id}`, { method: 'DELET
 
 // Transactions
 export const getTransactions = (params = '') => req(`/payments/transactions${params}`);
+export const refundTransaction = (id: string) => req(`/payments/refund/${id}`, { method: 'POST' });
+
+// Cafeteria (filtered transactions)
+export const getCafeteriaTransactions = (params = '') => req(`/payments/transactions?vendorId=CAFETERIA${params}`);
 
 // Activity Logs
 export const getActivityLogs = () => req('/activity-logs');
-
-// Session
-export const getSessionInfo = () => req('/config/session');
 
 // Admins
 export const getAdmins = () => req('/admin');

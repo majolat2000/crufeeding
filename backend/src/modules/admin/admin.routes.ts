@@ -18,13 +18,25 @@ adminRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_r
   } catch (e) { next(e); }
 });
 
-/** PUT /api/v1/admin/:id/role — change admin role */
-adminRouter.put('/:id/role', authenticate, authorize('super_admin'), async (req: AuthRequest, res, next) => {
+/** PUT /api/v1/admin/:id/role — change admin role with demotion rules */
+adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role } = req.body;
-    if (!['super_admin', 'bursar', 'user'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
+    if (!['super_admin', 'bursar', 'user', 'subscriber'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
+    const target = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!target) return res.status(404).json({ success: false, message: 'User not found' });
+
+    // Demotion rules: bursar cannot demote super_admin
+    if (req.user!.role === 'bursar' && target.role === 'super_admin') {
+      return res.status(403).json({ success: false, message: 'Bursars cannot demote Super Admins' });
+    }
+    // Only super_admin can promote to super_admin
+    if (role === 'super_admin' && req.user!.role !== 'super_admin') {
+      return res.status(403).json({ success: false, message: 'Only Super Admin can assign Super Admin role' });
+    }
+
     const user = await prisma.user.update({ where: { id: req.params.id }, data: { role }, select: { id: true, email: true, role: true, fullname: true } });
-    await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'UPDATE_ROLE', target: user.email, metadata: { role }, ip: req.ip });
+    await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'UPDATE_ROLE', target: user.email, metadata: { from: target.role, to: role }, ip: req.ip });
     res.json({ success: true, data: user });
   } catch (e) { next(e); }
 });

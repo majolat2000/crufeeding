@@ -44,8 +44,8 @@ async function seedDatabase() {
     }
     console.log('[seed] no users found — seeding database...');
 
-    const hash1 = await bcrypt.hash('CRUFEED@1#1', 10);
-    const hash2 = await bcrypt.hash('12345678', 10);
+    const hash1 = await bcrypt.hash('CRUFEED@1#1', 4);
+    const hash2 = await bcrypt.hash('12345678', 4);
 
     const superAdmin = await prisma.user.create({
       data: { email: 'majesty.olatimilehin@crawforduniversity.edu.ng', password: hash1, fullname: 'Majesty Olatimilehin', role: 'super_admin', verified: true },

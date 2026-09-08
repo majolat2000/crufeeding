@@ -5,12 +5,11 @@ import { getLevels, createLevel, deleteLevel, getConfig, updateMealRates, change
 export default function SettingsPage() {
   const [levels, setLevels] = useState<string[]>([]);
   const [newLevel, setNewLevel] = useState('100 LEVEL');
-  const [breakfast, setBreakfast] = useState('1500');
-  const [lunch, setLunch] = useState('2000');
-  const [dinner, setDinner] = useState('1500');
+  const [breakfast, setBreakfast] = useState(1500);
+  const [lunch, setLunch] = useState(2000);
+  const [dinner, setDinner] = useState(1500);
   const [msg, setMsg] = useState('');
 
-  // Password change
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [pwMsg, setPwMsg] = useState('');
@@ -22,9 +21,9 @@ export default function SettingsPage() {
     }).catch(() => {});
     getConfig().then((r) => {
       const d = r.data ?? r;
-      setBreakfast(String(d.breakfastRate ?? 1500));
-      setLunch(String(d.lunchRate ?? 2000));
-      setDinner(String(d.dinnerRate ?? 1500));
+      setBreakfast(Number(d.breakfastRate ?? 1500));
+      setLunch(Number(d.lunchRate ?? 2000));
+      setDinner(Number(d.dinnerRate ?? 1500));
     }).catch(() => {});
   }, []);
 
@@ -33,18 +32,19 @@ export default function SettingsPage() {
   const Chip = ({ label, onDelete }: { label: string; onDelete: () => void }) => (
     <span className="inline-flex items-center gap-2 bg-[#F4F5F7] border border-gray-200 rounded-full px-3 py-1.5 text-sm">
       {label}
-      <button onClick={onDelete} className="w-5 h-5 rounded-full bg-[#1A153B] text-white text-xs leading-none">\u00D7</button>
+      <button onClick={onDelete} className="w-5 h-5 rounded-full bg-[#1A153B] text-white text-xs leading-none">×</button>
     </span>
   );
 
   const handleUpdateRates = async () => {
     try {
       await updateMealRates({
-        breakfastRate: Number(breakfast),
-        lunchRate: Number(lunch),
-        dinnerRate: Number(dinner),
+        breakfastRate: breakfast,
+        lunchRate: lunch,
+        dinnerRate: dinner,
+        allThreeRate: breakfast + lunch + dinner,
       });
-      setMsg(`Rates updated: Breakfast \u20A6${breakfast}, Lunch \u20A6${lunch}, Dinner \u20A6${dinner}`);
+      setMsg(`Rates updated: Breakfast ₦${breakfast.toLocaleString()}, Lunch ₦${lunch.toLocaleString()}, Dinner ₦${dinner.toLocaleString()}`);
     } catch (e: any) { setMsg(e.message); }
   };
 
@@ -62,13 +62,12 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-[#1A153B]">Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">Levels, meal rates, password management &bull; PostgreSQL single source</p>
+        <p className="text-sm text-gray-500 mt-1">Levels, meal rates, password management</p>
       </div>
 
       {/* Levels */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">User Registration Spec</h2>
-        <p className="text-xs text-gray-600 mt-2">Users register with <b>Matric/Reg No</b> (CRU******* or 2********), email, password, and Level. <b>Visitor</b> needs only email + password.</p>
+        <h2 className="font-bold text-[#1A153B]">Levels</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           {levels.map((l) => (
             <Chip key={l} label={l} onDelete={async () => { try { await deleteLevel(l); setLevels(levels.filter(x => x !== l)); } catch (e: any) { setMsg(e.message); } }} />
@@ -85,23 +84,35 @@ export default function SettingsPage() {
       {/* Meal Rates */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 className="font-bold text-[#1A153B]">Daily Meal Rates</h2>
-        <p className="text-xs text-gray-500 mt-1">Breakfast \u20A61,500 &bull; Lunch \u20A62,000 &bull; Dinner \u20A61,500 &bull; All Three \u20A65,000/day</p>
+        <p className="text-xs text-gray-500 mt-1">Adjustable numeric selectors</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
-            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Breakfast (\u20A6)</label>
-            <input value={breakfast} onChange={e => setBreakfast(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Breakfast (₦)</label>
+            <div className="flex items-center gap-2 mt-1">
+              <button onClick={() => setBreakfast(Math.max(0, breakfast - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
+              <input type="number" value={breakfast} onChange={e => setBreakfast(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <button onClick={() => setBreakfast(breakfast + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
+            </div>
           </div>
           <div>
-            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Lunch (\u20A6)</label>
-            <input value={lunch} onChange={e => setLunch(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Lunch (₦)</label>
+            <div className="flex items-center gap-2 mt-1">
+              <button onClick={() => setLunch(Math.max(0, lunch - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
+              <input type="number" value={lunch} onChange={e => setLunch(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <button onClick={() => setLunch(lunch + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
+            </div>
           </div>
           <div>
-            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Dinner (\u20A6)</label>
-            <input value={dinner} onChange={e => setDinner(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Dinner (₦)</label>
+            <div className="flex items-center gap-2 mt-1">
+              <button onClick={() => setDinner(Math.max(0, dinner - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
+              <input type="number" value={dinner} onChange={e => setDinner(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <button onClick={() => setDinner(dinner + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
+            </div>
           </div>
         </div>
         <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
-          All Three auto = \u20A6{(Number(breakfast) + Number(lunch) + Number(dinner)).toLocaleString()} per day
+          All Three auto = ₦{(breakfast + lunch + dinner).toLocaleString()} per day
         </div>
         <button onClick={handleUpdateRates} className="mt-4 bg-[#1A153B] text-white px-6 py-2.5 rounded-xl text-sm font-bold">Update Rates</button>
         {msg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2 mt-3">{msg}</p>}
@@ -110,7 +121,6 @@ export default function SettingsPage() {
       {/* Password Change */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 className="font-bold text-[#1A153B]">Change Password</h2>
-        <p className="text-xs text-gray-500 mt-1">Super Admin / Bursar can update their password here</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Current Password</label>
@@ -123,10 +133,6 @@ export default function SettingsPage() {
         </div>
         <button onClick={handleChangePassword} className="mt-4 bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold">Update Password</button>
         {pwMsg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2 mt-3">{pwMsg}</p>}
-      </div>
-
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-800">
-        Hostel configuration removed per spec &bull; All changes persist to PostgreSQL immediately
       </div>
     </div>
   );

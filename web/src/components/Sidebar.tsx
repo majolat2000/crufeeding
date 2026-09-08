@@ -7,7 +7,7 @@ import { clearSession, getSession } from '@/lib/auth';
 const NAV = [
   { href: '/', label: 'Dashboard', icon: '◧' },
   { href: '/users', label: 'Users', icon: '☺' },
-  { href: '/restaurants', label: 'Restaurants', icon: '🍔' },
+  { href: '/restaurants', label: 'Cafeteria', icon: '🍔' },
   { href: '/transactions', label: 'Transactions', icon: '≡' },
   { href: '/fund-wallets', label: 'Fund Wallets', icon: '💳' },
   { href: '/admin', label: 'Admin', icon: '🛡' },

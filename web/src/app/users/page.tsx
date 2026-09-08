@@ -116,7 +116,7 @@ export default function UsersPage() {
                       </span>
                     ) : <span className="text-xs text-gray-400">\u2014</span>}
                   </td>
-                  <td className="px-4 py-3 text-right font-bold text-sm">\u20A6{Number(u.wallet?.balance ?? 0).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right font-bold text-sm">₦{Number(u.wallet?.balance ?? 0).toLocaleString()}</td>
                   <td className="px-4 py-3 text-right">
                     {editing === u.id ? (
                       <>
@@ -136,7 +136,6 @@ export default function UsersPage() {
           </table>
         )}
       </div>
-      <p className="text-xs text-gray-500">Super Admin can set any role; Bursar can set User/Subscriber/Bursar only. Changes persist to PostgreSQL immediately.</p>
     </div>
   );
 }

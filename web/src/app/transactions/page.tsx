@@ -63,8 +63,8 @@ export default function TransactionsPage() {
                         {r.type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right font-bold text-[#4338CA]">\u20A6{Number(r.gross).toLocaleString()}</td>
-                    <td className="px-4 py-3 text-right font-semibold">\u20A6{Number(r.balanceAfter).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right font-bold text-[#4338CA]">₦{Number(r.gross).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right font-semibold">₦{Number(r.balanceAfter).toLocaleString()}</td>
                     <td className="px-4 py-3 font-mono text-xs text-gray-500">{r.reference || '\u2014'}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${r.status === 'success' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>

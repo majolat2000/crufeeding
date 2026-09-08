@@ -39,7 +39,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-[#1A153B]">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Session {session} &bull; Single restaurant: The Cafeteria &bull; 100% direct payout</p>
+          <p className="text-sm text-gray-500 mt-1">Session {session} &bull; Single cafeteria: The Cafeteria &bull; 100% direct payout</p>
         </div>
         <span className="bg-[#1A153B] text-white text-xs font-bold px-3 py-1.5 rounded-full">{session}</span>
       </div>
@@ -47,10 +47,10 @@ export default function DashboardPage() {
       {error && <p className="text-xs bg-red-50 border border-red-200 rounded-xl p-2">{error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Stat title="Total Users" value={d?.totalUsers ?? '\u2014'} hint="all registered" />
-        <Stat title="Subscribers" value={d?.totalSubscribers ?? '\u2014'} hint="active meal plans" />
-        <Stat title="New Users (week)" value={d?.newUsersWeek ?? '\u2014'} hint="last 7 days" />
-        <Stat title="Total Disbursement (session)" value={d ? `\u20A6${d.totalDisbursement.toLocaleString()}` : '\u2014'} hint={`${session} so far`} />
+        <Stat title="Total Users" value={d?.totalUsers ?? '—'} hint="all registered" />
+        <Stat title="Subscribers" value={d?.totalSubscribers ?? '—'} hint="active meal plans" />
+        <Stat title="New Users (week)" value={d?.newUsersWeek ?? '—'} hint="last 7 days" />
+        <Stat title="Total Disbursement (session)" value={d ? `₦${d.totalDisbursement.toLocaleString()}` : '—'} hint={`${session} so far`} />
         <Stat title="Total Transactions (month)" value={d?.monthlyTransactions ?? '\u2014'} hint="users + subscribers" />
         <Stat title="The Cafeteria \u2014 Purchases" value={d?.cafeteriaPurchases ?? '\u2014'} hint="single cafeteria \u2022 100% payout" />
       </div>
@@ -81,7 +81,7 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 mt-4">Breakfast \u20A61,500 &bull; Lunch \u20A62,000 &bull; Dinner \u20A61,500 &bull; All Three \u20A65,000/day</p>
+          <p className="text-xs text-gray-500 mt-4">Breakfast ₦1,500 &bull; Lunch ₦2,000 &bull; Dinner ₦1,500 &bull; All Three ₦5,000/day</p>
         </div>
       </div>
     </div>

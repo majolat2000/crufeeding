@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crawford Digital Feeding — Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style> .navy{ background:#1A153B } </style>
+</head>
+<body class="bg-[#F4F5F7] text-gray-900">
+<header class="navy text-white p-4 flex justify-between items-center">
+  <div><h1 class="font-extrabold">Crawford Digital Feeding Platform</h1><p class="text-xs text-indigo-200">Preview • Mobile + Web • #1A153B theme</p></div>
+  <div class="text-xs bg-white/10 rounded-full px-3 py-1">v1.0 • Fix applied • Build ✓</div>
+</header>
+
+<div class="max-w-7xl mx-auto p-6 grid lg:grid-cols-2 gap-6">
+  <!-- Mobile Home Preview -->
+  <div class="bg-white rounded-2xl overflow-hidden border shadow-sm">
+    <div class="bg-white border-b p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full navy flex items-center justify-center text-white font-extrabold">CU</div><div><p class="text-xs text-gray-500 font-bold tracking-widest uppercase">Crawford University</p><p class="font-extrabold text-[#1A153B]">Majesty Olat</p></div></div>
+      <div class="w-8 h-8 rounded-full bg-gray-100"></div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-2xl p-5 text-white" style="background:linear-gradient(135deg,#1A153B,#2E2960,#3B3486)">
+        <p class="text-indigo-200 text-xs font-bold tracking-widest uppercase">Feeding Balance</p>
+        <p class="text-4xl font-extrabold mt-2">₦75.00</p>
+        <p class="text-indigo-200 text-xs mt-3">Matric: LCU/UG/20/17109 • Faith Hall</p>
+      </div>
+      <p class="text-xs font-extrabold text-[#1A153B] uppercase tracking-wide mt-5 mb-2">Available Restaurants</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white border rounded-xl p-4 text-center"><div class="w-12 h-12 rounded-full bg-gray-50 mx-auto flex items-center justify-center">🍔</div><p class="font-bold text-[#1A153B] text-sm mt-2">Burger & Bread</p><p class="text-xs text-gray-400">Tap to pay</p></div>
+        <div class="bg-white border rounded-xl p-4 text-center"><div class="w-12 h-12 rounded-full bg-gray-50 mx-auto flex items-center justify-center">🍲</div><p class="font-bold text-[#1A153B] text-sm mt-2">Tasty Vine Kitchen</p><p class="text-xs text-gray-400">Tap to pay</p></div>
+        <div class="bg-white border rounded-xl p-4 text-center"><div class="w-12 h-12 rounded-full bg-gray-50 mx-auto flex items-center justify-center">🍕</div><p class="font-bold text-[#1A153B] text-sm mt-2">Cresta</p><p class="text-xs text-gray-400">Tap to pay</p></div>
+        <div class="bg-white border rounded-xl p-4 text-center"><div class="w-12 h-12 rounded-full bg-gray-50 mx-auto flex items-center justify-center">🍛</div><p class="font-bold text-[#1A153B] text-sm mt-2">Mama Cass</p><p class="text-xs text-gray-400">Tap to pay</p></div>
+      </div>
+      <div class="mt-4 bg-[#1A153B] text-white rounded-xl p-3 flex items-center justify-between"><span class="text-xs">Expo Router: tap → /payment modal</span><span class="bg-white text-[#1A153B] rounded-full px-3 py-1 text-xs font-bold">QR</span></div>
+    </div>
+    <div class="bg-gray-50 border-t p-3 flex justify-around text-xs font-bold text-gray-400"><span class="text-[#1A153B]">⌂ Home</span><span>≡ Transactions</span><span>☺ Profile</span></div>
+  </div>
+
+  <!-- QR Modal Preview -->
+  <div class="navy rounded-2xl overflow-hidden text-white p-6 flex flex-col min-h-[600px]">
+    <div class="text-center">
+      <p class="text-white/60 text-xs font-bold tracking-widest uppercase">QR Payment</p>
+      <p class="font-bold mt-3 leading-6">Present this QR code to complete your payment of <span class="font-extrabold">₦5</span> to <span class="font-extrabold">Burger & Bread</span></p>
+      <p class="text-indigo-200 text-xs mt-2">Vendor will scan • 10% levy auto-split</p>
+    </div>
+    <div class="flex-1 flex items-center justify-center py-6">
+      <div class="bg-white rounded-3xl p-6 text-center">
+        <div class="w-48 h-48 bg-white border-4 border-[#1A153B] rounded-xl flex items-center justify-center text-[#1A153B] font-mono text-xs">QR CODE<br/>react-native-qrcode-svg<br/>LCU/UG/20/17109</div>
+        <p class="text-[#1A153B] font-extrabold mt-4">Burger & Bread</p>
+        <p class="text-gray-500 text-xs">Amount: ₦5 • Levy 10% included</p>
+        <div class="mt-2 bg-gray-100 rounded-full px-3 py-1 inline-block"><span class="text-[#1A153B] text-xs font-bold">LCU/UG/20/17109</span></div>
+      </div>
+    </div>
+    <div class="flex justify-center mb-4"><span class="bg-white/10 border border-white/20 rounded-full px-5 py-2 font-mono font-bold">09:59 <span class="text-white/60 text-xs">expires</span></span></div>
+    <button class="bg-white text-[#1A153B] rounded-full py-4 font-extrabold">Done</button>
+    <p class="text-white/40 text-xs text-center mt-2">Keep screen bright • Don’t screenshot</p>
+  </div>
+
+  <!-- Web Dashboard Preview -->
+  <div class="lg:col-span-2 bg-white rounded-2xl border overflow-hidden">
+    <div class="p-6">
+      <h2 class="font-extrabold text-[#1A153B] text-lg">Web Admin Portal — Dashboard</h2>
+      <p class="text-xs text-gray-500">Fixed sidebar #1A153B • Light grey #F4F5F7 • 12 modules</p>
+      <div class="grid md:grid-cols-3 gap-3 mt-4">
+        <div class="border rounded-xl p-4"><p class="text-xs font-bold text-gray-500 uppercase">Verified Students</p><p class="text-xl font-extrabold text-[#1A153B]">1,842</p></div>
+        <div class="border rounded-xl p-4"><p class="text-xs font-bold text-gray-500 uppercase">Total Disbursement</p><p class="text-xl font-extrabold text-[#1A153B]">₦12.45M</p></div>
+        <div class="border rounded-xl p-4"><p class="text-xs font-bold text-gray-500 uppercase">Total Transactions</p><p class="text-xl font-extrabold text-[#1A153B]">18,420</p></div>
+      </div>
+      <div class="mt-4 flex gap-2 text-xs"><span class="bg-[#1A153B] text-white rounded-full px-3 py-1">Dashboard</span><span class="bg-gray-100 rounded-full px-3 py-1">Users</span><span class="bg-gray-100 rounded-full px-3 py-1">Restaurants</span><span class="bg-gray-100 rounded-full px-3 py-1">Settings</span></div>
+      <p class="text-xs text-emerald-600 mt-3">✓ Next.js 14 build passed (19 routes) — ready on http://localhost:3001</p>
+    </div>
+    <div class="bg-[#1A153B] text-indigo-100 p-3 flex gap-4 text-xs overflow-x-auto">
+      <span>◧ Dashboard</span><span>☺ Users</span><span>🍔 Restaurants</span><span>≡ Transactions</span><span>💳 Fund Wallets</span><span>🛡 Admin</span><span>⚙ Settings</span><span class="text-white font-bold">+ 5 more</span>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center text-xs text-gray-400 p-6">Run: <code>cd web && npm run dev</code> → http://localhost:3001 &nbsp;|&nbsp; <code>cd mobile && npx expo start --web --port 19006</code> → http://localhost:19006</footer>
+</body>
+</html>
