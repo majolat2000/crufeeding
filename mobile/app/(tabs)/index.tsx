@@ -28,8 +28,12 @@ export function HomeScreen() {
     } catch {}
   };
 
-  const handleRestaurantPress = (merchant: string, amount: string) => {
-    router.push({ pathname: '/pin-verify', params: { merchant, amount } });
+  const handleRestaurantPress = (merchant: string) => {
+    if (merchant === 'The Cafeteria') {
+      router.push('/cafeteria');
+    } else {
+      router.push({ pathname: '/pin-verify', params: { merchant, amount: '5' } });
+    }
   };
 
   const handleFundWallet = () => {
@@ -38,7 +42,7 @@ export function HomeScreen() {
 
   const renderRestaurant = ({ item }: { item: (typeof RESTAURANTS)[0] }) => (
     <TouchableOpacity
-      onPress={() => handleRestaurantPress(item.name, '5')}
+      onPress={() => handleRestaurantPress(item.name)}
       activeOpacity={0.85}
       style={{
         flex: 1, margin: 6, minHeight: 110,
@@ -52,7 +56,7 @@ export function HomeScreen() {
         <Text style={{ fontSize: 24 }}>{item.icon}</Text>
       </View>
       <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }} numberOfLines={2}>{item.name}</Text>
-      <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>Tap to pay</Text>
+      <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>Tap to order</Text>
     </TouchableOpacity>
   );
 
@@ -126,7 +130,7 @@ export function HomeScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Text style={{ color: colors.gold, fontSize: 16 }}>{'\u26A1'}</Text>
             <Text style={{ color: colors.textPrimary, fontSize: 12, flex: 1 }}>
-              Tap The Cafeteria to generate your QR payment. 100% direct payout to vendor.
+              Tap The Cafeteria to purchase your food. Swift and Reliable.
             </Text>
           </View>
         </FlashyCard>

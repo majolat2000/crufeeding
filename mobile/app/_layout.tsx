@@ -133,6 +133,9 @@ export default function RootLayout() {
         <Stack.Screen name="pin-verify" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="vendor" options={{ headerShown: false }} />
+        <Stack.Screen name="cafeteria" options={{ headerShown: false }} />
+        <Stack.Screen name="order-confirm" options={{ headerShown: false }} />
+        <Stack.Screen name="vendor-confirm" options={{ headerShown: false }} />
         <Stack.Screen
           name="payment"
           options={{ presentation: 'modal', animation: 'slide_from_bottom', headerShown: false }}

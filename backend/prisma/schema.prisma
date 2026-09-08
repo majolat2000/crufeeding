@@ -142,3 +142,20 @@ model OtpCode {
   createdAt DateTime @default(now())
   @@index([email, purpose])
 }
+
+model PaymentOrder {
+  id           String   @id @default(cuid())
+  studentId    String
+  vendorId     String
+  items        Json
+  totalAmount  Decimal  @db.Decimal(12,2)
+  qrCode       String?
+  shortCode    String?
+  status       String   @default("pending")
+  expiresAt    DateTime
+  confirmedAt  DateTime?
+  createdAt    DateTime @default(now())
+  @@index([studentId])
+  @@index([shortCode])
+  @@index([status])
+}

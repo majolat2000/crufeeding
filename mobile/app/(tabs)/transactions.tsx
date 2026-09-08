@@ -58,7 +58,7 @@ export function TransactionsScreen() {
             <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700' }}>{user?.matricNo || 'N/A'}</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>History \u2014 Real ledger-backed transactions</Text>
+        <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>History</Text>
       </View>
       <FlatList
         data={txs}

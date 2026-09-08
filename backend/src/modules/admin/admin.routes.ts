@@ -25,6 +25,7 @@ adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), a
     if (!['super_admin', 'bursar', 'user', 'subscriber'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
     const target = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!target) return res.status(404).json({ success: false, message: 'User not found' });
+    if (target.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot modify the vendor account' });
 
     const data: any = { role };
     if (role !== 'subscriber') {
@@ -43,6 +44,7 @@ adminRouter.delete('/:id', authenticate, authorize('super_admin'), async (req: A
   try {
     const user = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (user.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot delete the vendor account' });
     if (user.role === 'super_admin') {
       const count = await prisma.user.count({ where: { role: 'super_admin' } });
       if (count <= 1) return res.status(400).json({ success: false, message: 'Cannot delete the last super admin' });
@@ -134,6 +136,9 @@ adminRouter.get('/users', authenticate, authorize('super_admin', 'bursar'), asyn
 adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role, level, mealBreakfast, mealLunch, mealDinner, hostel, verified } = req.body;
+    const existing = await prisma.user.findUnique({ where: { id: req.params.id } });
+    if (!existing) return res.status(404).json({ success: false, message: 'User not found' });
+    if (existing.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot modify the vendor account' });
     const data: any = {};
     if (role !== undefined) data.role = role;
     if (level !== undefined) data.level = level;

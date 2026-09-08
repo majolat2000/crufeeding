@@ -140,6 +140,16 @@ export function VendorScreen() {
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+        {/* Tabs */}
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+          <View style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: colors.gold, borderWidth: 1, borderColor: colors.gold, alignItems: 'center' }}>
+            <Text style={{ color: colors.surface, fontSize: 13, fontWeight: '700' }}>{'\uD83C\uDF7D\uFE0F'} Food Items</Text>
+          </View>
+          <TouchableOpacity onPress={() => router.push('/vendor-confirm')} style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: colors.emeraldGlow, borderWidth: 1, borderColor: colors.emerald, alignItems: 'center' }}>
+            <Text style={{ color: colors.emerald, fontSize: 13, fontWeight: '700' }}>{'\u2705'} Confirm Payment</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Stats */}
         <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
           <FlashyCard style={{ flex: 1 }}>

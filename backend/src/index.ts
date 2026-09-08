@@ -14,6 +14,7 @@ import { adminRouter } from './modules/admin/admin.routes.js';
 import { configRouter } from './modules/config/config.routes.js';
 import { activityLogRouter } from './modules/activityLog/activityLog.routes.js';
 import { vendorRouter } from './modules/vendor/vendor.routes.js';
+import { orderRouter } from './modules/order/order.routes.js';
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/config', configRouter);
 app.use('/api/v1/activity-logs', activityLogRouter);
 app.use('/api/v1/vendor', vendorRouter);
+app.use('/api/v1/orders', orderRouter);
 
 app.use(notFound);
 app.use(errorHandler);

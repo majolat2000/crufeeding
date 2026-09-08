@@ -6,6 +6,19 @@ import { logActivity } from '../activityLog/activityLog.service.js';
 
 export const vendorRouter = Router();
 
+/** GET /api/v1/vendor/catalog — public food catalog (students browse) */
+vendorRouter.get('/catalog', async (_req, res, next) => {
+  try {
+    const vendor = await prisma.user.findUnique({ where: { email: 'cafeteria@crawforduniversity.edu.ng' } });
+    if (!vendor) return res.status(404).json({ success: false, message: 'Vendor not found' });
+    const items = await prisma.foodItem.findMany({
+      where: { vendorId: vendor.id, available: true },
+      orderBy: { category: 'asc' },
+    });
+    res.json({ success: true, data: items });
+  } catch (e) { next(e); }
+});
+
 /** GET /api/v1/vendor/food — list vendor's food items */
 vendorRouter.get('/food', authenticate, authorize('vendor'), async (req: AuthRequest, res, next) => {
   try {
@@ -64,5 +77,20 @@ vendorRouter.delete('/food/:id', authenticate, authorize('vendor'), async (req: 
     await prisma.foodItem.delete({ where: { id: req.params.id } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'DELETE_FOOD_ITEM', target: existing.name, ip: req.ip });
     res.json({ success: true, message: 'Food item deleted' });
+  } catch (e) { next(e); }
+});
+
+/** GET /api/v1/vendor/pending-orders — vendor sees pending orders */
+vendorRouter.get('/pending-orders', authenticate, authorize('vendor'), async (req: AuthRequest, res, next) => {
+  try {
+    const orders = await prisma.paymentOrder.findMany({
+      where: { vendorId: req.user!.sub, status: 'pending' },
+      orderBy: { createdAt: 'desc' },
+    });
+    const enriched = await Promise.all(orders.map(async (o: any) => {
+      const student = await prisma.user.findUnique({ where: { id: o.studentId }, select: { fullname: true, matricNo: true, email: true } });
+      return { ...o, student };
+    }));
+    res.json({ success: true, data: enriched });
   } catch (e) { next(e); }
 });
