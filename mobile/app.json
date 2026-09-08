@@ -34,14 +34,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090D16"
-      }
+      },
+      "permissions": ["android.permission.CAMERA"]
     },
     "web": {
       "bundler": "metro",
       "output": "static"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-camera"
     ],
     "experiments": {
       "typedRoutes": true
