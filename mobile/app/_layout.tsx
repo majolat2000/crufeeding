@@ -3,11 +3,14 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppState, AppStateStatus, Modal, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import * as Updates from 'expo-updates';
 import { useAuthStore } from '../src/store/authStore';
 import { colors } from '../src/theme/theme';
 import { api } from '../src/api/client';
 import '../global.css';
+
+SplashScreen.preventAutoHideAsync();
 
 const LOCK_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
@@ -19,8 +22,36 @@ export default function RootLayout() {
   const [pinInput, setPinInput] = useState('');
   const lastActiveRef = useRef(Date.now());
   const appStateRef = useRef(AppState.currentState);
+  const [appReady, setAppReady] = useState(false);
 
   useEffect(() => { hydrate(); }, []);
+
+  // OTA update check + splash hide
+  useEffect(() => {
+    async function prepare() {
+      if (__DEV__) {
+        setAppReady(true);
+        return;
+      }
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+          return; // reloadAsync restarts the app — splash stays visible
+        }
+      } catch {}
+      setAppReady(true);
+    }
+    prepare();
+  }, []);
+
+  // Hide splash once hydrated + update check complete
+  useEffect(() => {
+    if (hydrated && appReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [hydrated, appReady]);
 
   // Auth guard
   useEffect(() => {
@@ -33,30 +64,13 @@ export default function RootLayout() {
     }
   }, [token, hydrated, segments]);
 
-  // OTA update check
-  useEffect(() => {
-    if (__DEV__) return;
-    async function checkUpdate() {
-      try {
-        const update = await Updates.checkForUpdateAsync();
-        if (update.isAvailable) {
-          await Updates.fetchUpdateAsync();
-          await Updates.reloadAsync();
-        }
-      } catch {}
-    }
-    checkUpdate();
-  }, []);
-
   // Screen lock: track app state changes
   const handleAppStateChange = useCallback((nextState: AppStateStatus) => {
     const now = Date.now();
     if (appStateRef.current === 'active' && nextState.match(/inactive|background/)) {
-      // App going to background — record time
       lastActiveRef.current = now;
     }
     if (appStateRef.current.match(/inactive|background/) && nextState === 'active') {
-      // App coming to foreground — check elapsed time
       const elapsed = now - lastActiveRef.current;
       if (elapsed >= LOCK_TIMEOUT && token) {
         setLocked(true);
@@ -85,7 +99,8 @@ export default function RootLayout() {
     }
   }
 
-  if (!hydrated) return null;
+  // Don't render anything until hydration + OTA check complete
+  if (!hydrated || !appReady) return null;
 
   return (
     <SafeAreaProvider>

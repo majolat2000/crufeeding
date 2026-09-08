@@ -11,14 +11,15 @@
       "policy": "appVersion"
     },
     "updates": {
+      "enabled": true,
       "url": "https://u.expo.dev/000dbe92-926b-4680-89c9-bc825251a904",
-      "fallbackToCacheTimeout": 0,
-      "checkAutomatically": "ON_LOAD"
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
     },
     "splash": {
-      "backgroundColor": "#090D16",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "image": "./assets/splash.png"
+      "backgroundColor": "#090D16"
     },
     "assetBundlePatterns": [
       "**/*"
