@@ -4,21 +4,21 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
 
-const LEVELS = ['JUPEB', '100 LEVEL', '200 LEVEL', '300 LEVEL', '500 LEVEL', 'Visitor'];
-
 export function SignupScreen() {
   const router = useRouter();
   const { signup, loading } = useAuthStore();
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [matricNo, setMatricNo] = useState('');
-  const [level, setLevel] = useState('300 LEVEL');
 
   const handleSignup = async () => {
     if (!fullname || !email || !password) return Alert.alert('Error', 'Name, email and password required');
+    if (password !== confirmPassword) return Alert.alert('Error', 'Passwords do not match');
+    if (password.length < 6) return Alert.alert('Error', 'Password must be at least 6 characters');
     try {
-      await signup({ fullname, email: email.trim(), password, matricNo: matricNo || undefined, level });
+      await signup({ fullname, email: email.trim(), password, matricNo: matricNo || undefined });
       router.replace('/(tabs)');
     } catch (e: any) {
       Alert.alert('Signup Failed', e.message);
@@ -47,27 +47,13 @@ export function SignupScreen() {
         </View>
 
         <View style={{ marginTop: 16 }}>
-          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Matric / Reg No</Text>
-          <TextInput value={matricNo} onChangeText={setMatricNo} placeholder="MATRIC NO/REG NO" placeholderTextColor={colors.textMuted} autoCapitalize="characters" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
+          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Confirm Password</Text>
+          <TextInput value={confirmPassword} onChangeText={setConfirmPassword} placeholder="Re-enter password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
         </View>
 
         <View style={{ marginTop: 16 }}>
-          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Level</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-            {LEVELS.map(l => (
-              <TouchableOpacity
-                key={l}
-                onPress={() => setLevel(l)}
-                style={{
-                  paddingVertical: 8, paddingHorizontal: 14, borderRadius: radius.sm,
-                  backgroundColor: level === l ? colors.goldGlow : colors.surfaceOverlay,
-                  borderWidth: 1, borderColor: level === l ? colors.gold : colors.borderSubtle,
-                }}
-              >
-                <Text style={{ color: level === l ? colors.goldText : colors.textMuted, fontSize: 12, fontWeight: '700' }}>{l}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>Matric / Reg No</Text>
+          <TextInput value={matricNo} onChangeText={setMatricNo} placeholder="MATRIC NO/REG NO" placeholderTextColor={colors.textMuted} autoCapitalize="characters" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 14, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 15 }} />
         </View>
 
         <TouchableOpacity

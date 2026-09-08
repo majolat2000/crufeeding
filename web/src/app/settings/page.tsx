@@ -10,6 +10,7 @@ export default function SettingsPage() {
 
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
   const [pwMsg, setPwMsg] = useState('');
 
   useEffect(() => {
@@ -34,12 +35,15 @@ export default function SettingsPage() {
   };
 
   const handleChangePassword = async () => {
-    if (!currentPw || !newPw) { setPwMsg('Fill in both fields'); return; }
+    if (!currentPw || !newPw || !confirmPw) { setPwMsg('Fill in all fields'); return; }
+    if (newPw !== confirmPw) { setPwMsg('New passwords do not match'); return; }
+    if (newPw.length < 6) { setPwMsg('Password must be at least 6 characters'); return; }
     try {
       await changePassword(currentPw, newPw);
       setPwMsg('Password changed successfully');
       setCurrentPw('');
       setNewPw('');
+      setConfirmPw('');
     } catch (e: any) { setPwMsg(e.message); }
   };
 
@@ -90,7 +94,7 @@ export default function SettingsPage() {
       {/* Password Change */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 className="font-bold text-[#1A153B]">Change Password</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Current Password</label>
             <input type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
@@ -98,6 +102,10 @@ export default function SettingsPage() {
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">New Password</label>
             <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Confirm New Password</label>
+            <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
           </div>
         </div>
         <button onClick={handleChangePassword} className="mt-4 bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold">Update Password</button>
