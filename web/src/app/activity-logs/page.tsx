@@ -14,7 +14,7 @@ export default function ActivityLogsPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold text-[#1A153B]">Activity Logs</h1>
-      <p className="text-sm text-gray-500">Granular bursary/super admin actions • wallet/status updates • precise timestamps</p>
+      <p className="text-sm text-gray-500">Granular bursary actions • wallet/status updates • precise timestamps</p>
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500"><tr><th className="text-left px-4 py-3">Time</th><th className="text-left px-4 py-3">Actor</th><th className="text-left px-4 py-3">Action</th><th className="text-left px-4 py-3">Target</th><th className="text-left px-4 py-3">Meta</th></tr></thead>

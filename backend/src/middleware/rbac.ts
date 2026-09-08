@@ -4,13 +4,7 @@ import type { Role } from '../types/index.js';
 
 /**
  * RBAC — restrict route to allowed roles.
- * Usage: router.get('/admins', authenticate, authorize('super_admin'), handler)
- *
- * Roles:
- * - super_admin: full access (admin CRUD, hostel/level config, levy settings)
- * - bursar: financial ops (wallet top-up approval, ledger views)
- * - hostel_admin: scoped to assigned hostel
- * - student: mobile wallet + payments only
+ * Both super_admin and bursar are unified as "Bursar" with full access.
  */
 export function authorize(...allowed: Role[]) {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -25,6 +19,5 @@ export function authorize(...allowed: Role[]) {
   };
 }
 
-// Convenience aliases
-export const requireSuperAdmin = authorize('super_admin');
+// Convenience aliases — both roles are unified as "Bursar"
 export const requireBursar = authorize('super_admin', 'bursar');

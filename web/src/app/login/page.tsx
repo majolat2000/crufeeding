@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { loginRequest } from '@/lib/auth';
 
 /**
- * Login only — no sign-up. Only Super Admins and Bursars.
- * Default Super Admin: majesty.olatimilehin@crawforduniversity.edu.ng / CRUFEED@1#1
+ * Login only — no sign-up. Only Bursars.
+ * Default: majesty.olatimilehin@crawforduniversity.edu.ng / CRUFEED@1#1
  */
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function LoginPage() {
         <div className="text-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-[#1A153B] text-white flex items-center justify-center font-extrabold mx-auto">CU</div>
           <h1 className="text-xl font-extrabold text-[#1A153B] mt-3">Crawford Feeding — Bursary Portal</h1>
-          <p className="text-xs text-gray-500 mt-1">Login only • Super Admin / Bursar</p>
+          <p className="text-xs text-gray-500 mt-1">Login only • Bursar</p>
         </div>
         <form onSubmit={submit} className="space-y-4">
           <div>

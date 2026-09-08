@@ -1,17 +1,14 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
 import { getSession } from '@/lib/auth';
-import { getUsers, updateUser, updateRole } from '@/lib/api';
+import { getUsers, updateUser } from '@/lib/api';
 
 type Role = 'user' | 'subscriber' | 'bursar' | 'super_admin';
 type User = { id: string; email: string; fullname: string; matricNo?: string; role: Role; level?: string; hostel?: string; mealBreakfast: boolean; mealLunch: boolean; mealDinner: boolean; wallet?: { balance: number }; verified: boolean };
 
-const ROLES_SUPER: Role[] = ['user', 'subscriber', 'bursar', 'super_admin'];
-const ROLES_BURSAR: Role[] = ['user', 'subscriber', 'bursar'];
+const ROLES: Role[] = ['user', 'subscriber', 'bursar'];
 
 export default function UsersPage() {
-  const session = getSession();
-  const actorRole = (session?.role ?? 'super_admin') as Role;
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
@@ -33,21 +30,11 @@ export default function UsersPage() {
 
   function startEdit(u: User) {
     setEditing(u.id);
-    setDraftRole(u.role);
+    setDraftRole(u.role === 'super_admin' ? 'bursar' : u.role);
     setDraftMeals({ breakfast: u.mealBreakfast, lunch: u.mealLunch, dinner: u.mealDinner });
   }
 
-  function canEdit(actor: Role, target: Role, next: Role): boolean {
-    if (actor === 'super_admin') return true;
-    if (actor === 'bursar') {
-      if (target === 'super_admin') return false;
-      return (ROLES_BURSAR as string[]).includes(next);
-    }
-    return false;
-  }
-
   async function save(u: User) {
-    if (!canEdit(actorRole, u.role, draftRole)) { alert('Permission denied'); return; }
     try {
       await updateUser(u.id, { role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner });
       setUsers(users.map(x => x.id === u.id ? { ...x, role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner } : x));
@@ -56,12 +43,22 @@ export default function UsersPage() {
     } catch (e: any) { setMsg(e.message); }
   }
 
+  function roleBadge(role: Role) {
+    if (role === 'super_admin' || role === 'bursar') return 'bg-[#1A153B] text-white';
+    if (role === 'subscriber') return 'bg-emerald-100 text-emerald-800';
+    return 'bg-gray-100 text-gray-700';
+  }
+
+  function roleLabel(role: Role) {
+    return role === 'super_admin' ? 'Bursar' : role;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-[#1A153B]">Users</h1>
-          <p className="text-sm text-gray-500">Search by email, name, or matric &bull; Signed in as {actorRole}</p>
+          <p className="text-sm text-gray-500">Search by email, name, or matric</p>
         </div>
       </div>
 
@@ -97,9 +94,9 @@ export default function UsersPage() {
                   <td className="px-4 py-3">
                     {editing === u.id ? (
                       <select value={draftRole} onChange={e => setDraftRole(e.target.value as Role)} className="border border-gray-200 rounded-lg px-2 py-1 text-sm">
-                        {(actorRole === 'super_admin' ? ROLES_SUPER : ROLES_BURSAR).map(r => <option key={r} value={r}>{r}</option>)}
+                        {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                       </select>
-                    ) : <span className={`px-2 py-1 rounded-full text-xs font-bold ${u.role === 'super_admin' ? 'bg-[#1A153B] text-white' : u.role === 'bursar' ? 'bg-amber-100 text-amber-800' : u.role === 'subscriber' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-700'}`}>{u.role}</span>}
+                    ) : <span className={`px-2 py-1 rounded-full text-xs font-bold ${roleBadge(u.role)}`}>{roleLabel(u.role)}</span>}
                   </td>
                   <td className="px-4 py-3">
                     {editing === u.id && draftRole === 'subscriber' ? (

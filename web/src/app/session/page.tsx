@@ -37,7 +37,7 @@ export default function SessionPage() {
       <h1 className="text-2xl font-extrabold text-[#1A153B]">Session</h1>
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 className="font-bold text-[#1A153B]">Academic Session</h2>
-        <p className="text-xs text-gray-500 mt-1">Manually adjustable by Super Admin / Bursar</p>
+        <p className="text-xs text-gray-500 mt-1">Manually adjustable by Bursar</p>
 
         <div className="mt-6 flex items-center gap-4">
           <button onClick={decrement} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg font-bold text-[#1A153B]">−</button>

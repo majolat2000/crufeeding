@@ -1,6 +1,6 @@
 'use client';
 /**
- * Auth helpers — Login only (no sign-up). Only Super Admin / Bursar can log in.
+ * Auth helpers — Login only (no sign-up). Only Bursar can log in.
  * Token stored in localStorage, cleared on logout.
  */
 export type Role = 'super_admin' | 'bursar';
@@ -37,7 +37,7 @@ export async function loginRequest(email: string, password: string) {
   const token = j.data?.token ?? j.token;
   const role = j.data?.user?.role ?? j.user?.role;
   if (!token) throw new Error('No token returned');
-  if (role !== 'super_admin' && role !== 'bursar') throw new Error('Web portal restricted to Super Admin / Bursar');
+  if (role !== 'super_admin' && role !== 'bursar') throw new Error('Web portal restricted to Bursar');
   setSession({ token, email, role });
   localStorage.setItem('token', token);
   return { token, role };

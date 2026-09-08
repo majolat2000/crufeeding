@@ -64,8 +64,8 @@ export function Sidebar() {
         <div className="p-4 border-t border-white/10">
           <div className="bg-white/10 rounded-xl p-3">
             <p className="text-xs text-indigo-200">Signed in as</p>
-            <p className="text-sm font-bold truncate">{session?.email ?? 'Super Admin'}</p>
-            <p className="text-xs text-indigo-300 capitalize">{session?.role?.replace('_', ' ') ?? 'super_admin'}</p>
+            <p className="text-sm font-bold truncate">{session?.email ?? 'Bursar'}</p>
+                  <p className="text-xs text-indigo-300">Bursar</p>
           </div>
         </div>
       )}
