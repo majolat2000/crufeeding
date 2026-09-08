@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
-import * as LocalAuthentication from 'expo-local-authentication';
+
+let LocalAuthentication: any = null;
+try {
+  LocalAuthentication = require('expo-local-authentication');
+} catch {}
 
 export function LoginScreen() {
   const router = useRouter();
-  const { login, loginPin, user, loading } = useAuthStore();
+  const { login, loginPin, loading } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [biometricAvailable, setBiometricAvailable] = useState(false);
@@ -18,9 +23,10 @@ export function LoginScreen() {
 
   const checkBiometric = async () => {
     try {
+      if (!LocalAuthentication) return;
       const compatible = await LocalAuthentication.hasHardwareAsync();
       const enrolled = await LocalAuthentication.isEnrolledAsync();
-      const storedUser = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_user'));
+      const storedUser = await AsyncStorage.getItem('auth_user');
       const parsed = storedUser ? JSON.parse(storedUser) : null;
       setBiometricAvailable(compatible && enrolled && !!parsed?.biometricEnabled);
     } catch {
@@ -40,15 +46,15 @@ export function LoginScreen() {
 
   const handleBiometricLogin = async () => {
     try {
+      if (!LocalAuthentication) return Alert.alert('Error', 'Biometrics not available');
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: 'Authenticate to sign in',
         cancelLabel: 'Cancel',
         disableDeviceFallback: false,
       });
       if (result.success) {
-        const storedUser = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_user'));
-        const storedToken = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('auth_token'));
-        if (storedUser && storedToken) {
+        const storedUser = await AsyncStorage.getItem('auth_user');
+        if (storedUser) {
           const parsed = JSON.parse(storedUser);
           if (parsed.email) {
             await loginPin(parsed.email, 'biometric');
