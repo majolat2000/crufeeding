@@ -21,7 +21,7 @@ function generateQRData(orderId: string, shortCode: string): string {
 const ORDER_TTL_MINUTES = 5;
 
 /** POST /api/v1/orders — create payment order (student) */
-orderRouter.post('/', authenticate, authorize('student', 'subscriber'), async (req: AuthRequest, res, next) => {
+orderRouter.post('/', authenticate, authorize('student'), async (req: AuthRequest, res, next) => {
   try {
     const { items, pin } = req.body;
     if (!items || !Array.isArray(items) || items.length === 0) {
