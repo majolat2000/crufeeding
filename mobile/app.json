@@ -7,9 +7,7 @@
     "icon": "./assets/icon.png",
     "scheme": "crawford-feeding",
     "userInterfaceStyle": "dark",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "enabled": true,
       "url": "https://u.expo.dev/000dbe92-926b-4680-89c9-bc825251a904",
