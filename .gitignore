@@ -33,10 +33,13 @@ isolate/
 .Default Project/dist
 mobile/node_modules/
 mobile/dist/
+mobile/dist-web/
 mobile/.expo/
+mobile/serve-web.js
 web/node_modules/
 web/.next/
 web/out/
+web/next-env.d.ts
 backend/node_modules/
 backend/dist/
 
@@ -49,6 +52,7 @@ backend/.env
 .expo/
 .next/
 *.tsbuildinfo
+preview.html
 
 # backup of nested repo - do not commit
 .git.bak/
