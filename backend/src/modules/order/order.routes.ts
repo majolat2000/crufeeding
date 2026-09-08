@@ -21,7 +21,7 @@ function generateQRData(orderId: string, shortCode: string): string {
 const ORDER_TTL_MINUTES = 5;
 
 /** POST /api/v1/orders — create payment order (student) */
-orderRouter.post('/', authenticate, authorize('user', 'subscriber'), async (req: AuthRequest, res, next) => {
+orderRouter.post('/', authenticate, authorize('student', 'subscriber'), async (req: AuthRequest, res, next) => {
   try {
     const { items, pin } = req.body;
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -33,7 +33,7 @@ orderRouter.post('/', authenticate, authorize('user', 'subscriber'), async (req:
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (!user.pin) return res.status(400).json({ success: false, message: 'No transaction PIN set. Please set one in Profile.' });
 
-    const pinValid = await import('bcryptjs').then(b => b.default.compare(pin, user.pin));
+    const pinValid = await import('bcryptjs').then(b => b.default.compare(pin, user.pin!));
     if (!pinValid) return res.status(401).json({ success: false, message: 'Invalid transaction PIN' });
 
     let totalAmount = 0;
