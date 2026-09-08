@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Production Build (Android + iOS)
+  build-android:
+    name: Production Build (Android)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -35,5 +35,35 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build production binaries (Android + iOS)
-        run: eas build --platform all --profile production --non-interactive
+      - name: Build production APK/AAB
+        run: eas build --platform android --profile production --non-interactive
+
+  build-ios:
+    name: Production Build (iOS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Setup Expo & EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build production IPA
+        run: eas build --platform ios --profile production --non-interactive
