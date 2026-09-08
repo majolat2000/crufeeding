@@ -1,10 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { getLevels, createLevel, deleteLevel, getConfig, updateMealRates, changePassword } from '@/lib/api';
+import { getConfig, updateMealRates, changePassword } from '@/lib/api';
 
 export default function SettingsPage() {
-  const [levels, setLevels] = useState<string[]>([]);
-  const [newLevel, setNewLevel] = useState('100 LEVEL');
   const [breakfast, setBreakfast] = useState(1500);
   const [lunch, setLunch] = useState(2000);
   const [dinner, setDinner] = useState(1500);
@@ -15,10 +13,6 @@ export default function SettingsPage() {
   const [pwMsg, setPwMsg] = useState('');
 
   useEffect(() => {
-    getLevels().then((r) => {
-      const arr = (r.data ?? r).map((l: any) => l.name ?? l);
-      setLevels(arr.length ? arr : []);
-    }).catch(() => {});
     getConfig().then((r) => {
       const d = r.data ?? r;
       setBreakfast(Number(d.breakfastRate ?? 1500));
@@ -26,15 +20,6 @@ export default function SettingsPage() {
       setDinner(Number(d.dinnerRate ?? 1500));
     }).catch(() => {});
   }, []);
-
-  const ALLOWED_LEVELS = ['JUPEB', '100 LEVEL', '200 LEVEL', '300 LEVEL', '500 LEVEL', 'Visitor'];
-
-  const Chip = ({ label, onDelete }: { label: string; onDelete: () => void }) => (
-    <span className="inline-flex items-center gap-2 bg-[#F4F5F7] border border-gray-200 rounded-full px-3 py-1.5 text-sm">
-      {label}
-      <button onClick={onDelete} className="w-5 h-5 rounded-full bg-[#1A153B] text-white text-xs leading-none">×</button>
-    </span>
-  );
 
   const handleUpdateRates = async () => {
     try {
@@ -62,23 +47,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-[#1A153B]">Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">Levels, meal rates, password management</p>
-      </div>
-
-      {/* Levels */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Levels</h2>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {levels.map((l) => (
-            <Chip key={l} label={l} onDelete={async () => { try { await deleteLevel(l); setLevels(levels.filter(x => x !== l)); } catch (e: any) { setMsg(e.message); } }} />
-          ))}
-        </div>
-        <div className="flex gap-2 mt-4">
-          <select value={newLevel} onChange={e => setNewLevel(e.target.value)} className="border border-gray-200 rounded-xl px-3 py-2 text-sm">
-            {ALLOWED_LEVELS.map(v => <option key={v} value={v}>{v}</option>)}
-          </select>
-          <button onClick={async () => { if (levels.includes(newLevel)) { setMsg('Level exists'); return; } try { await createLevel({ name: newLevel, cap: 1500, plan: 'Standard' }); setLevels([...levels, newLevel]); } catch (e: any) { setMsg(e.message); } }} className="bg-[#1A153B] text-white px-4 py-2 rounded-xl text-sm font-semibold">Add Level</button>
-        </div>
+        <p className="text-sm text-gray-500 mt-1">Meal rates, password management</p>
       </div>
 
       {/* Meal Rates */}

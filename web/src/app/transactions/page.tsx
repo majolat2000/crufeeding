@@ -81,12 +81,6 @@ export default function TransactionsPage() {
           </div>
         )}
       </div>
-
-      {/* XpressPayments placeholder */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4">
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">External Funding (XpressPayments)</p>
-        <p className="text-xs text-gray-400 mt-1">Placeholder for upcoming public/private API key integration for external wallet funding.</p>
-      </div>
     </div>
   );
 }

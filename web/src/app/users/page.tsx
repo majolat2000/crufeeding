@@ -119,7 +119,7 @@ export default function UsersPage() {
                       <span className="text-xs bg-emerald-50 border border-emerald-200 rounded-full px-2 py-1">
                         {u.mealBreakfast ? 'B ' : ''}{u.mealLunch ? 'L ' : ''}{u.mealDinner ? 'D ' : ''}
                       </span>
-                    ) : <span className="text-xs text-gray-400">\u2014</span>}
+                    ) : <span className="text-xs text-gray-400">None</span>}
                   </td>
                   <td className="px-4 py-3 text-right font-bold text-sm">₦{Number(u.wallet?.balance ?? 0).toLocaleString()}</td>
                   <td className="px-4 py-3 text-right">

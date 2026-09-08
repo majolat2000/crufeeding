@@ -52,7 +52,7 @@ export default function CafeteriaPage() {
 
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
         <h2 className="font-bold text-[#1A153B]">The Cafeteria</h2>
-        <p className="text-xs text-gray-500">Purchase history from PostgreSQL &bull; 100% direct payout</p>
+        <p className="text-xs text-gray-500">100% direct payout</p>
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
           <div className="bg-[#F4F5F7] rounded-xl p-4">
             <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Total Purchases</p>
