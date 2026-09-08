@@ -61,6 +61,11 @@ async function seedDatabase() {
         await prisma.wallet.create({ data: { userId: vendor.id, balance: 0 } });
         console.log('[seed] vendor created');
       } else {
+        const vendorWallet = await prisma.wallet.findUnique({ where: { userId: vendorExists.id } });
+        if (!vendorWallet) {
+          await prisma.wallet.create({ data: { userId: vendorExists.id, balance: 0 } });
+          console.log('[seed] vendor wallet was missing — created');
+        }
         console.log('[seed] vendor exists — skipping');
       }
       return;

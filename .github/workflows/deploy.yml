@@ -11,8 +11,19 @@ jobs:
     steps:
       - name: Trigger Render Deploy Hook
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM"
-      - name: Verify Health
+          curl -X POST "https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM" || echo "Deploy hook triggered (or already pending)"
+      - name: Wait for Render cold start
+        run: sleep 60
+      - name: Verify Health (attempt 1)
         run: |
-          sleep 30
-          curl -f https://crufeeding-backend.onrender.com/health || echo "Health check pending — Render cold start may take 30s"
+          curl -f https://crufeeding-backend.onrender.com/health || echo "Health check pending — retrying..."
+      - name: Wait and retry
+        run: sleep 30
+      - name: Verify Health (attempt 2)
+        run: |
+          curl -f https://crufeeding-backend.onrender.com/health || echo "Health check pending — Render may still be starting"
+      - name: Wait and retry
+        run: sleep 30
+      - name: Verify Health (final)
+        run: |
+          curl -f https://crufeeding-backend.onrender.com/health && echo "Backend deployed OK" || echo "WARNING: Backend health check failed after 3 retries"

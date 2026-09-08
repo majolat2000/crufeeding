@@ -27,6 +27,8 @@ export function VendorScreen() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [showBalance, setShowBalance] = useState(true);
 
   const [formName, setFormName] = useState('');
   const [formCost, setFormCost] = useState('');
@@ -34,7 +36,15 @@ export function VendorScreen() {
   const [formPictureUrl, setFormPictureUrl] = useState('');
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => { fetchItems(); fetchWallet(); }, []);
+
+  const fetchWallet = async () => {
+    try {
+      if (!user?.id) return;
+      const { data } = await api.get(`/wallet/${user.id}`);
+      setWalletBalance(Number(data.data?.balance ?? 0));
+    } catch {}
+  };
 
   const fetchItems = async () => {
     try {
@@ -135,6 +145,15 @@ export function VendorScreen() {
           </View>
           <TouchableOpacity onPress={handleLogout} style={{ backgroundColor: colors.surfaceOverlay, borderRadius: radius.sm, paddingHorizontal: 12, paddingVertical: 6, borderWidth: 1, borderColor: colors.borderSubtle }}>
             <Text style={{ color: colors.gold, fontSize: 12, fontWeight: '700' }}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, backgroundColor: colors.surfaceOverlay, borderRadius: radius.md, padding: 12, borderWidth: 1, borderColor: colors.borderSubtle }}>
+          <View>
+            <Text style={{ color: colors.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>Wallet Balance</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 20, fontWeight: '900', marginTop: 2 }}>{showBalance ? `${'\u20A6'}${walletBalance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}` : `${'\u20A6'}****`}</Text>
+          </View>
+          <TouchableOpacity onPress={() => setShowBalance(!showBalance)} style={{ padding: 8 }}>
+            <Text style={{ fontSize: 18 }}>{showBalance ? '\uD83D\uDC41' : '\uD83D\uDE48'}</Text>
           </TouchableOpacity>
         </View>
       </View>

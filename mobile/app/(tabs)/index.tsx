@@ -13,6 +13,7 @@ export function HomeScreen() {
   const router = useRouter();
   const { user, refreshUser } = useAuthStore();
   const [balance, setBalance] = useState(0);
+  const [showBalance, setShowBalance] = useState(true);
 
   useEffect(() => {
     fetchBalance();
@@ -83,7 +84,12 @@ export function HomeScreen() {
             style={{ borderRadius: radius.lg, padding: 24, borderWidth: 1, borderColor: colors.border }}
           >
             <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' }}>Feeding Balance</Text>
-            <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', marginTop: 8, letterSpacing: -1 }}>{'\u20A6'}{balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+              <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', letterSpacing: -1 }}>{showBalance ? `${'\u20A6'}${balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}` : `${'\u20A6'}****`}</Text>
+              <TouchableOpacity onPress={() => setShowBalance(!showBalance)} style={{ padding: 8 }}>
+                <Text style={{ fontSize: 20 }}>{showBalance ? '\uD83D\uDC41' : '\uD83D\uDE48'}</Text>
+              </TouchableOpacity>
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
               <Text style={{ color: colors.textMuted, fontSize: 11 }}>{user?.matricNo || user?.level || 'Student'}</Text>
               <StatusBadge label="Active" variant="success" />
