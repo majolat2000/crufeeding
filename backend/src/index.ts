@@ -48,7 +48,19 @@ async function seedDatabase() {
 
   const userCount = await prisma.user.count();
     if (userCount > 0) {
-      console.log(`[seed] ${userCount} users exist — skipping seed`);
+      console.log(`[seed] ${userCount} users exist — checking vendor...`);
+      const vendorExists = await prisma.user.findUnique({ where: { email: 'cafeteria@crawforduniversity.edu.ng' } });
+      if (!vendorExists) {
+        console.log('[seed] vendor missing — creating vendor account...');
+        const vendorHash = await bcrypt.hash('cafeteria', 4);
+        const vendor = await prisma.user.create({
+          data: { email: 'cafeteria@crawforduniversity.edu.ng', password: vendorHash, fullname: 'The Cafeteria', role: 'vendor', verified: true },
+        });
+        await prisma.wallet.create({ data: { userId: vendor.id, balance: 0 } });
+        console.log('[seed] vendor created');
+      } else {
+        console.log('[seed] vendor exists — skipping');
+      }
       return;
     }
     console.log('[seed] no users found — seeding database...');
