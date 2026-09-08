@@ -17,5 +17,9 @@
         "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
       }
     }
+  },
+  "update": {
+    "branch": "production",
+    "skills": ["prerender"]
   }
 }
