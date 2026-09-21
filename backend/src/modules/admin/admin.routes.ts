@@ -75,7 +75,7 @@ adminRouter.get('/dashboard', authenticate, authorize('bursar'), async (_req, re
 
     const [totalUsers, totalSubscribers, newUsersWeek, totalDisbursement, monthlyTransactions, cafeteriaPurchases] = await Promise.all([
       prisma.user.count(),
-      prisma.user.count({ where: { role: 'student' } }),
+      prisma.user.count({ where: { role: 'student', OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] } }),
       prisma.user.count({ where: { createdAt: { gte: weekAgo } } }),
       prisma.transaction.aggregate({ where: { type: 'credit', createdAt: { gte: sessionStart } }, _sum: { gross: true } }),
       prisma.transaction.count({ where: { createdAt: { gte: monthStart } } }),

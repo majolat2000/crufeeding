@@ -24,7 +24,7 @@ export default function FundWalletsPage() {
       });
     }).catch(() => {});
     getUsers().then((r) => {
-      const subs = (r.data ?? []).filter((u: any) => u.role === 'subscriber');
+      const subs = (r.data ?? []).filter((u: any) => u.role === 'student' && (u.mealBreakfast || u.mealLunch || u.mealDinner));
       setSubscribers(subs);
     }).catch(() => {});
   }, []);

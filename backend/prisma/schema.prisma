@@ -7,20 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  bursar
-  hostel_admin
-  student
-  vendor
-}
-
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
   password      String   @default("")
   matricNo      String?  @unique
   fullname      String?
-  role          Role     @default(student)
+  role          String   @default("student")
   isVisitor     Boolean  @default(false)
   mealBreakfast Boolean  @default(false)
   mealLunch     Boolean  @default(false)
