@@ -5,13 +5,15 @@ dotenv.config();
  * Typed env — fails fast if required secrets missing.
  */
 export const env = {
-  port: parseInt(process.env.PORT ?? '10000', 10), // Render: process.env.PORT || 10000
-  // PostgreSQL single source — must read from process.env.DATABASE_URL
-  databaseUrl: process.env.DATABASE_URL ?? process.env.MONGO_URI ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding',
-  mongoUri: process.env.MONGO_URI ?? 'mongodb://localhost:27017/crawford_feeding', // kept for backward compat during migration
+  port: parseInt(process.env.PORT ?? '10000', 10),
+  databaseUrl: process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding',
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   nodeEnv: process.env.NODE_ENV ?? 'development',
+  supabaseUrl: process.env.SUPABASE_URL ?? '',
+  supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY ?? '',
+  supabaseSecretKey: process.env.SUPABASE_SECRET_KEY ?? '',
+  supabaseJwksUrl: process.env.SUPABASE_JWKS_URL ?? '',
 } as const;
 
 if (!process.env.JWT_SECRET && env.nodeEnv === 'production') {
