@@ -19,7 +19,7 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: DATABASE_URL
-        value: postgresql://postgres:4YusvRA7HNWitDnm@db.eutikaqjhskiugkjxpvb.supabase.co:5432/postgres?sslmode=require
+        value: postgresql://postgres.eutikaqjhskiugkjxpvb:4YusvRA7HNWitDnm@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require
       - key: SUPABASE_URL
         value: https://eutikaqjhskiugkjxpvb.supabase.co
       - key: SUPABASE_PUBLISHABLE_KEY
