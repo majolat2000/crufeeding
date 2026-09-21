@@ -5,7 +5,7 @@ services:
     rootDir: backend
     plan: free
     buildCommand: NODE_OPTIONS="--max-old-space-size=400" sh -c "npm install && npx prisma generate && tsc -p tsconfig.json"
-    startCommand: npx prisma db push --accept-data-loss && node dist/index.js
+    startCommand: node dist/index.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -20,5 +20,13 @@ services:
         value: 7d
       - key: DATABASE_URL
         value: postgresql://postgres:4YusvRA7HNWitDnm@db.eutikaqjhskiugkjxpvb.supabase.co:5432/postgres?sslmode=require
+      - key: SUPABASE_URL
+        value: https://eutikaqjhskiugkjxpvb.supabase.co
+      - key: SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_hEzyoWJkCg8mkkIfIwpEew_YiG_dgC2
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_JWKS_URL
+        value: https://eutikaqjhskiugkjxpvb.supabase.co/auth/v1/.well-known/jwks.json
       - key: NEXT_PUBLIC_API_URL
         sync: false
