@@ -5,14 +5,20 @@ dotenv.config();
  * Typed env — fails fast if required secrets missing.
  */
 function buildDatabaseUrl(raw: string): string {
-  // Strip any existing pgbouncer/prepared_statements params to avoid duplicates
   let url = raw
     .replace(/[?&]pgbouncer=true/, '')
     .replace(/[?&]prepared_statements=false/, '')
     .replace(/[?&]connection_limit=\d+/, '');
 
+  // Only add pooler settings if using the pooler (port 6543)
+  if (url.includes(':6543')) {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}pgbouncer=true&prepared_statements=false&connection_limit=5`;
+  }
+
+  // Direct connection (port 5432) — add connection limit only
   const separator = url.includes('?') ? '&' : '?';
-  return `${url}${separator}pgbouncer=true&prepared_statements=false&connection_limit=5`;
+  return `${url}${separator}connection_limit=5`;
 }
 
 export const env = {
