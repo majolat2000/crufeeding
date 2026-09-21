@@ -6,7 +6,9 @@ dotenv.config();
  */
 export const env = {
   port: parseInt(process.env.PORT ?? '10000', 10),
-  databaseUrl: process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding',
+  databaseUrl: (process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding')
+    .replace(/prepared_statements=false/, '')
+    + (process.env.DATABASE_URL?.includes('prepared_statements') ? '' : '&prepared_statements=false'),
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   nodeEnv: process.env.NODE_ENV ?? 'development',
