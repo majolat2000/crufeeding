@@ -172,6 +172,19 @@ authRouter.post('/verify-pin', authenticate, async (req: AuthRequest, res, next)
   } catch (e) { next(e); }
 });
 
+/** POST /api/v1/auth/verify-password — screen unlock via password */
+authRouter.post('/verify-password', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ success: false, message: 'Email and password required' });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(401).json({ success: false, message: 'Invalid password' });
+    res.json({ success: true, message: 'Password verified' });
+  } catch (e) { next(e); }
+});
+
 /** POST /api/v1/auth/login-pin — login with PIN */
 authRouter.post('/login-pin', async (req, res, next) => {
   try {

@@ -3,11 +3,17 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppState, AppStateStatus, Modal, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Updates from 'expo-updates';
 import { useAuthStore } from '../src/store/authStore';
 import { colors } from '../src/theme/theme';
 import { api } from '../src/api/client';
+
+let LocalAuthentication: any = null;
+try {
+  LocalAuthentication = require('expo-local-authentication');
+} catch {}
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,12 +24,27 @@ export default function RootLayout() {
   const segments = useSegments();
   const { token, hydrated, hydrate, user } = useAuthStore();
   const [locked, setLocked] = useState(false);
-  const [pinInput, setPinInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [unlocking, setUnlocking] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
   const lastActiveRef = useRef(Date.now());
   const appStateRef = useRef(AppState.currentState);
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => { hydrate(); }, []);
+
+  // Check biometric availability
+  useEffect(() => {
+    async function checkBio() {
+      try {
+        if (!LocalAuthentication) return;
+        const compatible = await LocalAuthentication.hasHardwareAsync();
+        const enrolled = await LocalAuthentication.isEnrolledAsync();
+        setBiometricAvailable(compatible && enrolled);
+      } catch { setBiometricAvailable(false); }
+    }
+    checkBio();
+  }, []);
 
   // OTA update check + splash hide
   useEffect(() => {
@@ -37,7 +58,7 @@ export default function RootLayout() {
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
           await Updates.reloadAsync();
-          return; // reloadAsync restarts the app — splash stays visible
+          return;
         }
       } catch {}
       setAppReady(true);
@@ -60,19 +81,16 @@ export default function RootLayout() {
     if (!token && !inAuthGroup) {
       router.replace('/login');
     } else if (token && inAuthGroup) {
-      // Redirect vendor users to vendor screen, others to tabs
       if (user?.role === 'vendor') {
         router.replace('/vendor');
       } else {
         router.replace('/(tabs)');
       }
     } else if (token && !inAuthGroup && !isVendorRoute) {
-      // If vendor is on tabs, redirect to vendor
       if (user?.role === 'vendor') {
         router.replace('/vendor');
       }
     } else if (token && !inAuthGroup && isVendorRoute) {
-      // If non-vendor is on vendor, redirect to tabs
       if (user?.role !== 'vendor') {
         router.replace('/(tabs)');
       }
@@ -99,18 +117,45 @@ export default function RootLayout() {
     return () => sub.remove();
   }, [handleAppStateChange]);
 
-  async function handlePinVerify() {
-    if (!pinInput || pinInput.length < 4) {
-      Alert.alert('Error', 'Enter your PIN');
+  async function handlePasswordUnlock() {
+    if (!passwordInput) {
+      Alert.alert('Error', 'Enter your password');
       return;
     }
+    setUnlocking(true);
     try {
-      await api.post('/auth/verify-pin', { pin: pinInput });
+      const storedUser = await AsyncStorage.getItem('auth_user');
+      const parsed = storedUser ? JSON.parse(storedUser) : null;
+      const email = parsed?.email || user?.email;
+      if (!email) {
+        Alert.alert('Error', 'User email not found');
+        setUnlocking(false);
+        return;
+      }
+      await api.post('/auth/verify-password', { email, password: passwordInput });
       setLocked(false);
-      setPinInput('');
+      setPasswordInput('');
     } catch (e: any) {
-      Alert.alert('Invalid PIN', e.message || 'PIN verification failed');
-      setPinInput('');
+      Alert.alert('Invalid Password', e.message || 'Password verification failed');
+      setPasswordInput('');
+    } finally {
+      setUnlocking(false);
+    }
+  }
+
+  async function handleBiometricUnlock() {
+    try {
+      if (!LocalAuthentication) return Alert.alert('Error', 'Biometrics not available');
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Unlock with biometrics',
+        cancelLabel: 'Cancel',
+        disableDeviceFallback: true,
+      });
+      if (result.success) {
+        setLocked(false);
+      }
+    } catch (e: any) {
+      Alert.alert('Biometric Error', e.message);
     }
   }
 
@@ -149,23 +194,30 @@ export default function RootLayout() {
             <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
           </View>
           <Text style={{ color: '#fff', fontSize: 20, fontWeight: '800', marginBottom: 8 }}>Screen Locked</Text>
-          <Text style={{ color: colors.textMuted, fontSize: 13, marginBottom: 24, textAlign: 'center' }}>Enter your PIN to continue</Text>
+          <Text style={{ color: colors.textMuted, fontSize: 13, marginBottom: 24, textAlign: 'center' }}>Enter your password to continue</Text>
           <TextInput
-            value={pinInput}
-            onChangeText={setPinInput}
-            placeholder="Enter PIN"
+            value={passwordInput}
+            onChangeText={setPasswordInput}
+            placeholder="Enter password"
             placeholderTextColor={colors.textMuted}
-            keyboardType="numeric"
             secureTextEntry
-            maxLength={6}
-            style={{ backgroundColor: colors.surface, borderRadius: 12, paddingHorizontal: 20, paddingVertical: 14, color: '#fff', borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 18, width: '100%', textAlign: 'center', letterSpacing: 8 }}
+            style={{ backgroundColor: colors.surface, borderRadius: 12, paddingHorizontal: 20, paddingVertical: 14, color: '#fff', borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 16, width: '100%' }}
           />
           <TouchableOpacity
-            onPress={handlePinVerify}
-            style={{ backgroundColor: colors.gold, borderRadius: 12, paddingVertical: 16, alignItems: 'center', width: '100%', marginTop: 16 }}
+            onPress={handlePasswordUnlock}
+            disabled={unlocking}
+            style={{ backgroundColor: colors.gold, borderRadius: 12, paddingVertical: 16, alignItems: 'center', width: '100%', marginTop: 16, opacity: unlocking ? 0.5 : 1 }}
           >
-            <Text style={{ color: colors.surface, fontWeight: '800', fontSize: 15 }}>Unlock</Text>
+            <Text style={{ color: colors.surface, fontWeight: '800', fontSize: 15 }}>{unlocking ? 'Verifying...' : 'Unlock'}</Text>
           </TouchableOpacity>
+          {biometricAvailable && (
+            <TouchableOpacity
+              onPress={handleBiometricUnlock}
+              style={{ backgroundColor: colors.surfaceOverlay, borderRadius: 12, paddingVertical: 16, alignItems: 'center', width: '100%', marginTop: 12, borderWidth: 1, borderColor: colors.borderSubtle }}
+            >
+              <Text style={{ color: colors.gold, fontWeight: '700', fontSize: 14 }}>{'\uD83D\uDD11'} Unlock with Biometrics</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </Modal>
     </SafeAreaProvider>
