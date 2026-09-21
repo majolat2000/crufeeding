@@ -60,7 +60,7 @@ configRouter.post('/fund-valid', authenticate, authorize('super_admin', 'bursar'
     if (!cfg) return res.status(500).json({ success: false, message: 'No config found' });
     const rates = { breakfast: Number(cfg.breakfastRate), lunch: Number(cfg.lunchRate), dinner: Number(cfg.dinnerRate), allThree: Number(cfg.allThreeRate) };
 
-    const subscribers = await prisma.user.findMany({ where: { role: 'subscriber', verified: true } });
+    const subscribers = await prisma.user.findMany({ where: { role: 'student', verified: true } });
     let funded = 0;
     let totalCredited = 0;
 
@@ -114,7 +114,7 @@ configRouter.post('/fund-selective', authenticate, authorize('super_admin', 'bur
     if (!cfg) return res.status(500).json({ success: false, message: 'No config found' });
     const rates = { breakfast: Number(cfg.breakfastRate), lunch: Number(cfg.lunchRate), dinner: Number(cfg.dinnerRate), allThree: Number(cfg.allThreeRate) };
 
-    const subscribers = await prisma.user.findMany({ where: { id: { in: studentIds }, role: 'subscriber', verified: true } });
+    const subscribers = await prisma.user.findMany({ where: { id: { in: studentIds }, role: 'student', verified: true } });
     let funded = 0;
     let totalCredited = 0;
 

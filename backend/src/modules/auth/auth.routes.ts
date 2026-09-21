@@ -49,7 +49,6 @@ authRouter.post('/signup', async (req, res, next) => {
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) return res.status(409).json({ success: false, message: 'Email already registered' });
     const hash = await bcrypt.hash(password, 10);
-    const isSubscriber = mealBreakfast || mealLunch || mealDinner;
     const user = await prisma.user.create({
       data: {
         email,
@@ -57,7 +56,7 @@ authRouter.post('/signup', async (req, res, next) => {
         fullname,
         matricNo: matricNo || null,
         level: level || 'Visitor',
-        role: isSubscriber ? 'subscriber' : 'user',
+        role: 'student',
         mealBreakfast: mealBreakfast || false,
         mealLunch: mealLunch || false,
         mealDinner: mealDinner || false,

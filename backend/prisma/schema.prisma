@@ -8,10 +8,10 @@ datasource db {
 }
 
 enum Role {
-  user
-  subscriber
-  bursar
   super_admin
+  bursar
+  hostel_admin
+  student
   vendor
 }
 

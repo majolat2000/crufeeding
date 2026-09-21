@@ -15,6 +15,7 @@ import { configRouter } from './modules/config/config.routes.js';
 import { activityLogRouter } from './modules/activityLog/activityLog.routes.js';
 import { vendorRouter } from './modules/vendor/vendor.routes.js';
 import { orderRouter } from './modules/order/order.routes.js';
+import { migrateRouter } from './modules/migrate/migrate.routes.js';
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/v1/config', configRouter);
 app.use('/api/v1/activity-logs', activityLogRouter);
 app.use('/api/v1/vendor', vendorRouter);
 app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/admin', migrateRouter);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -43,7 +45,7 @@ async function seedDatabase() {
   try {
     // Fix stale meal plans: non-subscribers should have no meals selected
   const staleUsers = await prisma.user.updateMany({
-    where: { role: { not: 'subscriber' }, OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] },
+    where: { role: { not: 'student' }, OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] },
     data: { mealBreakfast: false, mealLunch: false, mealDinner: false },
   });
   if (staleUsers.count > 0) console.log(`[seed] reset ${staleUsers.count} non-subscriber users to no meal plan`);

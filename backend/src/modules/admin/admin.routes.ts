@@ -22,13 +22,13 @@ adminRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_r
 adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role } = req.body;
-    if (!['super_admin', 'bursar', 'user', 'subscriber'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
+    if (!['super_admin', 'bursar', 'hostel_admin', 'student', 'vendor'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
     const target = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!target) return res.status(404).json({ success: false, message: 'User not found' });
     if (target.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot modify the vendor account' });
 
     const data: any = { role };
-    if (role !== 'subscriber') {
+    if (role !== 'student') {
       data.mealBreakfast = false;
       data.mealLunch = false;
       data.mealDinner = false;
@@ -74,14 +74,14 @@ adminRouter.get('/dashboard', authenticate, authorize('super_admin', 'bursar'), 
 
     const [totalUsers, totalSubscribers, newUsersWeek, totalDisbursement, monthlyTransactions, cafeteriaPurchases] = await Promise.all([
       prisma.user.count(),
-      prisma.user.count({ where: { role: 'subscriber' } }),
+      prisma.user.count({ where: { role: 'student' } }),
       prisma.user.count({ where: { createdAt: { gte: weekAgo } } }),
       prisma.transaction.aggregate({ where: { type: 'credit', createdAt: { gte: sessionStart } }, _sum: { gross: true } }),
       prisma.transaction.count({ where: { createdAt: { gte: monthStart } } }),
       prisma.transaction.count({ where: { vendorId: 'CAFETERIA', createdAt: { gte: monthStart } } }),
     ]);
 
-    const subscribers = await prisma.user.findMany({ where: { role: 'subscriber' }, select: { mealBreakfast: true, mealLunch: true, mealDinner: true } });
+    const subscribers = await prisma.user.findMany({ where: { role: 'student' }, select: { mealBreakfast: true, mealLunch: true, mealDinner: true } });
     const breakdown = {
       breakfastOnly: 0, lunchOnly: 0, dinnerOnly: 0,
       breakfastLunch: 0, breakfastDinner: 0, lunchDinner: 0,
@@ -146,11 +146,11 @@ adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), 
     if (verified !== undefined) data.verified = verified;
 
     const targetRole = role ?? (await prisma.user.findUnique({ where: { id: req.params.id } }))?.role;
-    if (targetRole === 'subscriber') {
+    if (targetRole === 'student') {
       if (mealBreakfast !== undefined) data.mealBreakfast = mealBreakfast;
       if (mealLunch !== undefined) data.mealLunch = mealLunch;
       if (mealDinner !== undefined) data.mealDinner = mealDinner;
-    } else if (role !== undefined && role !== 'subscriber') {
+    } else if (role !== undefined && role !== 'student') {
       data.mealBreakfast = false;
       data.mealLunch = false;
       data.mealDinner = false;

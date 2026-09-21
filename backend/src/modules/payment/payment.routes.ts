@@ -58,7 +58,7 @@ paymentRouter.get('/transactions', authenticate, async (req: AuthRequest, res, n
         { student: { fullname: { contains: search, mode: 'insensitive' } } },
       ];
     }
-    if (!studentId && !vendorId && req.user!.role === ('user' as any) || req.user!.role === ('subscriber' as any)) {
+    if (!studentId && !vendorId && req.user!.role === 'student') {
       where.studentId = req.user!.sub;
     }
     const [rows, total] = await Promise.all([
