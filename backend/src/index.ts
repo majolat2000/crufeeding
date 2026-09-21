@@ -94,12 +94,7 @@ async function seedDatabase() {
     await prisma.restaurant.upsert({ where: { name: 'The Cafeteria' }, update: {}, create: { name: 'The Cafeteria', isActive: true } });
     await prisma.globalConfig.upsert({ where: { id: 'global' }, update: {}, create: { id: 'global', session: '2025/2026' } });
 
-    const levels = ['JUPEB', '100 LEVEL', '200 LEVEL', '300 LEVEL', '500 LEVEL', 'Visitor'];
-    for (const name of levels) {
-      await prisma.level.upsert({ where: { name }, update: {}, create: { name, cap: 2000, plan: name === 'Visitor' ? 'Basic' : 'Standard' } });
-    }
-
-    console.log('[seed] created Super Admin + Bursary + Vendor + Cafeteria + Levels');
+    console.log('[seed] created Super Admin + Bursary + Vendor + Cafeteria');
   } catch (e) {
     console.error('[seed] error:', e);
   }

@@ -11,7 +11,7 @@ export async function getWalletByStudentId(studentId: string) {
   if (!user) throw Object.assign(new Error('Student not found'), { statusCode: 404 });
   const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });
   if (!wallet) throw Object.assign(new Error('Wallet not found'), { statusCode: 404 });
-  return { ...wallet, user: { id: user.id, email: user.email, fullname: user.fullname, matricNo: user.matricNo, level: user.level } };
+  return { ...wallet, user: { id: user.id, email: user.email, fullname: user.fullname, matricNo: user.matricNo } };
 }
 
 export async function topUp(userId: string, amount: number) {

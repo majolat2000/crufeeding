@@ -14,7 +14,6 @@ const signupSchema = z.object({
   password: z.string().min(6),
   fullname: z.string().min(2),
   matricNo: z.string().optional(),
-  level: z.string().optional(),
   hostel: z.string().optional(),
   mealBreakfast: z.boolean().optional(),
   mealLunch: z.boolean().optional(),
@@ -45,7 +44,7 @@ authRouter.post('/signup', async (req, res, next) => {
   try {
     const parsed = signupSchema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ success: false, message: parsed.error.issues[0].message });
-    const { email, password, fullname, matricNo, level, hostel, mealBreakfast, mealLunch, mealDinner } = parsed.data;
+    const { email, password, fullname, matricNo, hostel, mealBreakfast, mealLunch, mealDinner } = parsed.data;
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) return res.status(409).json({ success: false, message: 'Email already registered' });
     const hash = await bcrypt.hash(password, 10);
@@ -55,7 +54,6 @@ authRouter.post('/signup', async (req, res, next) => {
         password: hash,
         fullname,
         matricNo: matricNo || null,
-        level: level || 'Visitor',
         role: 'student',
         mealBreakfast: mealBreakfast || false,
         mealLunch: mealLunch || false,
@@ -75,7 +73,7 @@ authRouter.get('/me', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user!.sub },
-      select: { id: true, email: true, fullname: true, role: true, matricNo: true, level: true, hostel: true, mealBreakfast: true, mealLunch: true, mealDinner: true, biometricEnabled: true, createdAt: true },
+      select: { id: true, email: true, fullname: true, role: true, matricNo: true, hostel: true, mealBreakfast: true, mealLunch: true, mealDinner: true, biometricEnabled: true, createdAt: true },
     });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     const wallet = await prisma.wallet.findUnique({ where: { userId: user.id } });

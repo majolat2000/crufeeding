@@ -8,7 +8,6 @@ type User = {
   fullname?: string;
   role: string;
   matricNo?: string;
-  level?: string;
   hostel?: string;
   mealBreakfast?: boolean;
   mealLunch?: boolean;

@@ -9,7 +9,7 @@ export const paymentRouter = Router();
 /** POST /api/v1/payments/qr — process QR payment */
 paymentRouter.post('/qr', authenticate, async (req: AuthRequest, res, next) => {
   try {
-    const { studentId, vendorId, vendorName, amount, hostel, level } = req.body;
+    const { studentId, vendorId, vendorName, amount, hostel } = req.body;
     if (!vendorId) return res.status(400).json({ success: false, message: 'vendorId required' });
     if (!amount || amount < 100) return res.status(400).json({ success: false, message: 'Minimum payment ₦100' });
     const user = await prisma.user.findFirst({ where: { OR: [{ id: studentId }, { matricNo: studentId }] } });
@@ -33,7 +33,6 @@ paymentRouter.post('/qr', authenticate, async (req: AuthRequest, res, next) => {
         status: 'success',
         reference: `QR-${Date.now()}-${user.id.slice(0, 6)}`,
         hostel: hostel || user.hostel,
-        level: level || user.level,
       },
     });
     await logActivity({ actorId: user.id, actorEmail: user.email, action: 'QR_PAYMENT', target: vendorId, metadata: { amount: gross, vendorName }, ip: req.ip });
@@ -112,7 +111,6 @@ paymentRouter.post('/refund/:id', authenticate, authorize('super_admin', 'bursar
         status: 'success',
         reference: `REFUND-${Date.now()}-${tx.id.slice(0, 6)}`,
         hostel: tx.hostel,
-        level: tx.level,
       },
     });
 

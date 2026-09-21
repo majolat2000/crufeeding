@@ -3,10 +3,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { getSession } from '@/lib/auth';
 import { getUsers, updateUser } from '@/lib/api';
 
-type Role = 'user' | 'subscriber' | 'bursar' | 'super_admin';
-type User = { id: string; email: string; fullname: string; matricNo?: string; role: Role; level?: string; hostel?: string; mealBreakfast: boolean; mealLunch: boolean; mealDinner: boolean; wallet?: { balance: number }; verified: boolean };
+type Role = 'student' | 'bursar' | 'super_admin' | 'hostel_admin' | 'vendor';
+type User = { id: string; email: string; fullname: string; matricNo?: string; role: Role; hostel?: string; mealBreakfast: boolean; mealLunch: boolean; mealDinner: boolean; wallet?: { balance: number }; verified: boolean };
 
-const ROLES: Role[] = ['user', 'subscriber', 'bursar'];
+const ROLES: Role[] = ['student', 'bursar'];
 
 export default function UsersPage() {
   const [query, setQuery] = useState('');
@@ -35,16 +35,10 @@ export default function UsersPage() {
   }
 
   async function save(u: User) {
-    const isSub = draftRole === 'subscriber';
-    const payload: any = { role: draftRole };
-    if (isSub) {
-      payload.mealBreakfast = draftMeals.breakfast;
-      payload.mealLunch = draftMeals.lunch;
-      payload.mealDinner = draftMeals.dinner;
-    }
+    const payload: any = { role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner };
     try {
       await updateUser(u.id, payload);
-      const updated = { ...u, role: draftRole, mealBreakfast: isSub ? draftMeals.breakfast : false, mealLunch: isSub ? draftMeals.lunch : false, mealDinner: isSub ? draftMeals.dinner : false };
+      const updated = { ...u, role: draftRole, mealBreakfast: draftMeals.breakfast, mealLunch: draftMeals.lunch, mealDinner: draftMeals.dinner };
       setUsers(users.map(x => x.id === u.id ? updated : x));
       setMsg(`Updated ${u.email}`);
       setEditing(null);
@@ -53,12 +47,12 @@ export default function UsersPage() {
 
   function roleBadge(role: Role) {
     if (role === 'super_admin' || role === 'bursar') return 'bg-[#1A153B] text-white';
-    if (role === 'subscriber') return 'bg-emerald-100 text-emerald-800';
+    if (role === 'student') return 'bg-emerald-100 text-emerald-800';
     return 'bg-gray-100 text-gray-700';
   }
 
   function roleLabel(role: Role) {
-    return role === 'super_admin' ? 'Bursar' : role;
+    return role === 'super_admin' ? 'Admin' : role;
   }
 
   return (
@@ -107,7 +101,7 @@ export default function UsersPage() {
                     ) : <span className={`px-2 py-1 rounded-full text-xs font-bold ${roleBadge(u.role)}`}>{roleLabel(u.role)}</span>}
                   </td>
                   <td className="px-4 py-3">
-                    {editing === u.id && draftRole === 'subscriber' ? (
+                    {editing === u.id && draftRole === 'student' ? (
                       <div className="flex gap-2">
                         {(['breakfast', 'lunch', 'dinner'] as const).map(m => (
                           <label key={m} className="flex items-center gap-1 text-xs border rounded-full px-2 py-1">
@@ -115,7 +109,7 @@ export default function UsersPage() {
                           </label>
                         ))}
                       </div>
-                    ) : u.role === 'subscriber' ? (
+                    ) : u.role === 'student' ? (
                       <span className="text-xs bg-emerald-50 border border-emerald-200 rounded-full px-2 py-1">
                         {u.mealBreakfast ? 'B ' : ''}{u.mealLunch ? 'L ' : ''}{u.mealDinner ? 'D ' : ''}
                       </span>

@@ -153,7 +153,6 @@ orderRouter.post('/confirm', authenticate, authorize('vendor'), async (req: Auth
         status: 'success',
         reference: `ORDER-${order.id.slice(0, 8)}`,
         hostel: student?.hostel,
-        level: student?.level,
       },
     });
 

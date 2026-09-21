@@ -118,13 +118,12 @@ export function ProfileScreen() {
           </View>
           <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 12 }}>Crawford University</Text>
           <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>{user?.fullname || 'Student'}</Text>
-          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || user?.level || 'N/A'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>
+          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || 'N/A'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>
           <StatusBadge label={user?.role === 'subscriber' ? 'Subscriber' : 'Student'} variant="success" />
         </View>
 
         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
           <Field label="Email" value={user?.email || ''} />
-          <Field label="Level" value={user?.level || 'N/A'} />
           <Field label="Matric No" value={user?.matricNo || 'N/A'} />
 
           <FlashyCard style={{ marginTop: 8 }}>

@@ -122,7 +122,7 @@ adminRouter.get('/users', authenticate, authorize('super_admin', 'bursar'), asyn
   try {
     const users = await prisma.user.findMany({
       select: {
-        id: true, email: true, fullname: true, matricNo: true, role: true, level: true, hostel: true,
+        id: true, email: true, fullname: true, matricNo: true, role: true, hostel: true,
         mealBreakfast: true, mealLunch: true, mealDinner: true, verified: true, createdAt: true,
         wallet: { select: { balance: true } },
       },
@@ -135,13 +135,12 @@ adminRouter.get('/users', authenticate, authorize('super_admin', 'bursar'), asyn
 /** PUT /api/v1/admin/users/:id — update user */
 adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
   try {
-    const { role, level, mealBreakfast, mealLunch, mealDinner, hostel, verified } = req.body;
+    const { role, mealBreakfast, mealLunch, mealDinner, hostel, verified } = req.body;
     const existing = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!existing) return res.status(404).json({ success: false, message: 'User not found' });
     if (existing.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot modify the vendor account' });
     const data: any = {};
     if (role !== undefined) data.role = role;
-    if (level !== undefined) data.level = level;
     if (hostel !== undefined) data.hostel = hostel;
     if (verified !== undefined) data.verified = verified;
 
@@ -178,25 +177,6 @@ adminRouter.delete('/hostels/:id', authenticate, authorize('super_admin', 'bursa
     await prisma.hostel.delete({ where: { id: req.params.id } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'DELETE_HOSTEL', target: req.params.id, ip: req.ip });
     res.json({ success: true, message: 'Hostel deleted' });
-  } catch (e) { next(e); }
-});
-
-/** POST /api/v1/admin/levels */
-adminRouter.post('/levels', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
-  try {
-    const { name, cap, plan } = req.body;
-    const level = await prisma.level.create({ data: { name, cap: Number(cap), plan } });
-    await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'CREATE_LEVEL', target: name, metadata: req.body, ip: req.ip });
-    res.status(201).json({ success: true, data: level });
-  } catch (e) { next(e); }
-});
-
-/** DELETE /api/v1/admin/levels/:id */
-adminRouter.delete('/levels/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
-  try {
-    await prisma.level.delete({ where: { id: req.params.id } });
-    await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'DELETE_LEVEL', target: req.params.id, ip: req.ip });
-    res.json({ success: true, message: 'Level deleted' });
   } catch (e) { next(e); }
 });
 

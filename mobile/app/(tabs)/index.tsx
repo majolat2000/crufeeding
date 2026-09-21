@@ -91,7 +91,7 @@ export function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
-              <Text style={{ color: colors.textMuted, fontSize: 11 }}>{user?.matricNo || user?.level || 'Student'}</Text>
+              <Text style={{ color: colors.textMuted, fontSize: 11 }}>{user?.matricNo || 'Student'}</Text>
               <StatusBadge label="Active" variant="success" />
             </View>
             <View style={{ position: 'absolute', right: -20, top: -20, width: 96, height: 96, borderRadius: 48, backgroundColor: colors.goldGlow }} />

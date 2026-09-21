@@ -60,11 +60,6 @@ export const fundSelective = (days: number, studentIds: string[]) => req('/confi
 export const getSessionInfo = () => req('/config/session');
 export const updateSession = (session: string) => req('/config/session', { method: 'PUT', body: JSON.stringify({ session }) });
 
-// Levels
-export const getLevels = () => req('/levels');
-export const createLevel = (data: any) => req('/levels', { method: 'POST', body: JSON.stringify(data) });
-export const deleteLevel = (id: string) => req(`/levels/${id}`, { method: 'DELETE' });
-
 // Transactions
 export const getTransactions = (params = '') => req(`/payments/transactions${params}`);
 export const refundTransaction = (id: string) => req(`/payments/refund/${id}`, { method: 'POST' });

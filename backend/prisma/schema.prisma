@@ -22,7 +22,6 @@ model User {
   matricNo      String?  @unique
   fullname      String?
   role          Role     @default(student)
-  level         String?
   isVisitor     Boolean  @default(false)
   mealBreakfast Boolean  @default(false)
   mealLunch     Boolean  @default(false)
@@ -61,14 +60,6 @@ model Hostel {
   capacity  Int
   occupants Int      @default(0)
   status    String   @default("Active")
-  createdAt DateTime @default(now())
-}
-
-model Level {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  cap       Decimal  @db.Decimal(12,2)
-  plan      String
   createdAt DateTime @default(now())
 }
 
