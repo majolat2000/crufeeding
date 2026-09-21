@@ -23,9 +23,29 @@ if (env.nodeEnv !== 'production') {
 export const pool = new Pool({
   connectionString: env.databaseUrl,
   ssl: { rejectUnauthorized: false },
+  max: 5,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 15000,
 });
 
-export async function connectPostgres() {
-  await prisma.$connect();
-  console.log('[pg] connected to Supabase');
+const MAX_RETRIES = 5;
+const INITIAL_DELAY_MS = 3000;
+
+export async function connectPostgres(): Promise<void> {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      await prisma.$connect();
+      console.log(`[pg] connected to Supabase (attempt ${attempt})`);
+      return;
+    } catch (err: any) {
+      const delay = INITIAL_DELAY_MS * attempt;
+      console.error(`[pg] connection attempt ${attempt}/${MAX_RETRIES} failed: ${err.message}`);
+      if (attempt < MAX_RETRIES) {
+        console.log(`[pg] retrying in ${delay}ms...`);
+        await new Promise(r => setTimeout(r, delay));
+      }
+    }
+  }
+  console.error('[pg] all connection attempts failed — exiting');
+  process.exit(1);
 }
