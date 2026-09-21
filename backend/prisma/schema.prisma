@@ -21,7 +21,7 @@ model User {
   password      String   @default("")
   matricNo      String?  @unique
   fullname      String?
-  role          Role     @default(user)
+  role          Role     @default(student)
   level         String?
   isVisitor     Boolean  @default(false)
   mealBreakfast Boolean  @default(false)
