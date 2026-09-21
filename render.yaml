@@ -20,7 +20,5 @@ services:
         value: 7d
       - key: DATABASE_URL
         value: postgresql://postgres:4YusvRA7HNWitDnm@db.eutikaqjhskiugkjxpvb.supabase.co:5432/postgres?sslmode=require
-      - key: OLD_DATABASE_URL
-        value: postgresql://crufeeding_db_user:5CKxNwASYFnXPrW7fBtFm00SbPSHVFHG@dpg-daf7hjgn74is738n3nt0-a/crufeeding_db
       - key: NEXT_PUBLIC_API_URL
         sync: false
