@@ -4,7 +4,7 @@ import type { Role } from '../types/index.js';
 
 /**
  * RBAC — restrict route to allowed roles.
- * Both super_admin and bursar are unified as "Bursar" with full access.
+ * Bursar is the head role with full admin access.
  */
 export function authorize(...allowed: Role[]) {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -19,5 +19,5 @@ export function authorize(...allowed: Role[]) {
   };
 }
 
-// Convenience aliases — both roles are unified as "Bursar"
-export const requireBursar = authorize('super_admin', 'bursar');
+// Convenience alias — bursar is the head role
+export const requireBursar = authorize('bursar');

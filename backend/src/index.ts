@@ -76,7 +76,7 @@ async function seedDatabase() {
     const hash2 = await bcrypt.hash('12345678', 4);
 
     const superAdmin = await prisma.user.create({
-      data: { email: 'majesty.olatimilehin@crawforduniversity.edu.ng', password: hash1, fullname: 'Majesty Olatimilehin', role: 'super_admin', verified: true },
+      data: { email: 'majesty.olatimilehin@crawforduniversity.edu.ng', password: hash1, fullname: 'Majesty Olatimilehin', role: 'bursar', verified: true },
     });
     await prisma.wallet.create({ data: { userId: superAdmin.id, balance: 0 } });
 
@@ -94,7 +94,7 @@ async function seedDatabase() {
     await prisma.restaurant.upsert({ where: { name: 'The Cafeteria' }, update: {}, create: { name: 'The Cafeteria', isActive: true } });
     await prisma.globalConfig.upsert({ where: { id: 'global' }, update: {}, create: { id: 'global', session: '2025/2026' } });
 
-    console.log('[seed] created Super Admin + Bursary + Vendor + Cafeteria');
+    console.log('[seed] created Bursar x2 + Vendor + Cafeteria');
   } catch (e) {
     console.error('[seed] error:', e);
   }

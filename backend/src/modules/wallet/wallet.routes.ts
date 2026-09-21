@@ -16,7 +16,7 @@ walletRouter.get('/:studentId', authenticate, async (req, res, next) => {
 });
 
 /** POST /api/v1/wallet/:studentId/topup — bursar/super_admin */
-walletRouter.post('/:studentId/topup', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+walletRouter.post('/:studentId/topup', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { amount, reference } = req.body;
     const user = await prisma.user.findFirst({ where: { OR: [{ id: req.params.studentId }, { matricNo: req.params.studentId }] } });
@@ -42,7 +42,7 @@ walletRouter.post('/:studentId/topup', authenticate, authorize('super_admin', 'b
 });
 
 /** GET /api/v1/wallet — list all wallets (admin) */
-walletRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_req, res, next) => {
+walletRouter.get('/', authenticate, authorize('bursar'), async (_req, res, next) => {
   try {
     const wallets = await prisma.wallet.findMany({ include: { user: { select: { id: true, email: true, fullname: true, matricNo: true, role: true, mealBreakfast: true, mealLunch: true, mealDinner: true } } }, orderBy: { updatedAt: 'desc' } });
     res.json({ success: true, data: wallets });

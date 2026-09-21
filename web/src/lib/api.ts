@@ -75,3 +75,6 @@ export const getAdmins = () => req('/admin');
 
 // Deductions
 export const deductFromWallet = (studentId: string, amount: number, reason: string) => req('/admin/deduct', { method: 'POST', body: JSON.stringify({ studentId, amount, reason }) });
+
+// Reset user credential (password or PIN)
+export const resetUserCredential = (identifier: string, type: string, newValue: string) => req('/admin/reset-user-credential', { method: 'POST', body: JSON.stringify({ identifier, type, newValue }) });

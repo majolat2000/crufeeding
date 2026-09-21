@@ -18,7 +18,7 @@ hostelRouter.get('/', authenticate, async (_req, res, next) => {
 });
 
 /** POST /api/v1/hostels — super_admin/bursar */
-hostelRouter.post('/', authenticate, authorize('super_admin', 'bursar'), async (req, res, next) => {
+hostelRouter.post('/', authenticate, authorize('bursar'), async (req, res, next) => {
   try {
     const { name, capacity } = req.body;
     const hostel = await prisma.hostel.create({ data: { name, capacity: Number(capacity) } }).catch(() => ({ id: Date.now().toString(), name, capacity }));
@@ -28,7 +28,7 @@ hostelRouter.post('/', authenticate, authorize('super_admin', 'bursar'), async (
 });
 
 /** DELETE /api/v1/hostels/:id */
-hostelRouter.delete('/:id', authenticate, authorize('super_admin', 'bursar'), async (req, res, next) => {
+hostelRouter.delete('/:id', authenticate, authorize('bursar'), async (req, res, next) => {
   try {
     await prisma.hostel.delete({ where: { id: req.params.id } }).catch(() => null);
     await logActivity({ actorId: (req as any).user.sub, actorEmail: (req as any).user.email, action: 'DELETE_HOSTEL', target: req.params.id, ip: req.ip });

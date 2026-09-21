@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import bcrypt from 'bcryptjs';
 import { authenticate, AuthRequest } from '../../middleware/auth.js';
 import { authorize } from '../../middleware/rbac.js';
 import { prisma } from '../../config/db.pg.js';
@@ -6,11 +7,11 @@ import { logActivity } from '../activityLog/activityLog.service.js';
 
 export const adminRouter = Router();
 
-/** GET /api/v1/admin — list all admin users */
-adminRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_req, res, next) => {
+/** GET /api/v1/admin — list all bursar users */
+adminRouter.get('/', authenticate, authorize('bursar'), async (_req, res, next) => {
   try {
     const admins = await prisma.user.findMany({
-      where: { role: { in: ['super_admin', 'bursar'] } },
+      where: { role: 'bursar' },
       select: { id: true, email: true, fullname: true, role: true, verified: true, createdAt: true },
       orderBy: { createdAt: 'asc' },
     });
@@ -18,11 +19,11 @@ adminRouter.get('/', authenticate, authorize('super_admin', 'bursar'), async (_r
   } catch (e) { next(e); }
 });
 
-/** PUT /api/v1/admin/:id/role — change user role */
-adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+/** PUT /api/v1/admin/:id/role — change user role (bursar only) */
+adminRouter.put('/:id/role', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role } = req.body;
-    if (!['super_admin', 'bursar', 'hostel_admin', 'student', 'vendor'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
+    if (!['bursar', 'hostel_admin', 'student', 'vendor'].includes(role)) return res.status(400).json({ success: false, message: 'Invalid role' });
     const target = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!target) return res.status(404).json({ success: false, message: 'User not found' });
     if (target.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot modify the vendor account' });
@@ -40,14 +41,14 @@ adminRouter.put('/:id/role', authenticate, authorize('super_admin', 'bursar'), a
 });
 
 /** DELETE /api/v1/admin/:id */
-adminRouter.delete('/:id', authenticate, authorize('super_admin'), async (req: AuthRequest, res, next) => {
+adminRouter.delete('/:id', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.params.id } });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.email === 'cafeteria@crawforduniversity.edu.ng') return res.status(403).json({ success: false, message: 'Cannot delete the vendor account' });
-    if (user.role === 'super_admin') {
-      const count = await prisma.user.count({ where: { role: 'super_admin' } });
-      if (count <= 1) return res.status(400).json({ success: false, message: 'Cannot delete the last super admin' });
+    if (user.role === 'bursar') {
+      const count = await prisma.user.count({ where: { role: 'bursar' } });
+      if (count <= 1) return res.status(400).json({ success: false, message: 'Cannot delete the last bursar' });
     }
     await prisma.user.delete({ where: { id: req.params.id } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'DELETE_USER', target: user.email, ip: req.ip });
@@ -56,7 +57,7 @@ adminRouter.delete('/:id', authenticate, authorize('super_admin'), async (req: A
 });
 
 /** GET /api/v1/admin/dashboard — real metrics */
-adminRouter.get('/dashboard', authenticate, authorize('super_admin', 'bursar'), async (_req, res, next) => {
+adminRouter.get('/dashboard', authenticate, authorize('bursar'), async (_req, res, next) => {
   try {
     const now = new Date();
     const watOffset = 1 * 60 * 60 * 1000;
@@ -118,7 +119,7 @@ adminRouter.get('/dashboard', authenticate, authorize('super_admin', 'bursar'), 
 });
 
 /** GET /api/v1/admin/users — list all users with wallet + meal info */
-adminRouter.get('/users', authenticate, authorize('super_admin', 'bursar'), async (_req, res, next) => {
+adminRouter.get('/users', authenticate, authorize('bursar'), async (_req, res, next) => {
   try {
     const users = await prisma.user.findMany({
       select: {
@@ -133,7 +134,7 @@ adminRouter.get('/users', authenticate, authorize('super_admin', 'bursar'), asyn
 });
 
 /** PUT /api/v1/admin/users/:id — update user */
-adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+adminRouter.put('/users/:id', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { role, mealBreakfast, mealLunch, mealDinner, hostel, verified } = req.body;
     const existing = await prisma.user.findUnique({ where: { id: req.params.id } });
@@ -162,7 +163,7 @@ adminRouter.put('/users/:id', authenticate, authorize('super_admin', 'bursar'), 
 });
 
 /** POST /api/v1/admin/hostels */
-adminRouter.post('/hostels', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+adminRouter.post('/hostels', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { name, capacity } = req.body;
     const hostel = await prisma.hostel.create({ data: { name, capacity: Number(capacity) } });
@@ -171,8 +172,8 @@ adminRouter.post('/hostels', authenticate, authorize('super_admin', 'bursar'), a
   } catch (e) { next(e); }
 });
 
-/** DELETE /api/v1/admin/hostels/:id */
-adminRouter.delete('/hostels/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+//** DELETE /api/v1/admin/hostels/:id */
+adminRouter.delete('/hostels/:id', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     await prisma.hostel.delete({ where: { id: req.params.id } });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'DELETE_HOSTEL', target: req.params.id, ip: req.ip });
@@ -181,7 +182,7 @@ adminRouter.delete('/hostels/:id', authenticate, authorize('super_admin', 'bursa
 });
 
 /** POST /api/v1/admin/deduct — deduct amount from user wallet */
-adminRouter.post('/deduct', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+adminRouter.post('/deduct', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { studentId, amount, reason } = req.body;
     if (!studentId || !amount) return res.status(400).json({ success: false, message: 'Email, matric number, or student ID and amount required' });
@@ -210,5 +211,32 @@ adminRouter.post('/deduct', authenticate, authorize('super_admin', 'bursar'), as
     });
     await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'WALLET_DEDUCTION', target: user.email, metadata: { amount: deductAmount, reason }, ip: req.ip });
     res.json({ success: true, message: `Deducted ₦${deductAmount.toLocaleString()} from ${user.email}`, data: { newBalance } });
+  } catch (e) { next(e); }
+});
+
+/** POST /api/v1/admin/reset-user-credential — bursar resets a user's PIN or password */
+adminRouter.post('/reset-user-credential', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
+  try {
+    const { identifier, type, newValue } = req.body;
+    if (!identifier) return res.status(400).json({ success: false, message: 'Email or matric number required' });
+    if (!type || !['password', 'pin'].includes(type)) return res.status(400).json({ success: false, message: 'Type must be "password" or "pin"' });
+    if (!newValue) return res.status(400).json({ success: false, message: 'New value required' });
+
+    const user = await prisma.user.findFirst({ where: { OR: [{ id: identifier }, { matricNo: identifier }, { email: identifier }] } });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (type === 'password') {
+      if (newValue.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+      const hash = await bcrypt.hash(newValue, 10);
+      await prisma.user.update({ where: { id: user.id }, data: { password: hash } });
+      await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'RESET_PASSWORD', target: user.email, metadata: { resetBy: 'bursar' }, ip: req.ip });
+      res.json({ success: true, message: `Password reset for ${user.email}` });
+    } else {
+      if (!/^\d{4,6}$/.test(newValue)) return res.status(400).json({ success: false, message: 'PIN must be 4-6 digits' });
+      const pinHash = await bcrypt.hash(newValue, 10);
+      await prisma.user.update({ where: { id: user.id }, data: { pin: pinHash } });
+      await logActivity({ actorId: req.user!.sub, actorEmail: req.user!.email, action: 'RESET_PIN', target: user.email, metadata: { resetBy: 'bursar' }, ip: req.ip });
+      res.json({ success: true, message: `PIN reset for ${user.email}` });
+    }
   } catch (e) { next(e); }
 });

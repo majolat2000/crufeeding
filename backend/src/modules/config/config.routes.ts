@@ -18,7 +18,7 @@ configRouter.get('/', async (_req, res, next) => {
 });
 
 /** PUT /api/v1/config/feeding-amount — granular rates */
-configRouter.put('/feeding-amount', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+configRouter.put('/feeding-amount', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { breakfastRate, lunchRate, dinnerRate, allThreeRate } = req.body;
     const data: any = { updatedBy: req.user!.email };
@@ -37,7 +37,7 @@ configRouter.put('/feeding-amount', authenticate, authorize('super_admin', 'burs
 });
 
 /** PUT /api/v1/config/session — manual session update */
-configRouter.put('/session', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+configRouter.put('/session', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { session } = req.body;
     if (!session || !/^\d{4}\/\d{4}$/.test(session)) return res.status(400).json({ success: false, message: 'Session must be YYYY/YYYY format' });
@@ -52,7 +52,7 @@ configRouter.put('/session', authenticate, authorize('super_admin', 'bursar'), a
 });
 
 /** POST /api/v1/config/fund-valid — credits wallets of active subscribers */
-configRouter.post('/fund-valid', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+configRouter.post('/fund-valid', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { days = 1 } = req.body;
     if (days < 1 || days > 31) return res.status(400).json({ success: false, message: 'Days must be 1-31' });
@@ -105,7 +105,7 @@ configRouter.post('/fund-valid', authenticate, authorize('super_admin', 'bursar'
 });
 
 /** POST /api/v1/config/fund-selective — fund specific subscribers */
-configRouter.post('/fund-selective', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+configRouter.post('/fund-selective', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const { days = 1, studentIds = [] } = req.body;
     if (days < 1 || days > 31) return res.status(400).json({ success: false, message: 'Days must be 1-31' });

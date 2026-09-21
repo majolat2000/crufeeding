@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { getSession } from '@/lib/auth';
 import { getUsers, updateUser } from '@/lib/api';
 
-type Role = 'student' | 'bursar' | 'super_admin' | 'hostel_admin' | 'vendor';
+type Role = 'student' | 'bursar' | 'hostel_admin' | 'vendor';
 type User = { id: string; email: string; fullname: string; matricNo?: string; role: Role; hostel?: string; mealBreakfast: boolean; mealLunch: boolean; mealDinner: boolean; wallet?: { balance: number }; verified: boolean };
 
 const ROLES: Role[] = ['student', 'bursar'];
@@ -30,7 +30,7 @@ export default function UsersPage() {
 
   function startEdit(u: User) {
     setEditing(u.id);
-    setDraftRole(u.role === 'super_admin' ? 'bursar' : u.role);
+    setDraftRole(u.role === 'bursar' ? 'student' : u.role);
     setDraftMeals({ breakfast: u.mealBreakfast, lunch: u.mealLunch, dinner: u.mealDinner });
   }
 
@@ -46,13 +46,13 @@ export default function UsersPage() {
   }
 
   function roleBadge(role: Role) {
-    if (role === 'super_admin' || role === 'bursar') return 'bg-[#1A153B] text-white';
+    if (role === 'bursar') return 'bg-[#1A153B] text-white';
     if (role === 'student') return 'bg-emerald-100 text-emerald-800';
     return 'bg-gray-100 text-gray-700';
   }
 
   function roleLabel(role: Role) {
-    return role === 'super_admin' ? 'Admin' : role;
+    return role;
   }
 
   return (

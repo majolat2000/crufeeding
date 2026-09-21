@@ -84,7 +84,7 @@ paymentRouter.get('/transactions', authenticate, async (req: AuthRequest, res, n
 });
 
 /** POST /api/v1/payments/refund/:id — process refund */
-paymentRouter.post('/refund/:id', authenticate, authorize('super_admin', 'bursar'), async (req: AuthRequest, res, next) => {
+paymentRouter.post('/refund/:id', authenticate, authorize('bursar'), async (req: AuthRequest, res, next) => {
   try {
     const tx = await prisma.transaction.findUnique({ where: { id: req.params.id } });
     if (!tx) return res.status(404).json({ success: false, message: 'Transaction not found' });
