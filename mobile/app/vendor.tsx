@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert, FlatList, Modal, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { colors, radius } from '../src/theme/theme';
 import { api } from '../src/api/client';
 import { useAuthStore } from '../src/store/authStore';
@@ -35,8 +36,12 @@ export function VendorScreen() {
   const [formCategory, setFormCategory] = useState<string>('Carbohydrate');
   const [formPictureUrl, setFormPictureUrl] = useState('');
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<'food' | 'confirm' | 'orders'>('food');
+  const [orders, setOrders] = useState<any[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   useEffect(() => { fetchItems(); fetchWallet(); }, []);
+  useFocusEffect(useCallback(() => { if (activeTab === 'orders') fetchOrders(); }, [activeTab]));
 
   const fetchWallet = async () => {
     try {
@@ -54,6 +59,16 @@ export function VendorScreen() {
       Alert.alert('Error', e.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    setOrdersLoading(true);
+    try {
+      const { data } = await api.get('/orders');
+      setOrders(data.data || []);
+    } catch {} finally {
+      setOrdersLoading(false);
     }
   };
 
@@ -161,68 +176,142 @@ export function VendorScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         {/* Tabs */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
-          <View style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: colors.gold, borderWidth: 1, borderColor: colors.gold, alignItems: 'center' }}>
-            <Text style={{ color: colors.surface, fontSize: 13, fontWeight: '700' }}>{'\uD83C\uDF7D\uFE0F'} Food Items</Text>
-          </View>
+          <TouchableOpacity onPress={() => setActiveTab('food')} style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: activeTab === 'food' ? colors.gold : colors.surfaceOverlay, borderWidth: 1, borderColor: activeTab === 'food' ? colors.gold : colors.borderSubtle, alignItems: 'center' }}>
+            <Text style={{ color: activeTab === 'food' ? colors.surface : colors.textMuted, fontSize: 13, fontWeight: '700' }}>{'\uD83C\uDF7D\uFE0F'} Food Items</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/vendor-confirm')} style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: colors.emeraldGlow, borderWidth: 1, borderColor: colors.emerald, alignItems: 'center' }}>
             <Text style={{ color: colors.emerald, fontSize: 13, fontWeight: '700' }}>{'\u2705'} Confirm Payment</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab('orders')} style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md, backgroundColor: activeTab === 'orders' ? colors.gold : colors.surfaceOverlay, borderWidth: 1, borderColor: activeTab === 'orders' ? colors.gold : colors.borderSubtle, alignItems: 'center' }}>
+            <Text style={{ color: activeTab === 'orders' ? colors.surface : colors.textMuted, fontSize: 13, fontWeight: '700' }}>{'\uD83D\uDCCB'} Orders</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Stats */}
-        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
-          <FlashyCard style={{ flex: 1 }}>
-            <Text style={{ color: colors.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>Total Items</Text>
-            <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: '900', marginTop: 4 }}>{items.length}</Text>
-          </FlashyCard>
-          <FlashyCard style={{ flex: 1 }}>
-            <Text style={{ color: colors.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>Available</Text>
-            <Text style={{ color: colors.emerald, fontSize: 24, fontWeight: '900', marginTop: 4 }}>{items.filter(i => i.available).length}</Text>
-          </FlashyCard>
-        </View>
-
-        {/* Add Button */}
-        <TouchableOpacity onPress={openAdd} style={{ backgroundColor: colors.gold, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center', marginBottom: 20 }}>
-          <Text style={{ color: colors.surface, fontWeight: '800', fontSize: 14 }}>+ Add Food Item</Text>
-        </TouchableOpacity>
-
-        {/* Food Items List */}
-        {loading ? (
-          <ActivityIndicator color={colors.gold} size="large" style={{ marginTop: 40 }} />
-        ) : items.length === 0 ? (
-          <View style={{ alignItems: 'center', paddingTop: 40 }}>
-            <Text style={{ color: colors.textMuted, fontSize: 14 }}>No food items yet</Text>
-            <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 4 }}>Tap "Add Food Item" to get started</Text>
-          </View>
-        ) : (
-          items.map(item => (
-            <View key={item.id} style={{ backgroundColor: colors.surface, borderRadius: radius.lg, marginBottom: 12, padding: 16, borderWidth: 1, borderColor: item.available ? colors.borderSubtle : 'rgba(239,68,68,0.3)' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.goldGlow, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 20 }}>{categoryIcon(item.category)}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Text style={{ fontSize: 15, fontWeight: '700', color: colors.textPrimary }}>{item.name}</Text>
-                    {!item.available && <StatusBadge label="Unavailable" variant="info" />}
-                  </View>
-                  <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>{item.category}</Text>
-                </View>
-                <Text style={{ fontSize: 16, fontWeight: '800', color: colors.gold }}>{'\u20A6'}{Number(item.cost).toLocaleString()}</Text>
-              </View>
-              <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-                <TouchableOpacity onPress={() => toggleAvailability(item)} style={{ flex: 1, backgroundColor: item.available ? 'rgba(239,68,68,0.15)' : colors.emeraldGlow, borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: item.available ? 'rgba(239,68,68,0.3)' : colors.emerald }}>
-                  <Text style={{ color: item.available ? '#EF4444' : colors.emerald, fontSize: 11, fontWeight: '700' }}>{item.available ? 'Mark Unavailable' : 'Mark Available'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => openEdit(item)} style={{ flex: 1, backgroundColor: colors.goldGlow, borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: colors.border }}>
-                  <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700' }}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDelete(item)} style={{ flex: 1, backgroundColor: 'rgba(239,68,68,0.15)', borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(239,68,68,0.3)' }}>
-                  <Text style={{ color: '#EF4444', fontSize: 11, fontWeight: '700' }}>Delete</Text>
-                </TouchableOpacity>
-              </View>
+        {activeTab === 'food' && (
+          <>
+            {/* Stats */}
+            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
+              <FlashyCard style={{ flex: 1 }}>
+                <Text style={{ color: colors.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>Total Items</Text>
+                <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: '900', marginTop: 4 }}>{items.length}</Text>
+              </FlashyCard>
+              <FlashyCard style={{ flex: 1 }}>
+                <Text style={{ color: colors.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>Available</Text>
+                <Text style={{ color: colors.emerald, fontSize: 24, fontWeight: '900', marginTop: 4 }}>{items.filter(i => i.available).length}</Text>
+              </FlashyCard>
             </View>
-          ))
+
+            {/* Add Button */}
+            <TouchableOpacity onPress={openAdd} style={{ backgroundColor: colors.gold, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center', marginBottom: 20 }}>
+              <Text style={{ color: colors.surface, fontWeight: '800', fontSize: 14 }}>+ Add Food Item</Text>
+            </TouchableOpacity>
+
+            {/* Food Items List */}
+            {loading ? (
+              <ActivityIndicator color={colors.gold} size="large" style={{ marginTop: 40 }} />
+            ) : items.length === 0 ? (
+              <View style={{ alignItems: 'center', paddingTop: 40 }}>
+                <Text style={{ color: colors.textMuted, fontSize: 14 }}>No food items yet</Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 4 }}>Tap "Add Food Item" to get started</Text>
+              </View>
+            ) : (
+              items.map(item => (
+                <View key={item.id} style={{ backgroundColor: colors.surface, borderRadius: radius.lg, marginBottom: 12, padding: 16, borderWidth: 1, borderColor: item.available ? colors.borderSubtle : 'rgba(239,68,68,0.3)' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                    <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.goldGlow, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ fontSize: 20 }}>{categoryIcon(item.category)}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <Text style={{ fontSize: 15, fontWeight: '700', color: colors.textPrimary }}>{item.name}</Text>
+                        {!item.available && <StatusBadge label="Unavailable" variant="info" />}
+                      </View>
+                      <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 2 }}>{item.category}</Text>
+                    </View>
+                    <Text style={{ fontSize: 16, fontWeight: '800', color: colors.gold }}>{'\u20A6'}{Number(item.cost).toLocaleString()}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+                    <TouchableOpacity onPress={() => toggleAvailability(item)} style={{ flex: 1, backgroundColor: item.available ? 'rgba(239,68,68,0.15)' : colors.emeraldGlow, borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: item.available ? 'rgba(239,68,68,0.3)' : colors.emerald }}>
+                      <Text style={{ color: item.available ? '#EF4444' : colors.emerald, fontSize: 11, fontWeight: '700' }}>{item.available ? 'Mark Unavailable' : 'Mark Available'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => openEdit(item)} style={{ flex: 1, backgroundColor: colors.goldGlow, borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: colors.border }}>
+                      <Text style={{ color: colors.goldText, fontSize: 11, fontWeight: '700' }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleDelete(item)} style={{ flex: 1, backgroundColor: 'rgba(239,68,68,0.15)', borderRadius: radius.sm, paddingVertical: 8, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(239,68,68,0.3)' }}>
+                      <Text style={{ color: '#EF4444', fontSize: 11, fontWeight: '700' }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))
+            )}
+          </>
+        )}
+
+        {activeTab === 'orders' && (
+          <>
+            {ordersLoading ? (
+              <ActivityIndicator color={colors.gold} size="large" style={{ marginTop: 40 }} />
+            ) : orders.length === 0 ? (
+              <View style={{ alignItems: 'center', paddingTop: 40 }}>
+                <Text style={{ color: colors.textMuted, fontSize: 14 }}>No orders yet</Text>
+                <Text style={{ color: colors.textMuted, fontSize: 12, marginTop: 4 }}>Orders from students will appear here</Text>
+              </View>
+            ) : (
+              orders.map((order: any) => {
+                const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+                  pending: { bg: 'rgba(245,158,11,0.15)', text: '#F59E0B', label: 'Processing' },
+                  confirmed: { bg: 'rgba(16,185,129,0.15)', text: '#10B981', label: 'Completed' },
+                  expired: { bg: 'rgba(148,163,184,0.15)', text: '#94A3B8', label: 'Expired' },
+                  cancelled: { bg: 'rgba(239,68,68,0.15)', text: '#EF4444', label: 'Cancelled' },
+                  failed: { bg: 'rgba(239,68,68,0.15)', text: '#EF4444', label: 'Failed' },
+                };
+                const si = statusColors[order.status] || statusColors.pending;
+                const items = (order.items || []) as { name: string; cost: number; quantity: number }[];
+                const total = Number(order.totalAmount);
+
+                return (
+                  <View key={order.id} style={{ backgroundColor: colors.surface, borderRadius: radius.lg, marginBottom: 12, padding: 16, borderWidth: 1, borderColor: colors.borderSubtle }}>
+                    {/* Customer info */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                      <View>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: colors.textPrimary }}>{order.student?.fullname || 'Student'}</Text>
+                        <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 2 }}>{order.student?.matricNo || 'No Matric'}</Text>
+                      </View>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={{ fontSize: 16, fontWeight: '800', color: colors.gold }}>{'\u20A6'}{total.toLocaleString()}</Text>
+                        <View style={{ backgroundColor: si.bg, borderRadius: radius.full, paddingHorizontal: 8, paddingVertical: 2, marginTop: 4, borderWidth: 1, borderColor: `${si.text}33` }}>
+                          <Text style={{ color: si.text, fontSize: 10, fontWeight: '700' }}>{si.label}</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Items breakdown */}
+                    <View style={{ backgroundColor: colors.surfaceOverlay, borderRadius: radius.md, padding: 12, borderWidth: 1, borderColor: colors.borderSubtle }}>
+                      {items.map((food, idx) => (
+                        <View key={idx} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 }}>
+                          <Text style={{ fontSize: 13, color: colors.textPrimary, flex: 1 }}>
+                            {food.quantity} x {food.name}
+                          </Text>
+                          <Text style={{ fontSize: 13, fontWeight: '600', color: colors.textMuted, marginLeft: 8 }}>
+                            {'\u20A6'}{(food.cost * food.quantity).toLocaleString()}
+                          </Text>
+                        </View>
+                      ))}
+                      <View style={{ borderTopWidth: 1, borderTopColor: colors.borderSubtle, marginTop: 8, paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: 1 }}>Total</Text>
+                        <Text style={{ fontSize: 14, fontWeight: '800', color: colors.gold }}>{'\u20A6'}{total.toLocaleString()}</Text>
+                      </View>
+                    </View>
+
+                    {/* Timestamp */}
+                    <Text style={{ fontSize: 10, color: colors.textMuted, marginTop: 8 }}>
+                      {new Date(order.createdAt).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}{' \u2022 '}{new Date(order.createdAt).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' })}
+                    </Text>
+                  </View>
+                );
+              })
+            )}
+          </>
         )}
 
         {/* Footer */}

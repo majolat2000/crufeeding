@@ -118,8 +118,8 @@ export function ProfileScreen() {
           </View>
           <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 12 }}>Crawford University</Text>
           <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>{user?.fullname || 'Student'}</Text>
-          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || 'N/A'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>
-          <StatusBadge label={user?.role === 'subscriber' ? 'Subscriber' : 'Student'} variant="success" />
+          <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || 'No Matric'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>
+          <StatusBadge label={user?.role === 'vendor' ? 'Vendor' : 'Student'} variant="success" />
         </View>
 
         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>

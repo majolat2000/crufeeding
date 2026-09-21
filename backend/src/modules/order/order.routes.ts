@@ -176,3 +176,37 @@ orderRouter.post('/cancel/:id', authenticate, async (req: AuthRequest, res, next
     res.json({ success: true, message: 'Order cancelled' });
   } catch (e) { next(e); }
 });
+
+/** GET /api/v1/orders — list orders (student sees own, vendor sees incoming) */
+orderRouter.get('/', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const userId = req.user!.sub;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const where = user.role === 'vendor'
+      ? { vendorId: userId }
+      : { studentId: userId };
+
+    const orders = await prisma.paymentOrder.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    const ordersWithStudent = await Promise.all(
+      orders.map(async (order) => {
+        let student = null;
+        if (user.role === 'vendor') {
+          student = await prisma.user.findUnique({
+            where: { id: order.studentId },
+            select: { id: true, fullname: true, matricNo: true, email: true },
+          });
+        }
+        return { ...order, student };
+      })
+    );
+
+    res.json({ success: true, data: ordersWithStudent });
+  } catch (e) { next(e); }
+});

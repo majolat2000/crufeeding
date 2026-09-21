@@ -6,6 +6,7 @@ import { colors } from '../../src/theme/theme';
 function TabIcon({ name, focused }: { name: string; focused: boolean }) {
   const iconMap: Record<string, string> = {
     Home: '\u2302',
+    Orders: '\uD83D\uDCCB',
     Transactions: '\u2261',
     Profile: '\u263B',
   };
@@ -55,6 +56,13 @@ export default function TabsLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ focused }) => <TabIcon name="Home" focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="orders"
+        options={{
+          title: 'Orders',
+          tabBarIcon: ({ focused }) => <TabIcon name="Orders" focused={focused} />,
         }}
       />
       <Tabs.Screen
