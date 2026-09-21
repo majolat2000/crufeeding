@@ -3,13 +3,21 @@ import { Pool } from 'pg';
 import { env } from './env.js';
 
 /**
- * PostgreSQL — Supabase. Reads from process.env.DATABASE_URL.
- * SSL enabled for Supabase (pg driver).
+ * Prisma Client — global singleton.
+ * In serverless / multi-invocation environments, creating multiple
+ * PrismaClient instances exhausts connection limits and causes
+ * "prepared statement does not exist" errors with Supabase pooler.
  */
-export const prisma = new PrismaClient({
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   datasourceUrl: env.databaseUrl,
   log: env.nodeEnv === 'development' ? ['warn', 'error'] : ['error'],
 });
+
+if (env.nodeEnv !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
 // Raw pg Pool for health checks / direct queries — enables SSL for Supabase
 export const pool = new Pool({

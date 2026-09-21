@@ -4,11 +4,20 @@ dotenv.config();
 /**
  * Typed env — fails fast if required secrets missing.
  */
+function buildDatabaseUrl(raw: string): string {
+  // Strip any existing pgbouncer/prepared_statements params to avoid duplicates
+  let url = raw
+    .replace(/[?&]pgbouncer=true/, '')
+    .replace(/[?&]prepared_statements=false/, '')
+    .replace(/[?&]connection_limit=\d+/, '');
+
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}pgbouncer=true&prepared_statements=false&connection_limit=5`;
+}
+
 export const env = {
   port: parseInt(process.env.PORT ?? '10000', 10),
-  databaseUrl: (process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding')
-    .replace(/prepared_statements=false/, '')
-    + (process.env.DATABASE_URL?.includes('prepared_statements') ? '' : '&prepared_statements=false'),
+  databaseUrl: buildDatabaseUrl(process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/crawford_feeding'),
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   nodeEnv: process.env.NODE_ENV ?? 'development',
