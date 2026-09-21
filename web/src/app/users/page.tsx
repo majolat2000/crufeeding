@@ -12,7 +12,7 @@ export default function UsersPage() {
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
-  const [draftRole, setDraftRole] = useState<Role>('user');
+  const [draftRole, setDraftRole] = useState<Role>('student');
   const [draftMeals, setDraftMeals] = useState<{ breakfast: boolean; lunch: boolean; dinner: boolean }>({ breakfast: false, lunch: false, dinner: false });
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
