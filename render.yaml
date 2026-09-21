@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: backend
     plan: free
-    buildCommand: NODE_OPTIONS="--max-old-space-size=400" sh -c "npm install && npx prisma generate && tsc -p tsconfig.json"
+    buildCommand: NODE_OPTIONS="--max-old-space-size=400" sh -c "rm -rf node_modules/.prisma && npm install && npx prisma generate && tsc -p tsconfig.json"
     startCommand: node dist/index.js
     healthCheckPath: /health
     envVars:
