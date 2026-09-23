@@ -1,5 +1,7 @@
 name: EAS OTA Update
 
+# Triggers on push to main: OTA update + web hosting deploy
+
 on:
   push:
     branches: [main]
