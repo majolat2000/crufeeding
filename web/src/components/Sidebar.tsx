@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { clearSession, getSession } from '@/lib/auth';
@@ -31,15 +32,18 @@ export function Sidebar() {
 
   return (
     <aside className={`${collapsed ? 'w-20' : 'w-64'} shrink-0 bg-[#1A153B] text-white flex flex-col min-h-screen sticky top-0 transition-all duration-200`}>
-      <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between">
-        {!collapsed && (
-          <div>
+      <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between gap-3">
+        <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'hidden' : ''}`}>
+          <div className="relative w-10 h-10 shrink-0 rounded-full overflow-hidden bg-white">
+            <Image src="/crawford-crest.png" alt="Crawford University" fill sizes="40px" className="object-contain" />
+          </div>
+          <div className="min-w-0">
             <h1 className="font-extrabold text-lg leading-none">Crawford</h1>
             <p className="text-xs text-indigo-200 mt-1">Feeding Management</p>
             <p className="text-[11px] text-indigo-300">Bursary Portal</p>
           </div>
-        )}
-        <button onClick={() => setCollapsed(!collapsed)} aria-label="Toggle sidebar" className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center">
+        </div>
+        <button onClick={() => setCollapsed(!collapsed)} aria-label="Toggle sidebar" className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center shrink-0">
           <span className="text-lg leading-none">☰</span>
         </button>
       </div>

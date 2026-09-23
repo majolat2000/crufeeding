@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
+import { CrawfordLogo } from '../src/components/CrawfordLogo';
 
 let LocalAuthentication: any = null;
 try {
@@ -71,9 +72,7 @@ export function LoginScreen() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
         <View style={{ alignItems: 'center', marginBottom: 40 }}>
-          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
-          </View>
+          <CrawfordLogo size={72} />
           <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: '800', marginTop: 16 }}>Crawford Feeding</Text>
           <Text style={{ color: colors.textMuted, fontSize: 13, marginTop: 4 }}>Sign in to your account</Text>
         </View>

@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { loginRequest } from '@/lib/auth';
 
 /**
@@ -29,7 +30,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7] p-6">
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-[#1A153B] text-white flex items-center justify-center font-extrabold mx-auto">CU</div>
+          <div className="mx-auto w-16 h-16 relative">
+            <Image src="/crawford-crest.png" alt="Crawford University" fill sizes="64px" className="object-contain" priority />
+          </div>
           <h1 className="text-xl font-extrabold text-[#1A153B] mt-3">Crawford Feeding — Bursary Portal</h1>
           <p className="text-xs text-gray-500 mt-1">Login only • Bursar</p>
         </div>

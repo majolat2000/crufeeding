@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from "react-native";
 import { getSession } from "../api/client";
+import { CrawfordLogo } from "../components/CrawfordLogo";
 
 const Field = ({ label, value }: { label: string; value: string }) => (
   <View className="mb-3">
@@ -21,9 +22,7 @@ export function ProfileScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View className="bg-white px-5 pt-4 pb-5 border-b border-gray-100 items-center">
-          <View className="w-16 h-16 rounded-full bg-[#1A153B] items-center justify-center">
-            <Text className="text-white font-extrabold">CU</Text>
-          </View>
+          <CrawfordLogo size={64} />
           <Text className="text-[11px] font-bold text-gray-400 tracking-widest uppercase mt-3">Crawford University</Text>
           <Text className="text-lg font-extrabold text-[#1A153B] mt-1">Majesty Olatimilehin</Text>
           <Text className="text-xs text-gray-500 mt-1">LCU/UG/20/17109 • 300 Level • Faith Hall</Text>

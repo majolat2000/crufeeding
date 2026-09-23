@@ -9,6 +9,7 @@ import * as Updates from 'expo-updates';
 import { useAuthStore } from '../src/store/authStore';
 import { colors } from '../src/theme/theme';
 import { api } from '../src/api/client';
+import { CrawfordLogo } from '../src/components/CrawfordLogo';
 
 let LocalAuthentication: any = null;
 try {
@@ -190,9 +191,7 @@ export default function RootLayout() {
       {/* Screen Lock Modal */}
       <Modal visible={locked} transparent animationType="fade">
         <View style={{ flex: 1, backgroundColor: 'rgba(9,13,22,0.95)', justifyContent: 'center', alignItems: 'center', padding: 32 }}>
-          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
-            <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
-          </View>
+          <CrawfordLogo size={72} style={{ marginBottom: 24 }} />
           <Text style={{ color: '#fff', fontSize: 20, fontWeight: '800', marginBottom: 8 }}>Screen Locked</Text>
           <Text style={{ color: colors.textMuted, fontSize: 13, marginBottom: 24, textAlign: 'center' }}>Enter your password to continue</Text>
           <TextInput

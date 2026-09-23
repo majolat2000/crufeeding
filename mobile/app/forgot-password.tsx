@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, P
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
+import { CrawfordLogo } from '../src/components/CrawfordLogo';
 
 export function ForgotPasswordScreen() {
   const router = useRouter();
@@ -50,6 +51,9 @@ export function ForgotPasswordScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
+        <View style={{ alignItems: 'center', marginBottom: 24 }}>
+          <CrawfordLogo size={64} />
+        </View>
         <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: '800', textAlign: 'center' }}>
           {step === 'email' ? 'Forgot Password' : step === 'otp' ? 'Verify OTP' : 'New Password'}
         </Text>

@@ -6,6 +6,14 @@ import { SessionProvider } from '@/lib/session-context';
 export const metadata: Metadata = {
   title: 'Crawford Feeding — Admin Portal',
   description: 'Bursary and hostel feeding management',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/logo.png',
+  },
 };
 
 /**

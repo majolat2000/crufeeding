@@ -6,6 +6,7 @@ import { FlashyCard } from '../../src/components/FlashyCard';
 import { GoldButton } from '../../src/components/GoldButton';
 import { StatusBadge } from '../../src/components/StatusBadge';
 import { api } from '../../src/api/client';
+import { CrawfordLogo } from '../../src/components/CrawfordLogo';
 
 const Field = ({ label, value }: { label: string; value: string }) => (
   <View style={{ marginBottom: 12 }}>
@@ -113,9 +114,7 @@ export function ProfileScreen() {
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         <View style={{ backgroundColor: colors.surface, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle, alignItems: 'center' }}>
-          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 22 }}>CU</Text>
-          </View>
+          <CrawfordLogo size={72} />
           <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, textTransform: 'uppercase', marginTop: 12 }}>Crawford University</Text>
           <Text style={{ fontSize: 18, fontWeight: '800', color: colors.textPrimary, marginTop: 4 }}>{user?.fullname || 'Student'}</Text>
           <Text style={{ fontSize: 12, color: colors.textMuted, marginTop: 4 }}>{user?.matricNo || 'No Matric'} {user?.hostel ? `\u2014 ${user.hostel}` : ''}</Text>

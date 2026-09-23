@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { RESTAURANTS } from "../constants/restaurants";
 import { getSession } from "../api/client";
+import { CrawfordLogo } from "../components/CrawfordLogo";
 
 export function HomeScreen() {
   const router = useRouter();
@@ -34,9 +35,7 @@ export function HomeScreen() {
         {/* Header */}
         <View className="flex-row items-center justify-between px-5 pt-3 pb-4 bg-white border-b border-gray-100">
           <View className="flex-row items-center gap-3">
-            <View className="w-9 h-9 rounded-full bg-[#1A153B] items-center justify-center">
-              <Text className="text-white font-extrabold text-sm">CU</Text>
-            </View>
+            <CrawfordLogo size={36} />
             <View>
               <Text className="text-xs text-gray-500 font-semibold tracking-widest uppercase">Crawford University</Text>
               <Text className="text-[11px] text-indigo-600 font-bold">Session {session}</Text>

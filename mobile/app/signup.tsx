@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvo
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../src/store/authStore';
 import { colors, radius } from '../src/theme/theme';
+import { CrawfordLogo } from '../src/components/CrawfordLogo';
 
 export function SignupScreen() {
   const router = useRouter();
@@ -28,6 +29,9 @@ export function SignupScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 60, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+        <View style={{ alignItems: 'center', marginBottom: 8 }}>
+          <CrawfordLogo size={72} />
+        </View>
         <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: '800', textAlign: 'center' }}>Create Account</Text>
         <Text style={{ color: colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: 4 }}>Join Crawford Feeding Platform</Text>
 

@@ -8,6 +8,7 @@ import { useAuthStore } from '../../src/store/authStore';
 import { StatusBadge } from '../../src/components/StatusBadge';
 import { FlashyCard } from '../../src/components/FlashyCard';
 import { api } from '../../src/api/client';
+import { CrawfordLogo } from '../../src/components/CrawfordLogo';
 
 export function HomeScreen() {
   const router = useRouter();
@@ -66,9 +67,7 @@ export function HomeScreen() {
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.borderSubtle }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: colors.surface, fontWeight: '900', fontSize: 14 }}>CU</Text>
-            </View>
+            <CrawfordLogo size={40} />
             <View>
               <Text style={{ fontSize: 11, color: colors.textMuted, fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase' }}>Crawford University</Text>
               <Text style={{ fontSize: 16, fontWeight: '800', color: colors.textPrimary }}>{user?.fullname || 'Student'}</Text>
