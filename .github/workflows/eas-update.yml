@@ -44,7 +44,7 @@ jobs:
 
       - name: Deploy Expo Web Hosting (push to main)
         if: github.event_name == 'push'
-        run: eas deploy --non-interactive --no-wait
+        run: eas deploy --non-interactive
 
       - name: PR Preview OTA (pull request)
         if: github.event_name == 'pull_request'
