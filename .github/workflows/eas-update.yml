@@ -47,8 +47,8 @@ jobs:
       - name: Deploy Expo Web Hosting (push to main)
         if: github.event_name == 'push'
         run: |
-          npx expo export --platform web --output-dir dist
-          npx eas deploy --path dist --non-interactive
+          npx expo export --platform web
+          npx eas deploy --prod --non-interactive
 
       - name: PR Preview OTA (pull request)
         if: github.event_name == 'pull_request'
