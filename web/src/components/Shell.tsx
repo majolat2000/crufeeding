@@ -3,7 +3,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { getSession, clearSession } from '@/lib/auth';
-import { Menu, Search, Bell } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 const TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
@@ -84,21 +84,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
           
           <div className="flex items-center gap-4 md:gap-6">
-            <div className="relative hidden md:block">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="pl-9 pr-4 py-2 w-64 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-              />
-            </div>
-            
-            <button className="p-2 text-gray-400 hover:text-gray-600 relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            
-            <div className="flex items-center gap-2 border-l border-gray-200 pl-4 md:pl-6">
+            <div className="flex items-center gap-2 border-gray-200 pl-4 md:pl-6">
               <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
                 {session?.email?.charAt(0).toUpperCase() || 'B'}
               </div>
