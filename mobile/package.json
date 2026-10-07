@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "publish:ota": "eas update --branch production"
+    "publish:ota": "set NODE_TLS_REJECT_UNAUTHORIZED=0&& eas update --branch production"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
