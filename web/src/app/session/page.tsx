@@ -30,21 +30,21 @@ export default function SessionPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold text-[#1A153B]">Session</h1>
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Academic Session</h2>
+      <h1 className="text-2xl font-bold text-gray-900">Session</h1>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Academic Session</h2>
         <p className="text-xs text-gray-500 mt-1">Manually adjustable by Bursar</p>
 
         <div className="mt-6 flex items-center gap-4">
-          <button onClick={decrement} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg font-bold text-[#1A153B]">−</button>
+          <button onClick={decrement} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-900">−</button>
           <div className="text-center">
-            <p className="text-3xl font-extrabold text-[#1A153B]">{session}</p>
+            <p className="text-3xl font-extrabold text-gray-900">{session}</p>
             <p className="text-xs text-gray-500 mt-1">Current academic session</p>
           </div>
-          <button onClick={increment} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg font-bold text-[#1A153B]">+</button>
+          <button onClick={increment} className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-900">+</button>
         </div>
 
-        <button onClick={handleUpdate} className="mt-6 bg-[#1A153B] text-white px-6 py-2.5 rounded-xl text-sm font-bold">
+        <button onClick={handleUpdate} className="mt-6 bg-blue-600 text-white px-6 py-2.5 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-700 transition-colors">
           Update Session
         </button>
 

@@ -76,16 +76,16 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-extrabold text-[#1A153B]">Admin</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Admin</h1>
 
       {msg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2">{msg}</p>}
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading admins from database...</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500">
+          <table className="w-full text-sm divide-y divide-gray-100">
+            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500">
               <tr>
                 <th className="text-left px-4 py-3">Name</th>
                 <th className="text-left px-4 py-3">Email</th>
@@ -100,13 +100,13 @@ export default function AdminPage() {
                   <td className="px-4 py-3 font-semibold">{a.fullname || '—'}</td>
                   <td className="px-4 py-3 text-xs">{a.email}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${a.role === 'bursar' ? 'bg-[#1A153B] text-white' : 'bg-amber-100 text-amber-800'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${a.role === 'bursar' ? 'bg-blue-600 text-white' : 'bg-amber-100 text-amber-800'}`}>
                       {a.role}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-500">{new Date(a.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => handleRoleChange(a)} className="text-[#1A153B] font-bold text-xs mr-2">
+                    <button onClick={() => handleRoleChange(a)} className="text-gray-900 font-bold text-xs mr-2">
                       {a.role === 'bursar' ? 'Demote to Student' : 'Promote to Bursar'}
                     </button>
                     <button onClick={() => handleRemove(a)} className="text-red-600 font-bold text-xs">Remove</button>
@@ -119,11 +119,11 @@ export default function AdminPage() {
       </div>
 
       {/* Deduction Panel */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg">💸</span>
           <div>
-            <h2 className="font-bold text-[#1A153B]">Deduction Panel</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Deduction Panel</h2>
             <p className="text-xs text-gray-500">Deduct amounts from user wallets to correct erroneous funding</p>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function AdminPage() {
               value={deductStudentId}
               onChange={e => setDeductStudentId(e.target.value)}
               placeholder="Enter email or matric number"
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
           <div>
@@ -146,7 +146,7 @@ export default function AdminPage() {
               onChange={e => setDeductAmount(e.target.value)}
               placeholder="0"
               min="1"
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
           <div>
@@ -155,7 +155,7 @@ export default function AdminPage() {
               value={deductReason}
               onChange={e => setDeductReason(e.target.value)}
               placeholder="e.g. Erroneous funding correction"
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
         </div>
@@ -170,11 +170,11 @@ export default function AdminPage() {
       </div>
 
       {/* Reset Credential Panel */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg">🔑</span>
           <div>
-            <h2 className="font-bold text-[#1A153B]">Reset User Credential</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Reset User Credential</h2>
             <p className="text-xs text-gray-500">Reset a user&apos;s password or transaction PIN using their email or matric number</p>
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function AdminPage() {
               value={resetIdentifier}
               onChange={e => setResetIdentifier(e.target.value)}
               placeholder="Enter email or matric number"
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
           <div>
@@ -194,7 +194,7 @@ export default function AdminPage() {
             <select
               value={resetType}
               onChange={e => setResetType(e.target.value as 'password' | 'pin')}
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             >
               <option value="password">Password</option>
               <option value="pin">Transaction PIN</option>
@@ -208,7 +208,7 @@ export default function AdminPage() {
               placeholder={resetType === 'password' ? 'Min 6 characters' : '4-6 digits'}
               type={resetType === 'password' ? 'password' : 'text'}
               maxLength={resetType === 'pin' ? 6 : undefined}
-              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+              className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function AdminPage() {
         <button
           onClick={handleResetCredential}
           disabled={resetLoading || !resetIdentifier || !resetValue}
-          className="mt-4 bg-[#1A153B] text-white rounded-xl px-6 py-2.5 text-sm font-bold disabled:opacity-50 hover:bg-[#2a2550] transition"
+          className="mt-4 bg-blue-600 text-white px-6 py-2.5 text-sm font-bold disabled:opacity-50 hover:bg-blue-700 transition rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
         >
           {resetLoading ? 'Processing...' : `Reset ${resetType === 'password' ? 'Password' : 'PIN'}`}
         </button>

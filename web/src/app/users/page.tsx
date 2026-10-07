@@ -46,7 +46,7 @@ export default function UsersPage() {
   }
 
   function roleBadge(role: Role) {
-    if (role === 'bursar') return 'bg-[#1A153B] text-white';
+    if (role === 'bursar') return 'bg-blue-600 text-white';
     if (role === 'student') return 'bg-emerald-100 text-emerald-800';
     return 'bg-gray-100 text-gray-700';
   }
@@ -59,23 +59,23 @@ export default function UsersPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1A153B]">Users</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
           <p className="text-sm text-gray-500">Search by email, name, or matric</p>
         </div>
       </div>
 
       {msg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2">{msg}</p>}
 
-      <div className="bg-white rounded-2xl border border-gray-100 p-4">
-        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search email, name, or matric..." className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+      <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search email, name, or matric..." className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden max-h-[60vh] overflow-y-auto">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-h-[60vh] overflow-y-auto">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading users from database...</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500 sticky top-0">
+          <table className="w-full text-sm divide-y divide-gray-100">
+            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500 sticky top-0">
               <tr>
                 <th className="text-left px-4 py-3">User</th>
                 <th className="text-left px-4 py-3">Matric</th>
@@ -89,13 +89,13 @@ export default function UsersPage() {
               {filtered.map(u => (
                 <tr key={u.id} className="border-t border-gray-100">
                   <td className="px-4 py-3">
-                    <p className="font-semibold text-[#1A153B]">{u.fullname || u.email}</p>
+                    <p className="font-semibold text-gray-900">{u.fullname || u.email}</p>
                     <p className="text-xs text-gray-500">{u.email}</p>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">{u.matricNo || '\u2014'}</td>
                   <td className="px-4 py-3">
                     {editing === u.id ? (
-                      <select value={draftRole} onChange={e => setDraftRole(e.target.value as Role)} className="border border-gray-200 rounded-lg px-2 py-1 text-sm">
+                      <select value={draftRole} onChange={e => setDraftRole(e.target.value as Role)} className="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                         {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                       </select>
                     ) : <span className={`px-2 py-1 rounded-full text-xs font-bold ${roleBadge(u.role)}`}>{roleLabel(u.role)}</span>}
@@ -123,7 +123,7 @@ export default function UsersPage() {
                         <button onClick={() => setEditing(null)} className="text-gray-500 text-xs">Cancel</button>
                       </>
                     ) : (
-                      <button onClick={() => startEdit(u)} className="text-[#1A153B] font-bold text-xs">Edit</button>
+                      <button onClick={() => startEdit(u)} className="text-gray-900 font-bold text-xs">Edit</button>
                     )}
                   </td>
                 </tr>

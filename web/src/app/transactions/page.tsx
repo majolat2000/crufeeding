@@ -25,22 +25,22 @@ export default function TransactionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1A153B]">Transactions</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
           <p className="text-sm text-gray-500 mt-1">Real ledger-backed transactions &bull; 100% to vendor</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 p-4">
-        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search student, merchant, ID..." className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+      <div className="bg-white rounded-xl border border-gray-100 p-4">
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search student, merchant, ID..." className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading transactions from database...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500">
+            <table className="w-full text-sm divide-y divide-gray-100">
+              <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500">
                 <tr>
                   <th className="text-left px-4 py-3">Date</th>
                   <th className="text-left px-4 py-3">Student</th>
@@ -57,7 +57,7 @@ export default function TransactionsPage() {
                   <tr key={r.id} className="border-t border-gray-100 hover:bg-gray-50/50">
                     <td className="px-4 py-3 text-xs text-gray-500">{new Date(r.createdAt).toLocaleString()}</td>
                     <td className="px-4 py-3 font-mono text-xs">{r.studentId}</td>
-                    <td className="px-4 py-3 font-semibold text-[#1A153B]">{r.vendorName || r.vendorId}</td>
+                    <td className="px-4 py-3 font-semibold text-gray-900">{r.vendorName || r.vendorId}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${r.type === 'credit' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                         {r.type}

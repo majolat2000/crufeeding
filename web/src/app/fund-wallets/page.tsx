@@ -57,16 +57,16 @@ export default function FundWalletsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold text-[#1A153B]">Fund Wallets</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Fund Wallets</h1>
 
       {/* Mode selector */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Funding Mode</h2>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Funding Mode</h2>
         <div className="mt-3 flex gap-3">
-          <button onClick={() => setMode('all')} className={`px-4 py-2 rounded-xl text-sm font-bold ${mode === 'all' ? 'bg-[#1A153B] text-white' : 'bg-gray-100 text-gray-700'}`}>
+          <button onClick={() => setMode('all')} className={`px-4 py-2 rounded-xl text-sm font-bold ${mode === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}>
             Fund All Active Subscribers ({subscribers.length})
           </button>
-          <button onClick={() => setMode('selective')} className={`px-4 py-2 rounded-xl text-sm font-bold ${mode === 'selective' ? 'bg-[#1A153B] text-white' : 'bg-gray-100 text-gray-700'}`}>
+          <button onClick={() => setMode('selective')} className={`px-4 py-2 rounded-xl text-sm font-bold ${mode === 'selective' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}>
             Fund Select Subscribers ({selected.size} selected)
           </button>
         </div>
@@ -74,17 +74,17 @@ export default function FundWalletsPage() {
 
       {/* Subscriber list (selective mode) */}
       {mode === 'selective' && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold text-[#1A153B]">Select Subscribers</h2>
-            <button onClick={selectAll} className="text-xs text-[#1A153B] font-bold underline">Select All</button>
+            <h2 className="text-lg font-semibold text-gray-900">Select Subscribers</h2>
+            <button onClick={selectAll} className="text-xs text-gray-900 font-bold underline">Select All</button>
           </div>
           <div className="max-h-[300px] overflow-y-auto space-y-2">
             {subscribers.map(s => (
-              <label key={s.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer ${selected.has(s.id) ? 'border-[#1A153B] bg-gray-50' : 'border-gray-200'}`}>
-                <input type="checkbox" checked={selected.has(s.id)} onChange={() => toggleSelect(s.id)} className="accent-[#1A153B]" />
+              <label key={s.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer ${selected.has(s.id) ? 'border-blue-600 bg-gray-50' : 'border-gray-200'}`}>
+                <input type="checkbox" checked={selected.has(s.id)} onChange={() => toggleSelect(s.id)} className="accent-blue-600" />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-[#1A153B]">{s.fullname || s.email}</p>
+                  <p className="text-sm font-semibold text-gray-900">{s.fullname || s.email}</p>
                   <p className="text-xs text-gray-500">{s.matricNo || '—'} &bull; {s.mealBreakfast ? 'B ' : ''}{s.mealLunch ? 'L ' : ''}{s.mealDinner ? 'D ' : ''}</p>
                 </div>
                 <span className="text-sm font-bold">₦{Number(s.wallet?.balance ?? 0).toLocaleString()}</span>
@@ -96,7 +96,7 @@ export default function FundWalletsPage() {
       )}
 
       {/* Funding calculator */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
         <p className="text-sm text-gray-700">Select days to fund (1-31). Wallets credited per active plan:</p>
         <ul className="text-xs text-gray-600 list-disc pl-5 mt-2">
           <li>Breakfast: ₦{rates.breakfast.toLocaleString()}/day</li>
@@ -106,7 +106,7 @@ export default function FundWalletsPage() {
         </ul>
         <div className="mt-4 flex items-center gap-3">
           <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Days</label>
-          <input type="number" min={1} max={31} value={days} onChange={e => setDays(Math.min(31, Math.max(1, Number(e.target.value) || 1)))} className="border border-gray-200 rounded-xl px-3 py-2 w-24 text-sm" />
+          <input type="number" min={1} max={31} value={days} onChange={e => setDays(Math.min(31, Math.max(1, Number(e.target.value) || 1)))} className="border border-gray-200 rounded-xl px-3 py-2 w-24 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
           <span className="text-xs text-gray-500">max 31</span>
         </div>
         <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
@@ -115,7 +115,7 @@ export default function FundWalletsPage() {
           <div className="bg-gray-50 rounded-xl p-2">Dinner <b>₦{(rates.dinner * days).toLocaleString()}</b></div>
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2">All Three <b>₦{(rates.allThree * days).toLocaleString()}</b></div>
         </div>
-        <button onClick={fund} disabled={loading || (mode === 'selective' && selected.size === 0)} className="mt-4 bg-[#1A153B] text-white px-6 py-3 rounded-xl font-bold disabled:opacity-60">
+        <button onClick={fund} disabled={loading || (mode === 'selective' && selected.size === 0)} className="mt-4 bg-blue-600 text-white px-6 py-3 font-bold disabled:opacity-60 rounded-lg shadow-sm hover:bg-blue-700 transition-colors">
           {loading ? 'Funding...' : `Fund ${mode === 'selective' ? `${selected.size} Selected` : 'All Valid Students'} — ${days} day(s)`}
         </button>
         <p className="text-xs text-gray-500 mt-2">Only The Cafeteria &bull; 100% direct payout &bull; Activity logged</p>

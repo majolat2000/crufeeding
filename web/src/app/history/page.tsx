@@ -19,10 +19,10 @@ export default function HistoryPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold text-[#1A153B]">History</h1>
+      <h1 className="text-2xl font-bold text-gray-900">History</h1>
       <p className="text-sm text-gray-500">Funding records only &bull; Credits to subscriber wallets</p>
 
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
         <div className="grid grid-cols-2 gap-4 text-center">
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
             <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">Total Funded</p>
@@ -30,17 +30,17 @@ export default function HistoryPage() {
           </div>
           <div className="bg-[#F4F5F7] rounded-xl p-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Funding Records</p>
-            <p className="text-2xl font-extrabold text-[#1A153B] mt-2">{txs.length}</p>
+            <p className="text-2xl font-extrabold text-gray-900 mt-2">{txs.length}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading funding history...</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500">
+          <table className="w-full text-sm divide-y divide-gray-100">
+            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500">
               <tr>
                 <th className="text-left px-4 py-3">Date</th>
                 <th className="text-left px-4 py-3">Student</th>
@@ -55,7 +55,7 @@ export default function HistoryPage() {
                 <tr key={t.id} className="border-t border-gray-100">
                   <td className="px-4 py-3 text-xs text-gray-500">{new Date(t.createdAt).toLocaleString()}</td>
                   <td className="px-4 py-3">
-                    <p className="font-semibold text-[#1A153B]">{t.student?.fullname || '—'}</p>
+                    <p className="font-semibold text-gray-900">{t.student?.fullname || '—'}</p>
                     <p className="text-xs text-gray-500">{t.student?.email}</p>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">{t.student?.matricNo || '—'}</td>

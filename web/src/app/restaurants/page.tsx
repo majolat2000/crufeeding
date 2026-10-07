@@ -48,15 +48,15 @@ export default function CafeteriaPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-extrabold text-[#1A153B]">Cafeteria</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Cafeteria</h1>
 
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">The Cafeteria</h2>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">The Cafeteria</h2>
         <p className="text-xs text-gray-500">100% direct payout</p>
         <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
           <div className="bg-[#F4F5F7] rounded-xl p-4">
             <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Total Purchases</p>
-            <p className="text-2xl font-extrabold text-[#1A153B]">{txs.length.toLocaleString()}</p>
+            <p className="text-2xl font-extrabold text-gray-900">{txs.length.toLocaleString()}</p>
           </div>
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
             <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">Total Value</p>
@@ -73,20 +73,20 @@ export default function CafeteriaPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by email, matric, name, reference..."
-            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm"
+            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
           />
-          <button type="submit" className="bg-[#1A153B] text-white px-4 py-2 rounded-xl text-sm font-bold">Search</button>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-700 transition-colors">Search</button>
         </form>
       </div>
 
       {msg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2">{msg}</p>}
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading cafeteria transactions...</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-xs uppercase tracking-widest text-gray-500">
+          <table className="w-full text-sm divide-y divide-gray-100">
+            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500">
               <tr>
                 <th className="text-left px-4 py-3">Student</th>
                 <th className="text-left px-4 py-3">Matric</th>
@@ -102,7 +102,7 @@ export default function CafeteriaPage() {
               {txs.map(t => (
                 <tr key={t.id} className="border-t border-gray-100">
                   <td className="px-4 py-3">
-                    <p className="font-semibold text-[#1A153B]">{t.student?.fullname || '—'}</p>
+                    <p className="font-semibold text-gray-900">{t.student?.fullname || '—'}</p>
                     <p className="text-xs text-gray-500">{t.student?.email || t.studentId.slice(0, 8)}</p>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">{t.student?.matricNo || '—'}</td>

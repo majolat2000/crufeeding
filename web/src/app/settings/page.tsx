@@ -50,20 +50,20 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#1A153B]">Settings</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
         <p className="text-sm text-gray-500 mt-1">Meal rates, password management</p>
       </div>
 
       {/* Meal Rates */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Daily Meal Rates</h2>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Daily Meal Rates</h2>
         <p className="text-xs text-gray-500 mt-1">Adjustable numeric selectors</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Breakfast (₦)</label>
             <div className="flex items-center gap-2 mt-1">
               <button onClick={() => setBreakfast(Math.max(0, breakfast - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
-              <input type="number" value={breakfast} onChange={e => setBreakfast(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <input type="number" value={breakfast} onChange={e => setBreakfast(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
               <button onClick={() => setBreakfast(breakfast + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function SettingsPage() {
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Lunch (₦)</label>
             <div className="flex items-center gap-2 mt-1">
               <button onClick={() => setLunch(Math.max(0, lunch - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
-              <input type="number" value={lunch} onChange={e => setLunch(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <input type="number" value={lunch} onChange={e => setLunch(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
               <button onClick={() => setLunch(lunch + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function SettingsPage() {
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Dinner (₦)</label>
             <div className="flex items-center gap-2 mt-1">
               <button onClick={() => setDinner(Math.max(0, dinner - 100))} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">−</button>
-              <input type="number" value={dinner} onChange={e => setDinner(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center" />
+              <input type="number" value={dinner} onChange={e => setDinner(Number(e.target.value) || 0)} className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-center focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
               <button onClick={() => setDinner(dinner + 100)} className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-bold">+</button>
             </div>
           </div>
@@ -87,25 +87,25 @@ export default function SettingsPage() {
         <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
           All Three auto = ₦{(breakfast + lunch + dinner).toLocaleString()} per day
         </div>
-        <button onClick={handleUpdateRates} className="mt-4 bg-[#1A153B] text-white px-6 py-2.5 rounded-xl text-sm font-bold">Update Rates</button>
+        <button onClick={handleUpdateRates} className="mt-4 bg-blue-600 text-white px-6 py-2.5 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-700 transition-colors">Update Rates</button>
         {msg && <p className="text-xs bg-amber-50 border border-amber-200 rounded-xl p-2 mt-3">{msg}</p>}
       </div>
 
       {/* Password Change */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="font-bold text-[#1A153B]">Change Password</h2>
+      <div className="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Current Password</label>
-            <input type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <input type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
           </div>
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">New Password</label>
-            <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
           </div>
           <div>
             <label className="text-xs font-bold tracking-widest uppercase text-gray-500">Confirm New Password</label>
-            <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" />
+            <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
           </div>
         </div>
         <button onClick={handleChangePassword} className="mt-4 bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold">Update Password</button>
