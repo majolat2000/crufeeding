@@ -23,6 +23,7 @@ type AuthState = {
   hydrated: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginPin: (email: string, pin: string) => Promise<void>;
+  loginBiometric: (email: string) => Promise<void>;
   signup: (data: any) => Promise<void>;
   logout: () => Promise<void>;
   hydrate: () => Promise<void>;
@@ -61,6 +62,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ loading: true });
     try {
       const { data } = await api.post('/auth/login-pin', { email, pin });
+      const { token, user } = data.data;
+      await AsyncStorage.setItem('auth_token', token);
+      await AsyncStorage.setItem('auth_user', JSON.stringify(user));
+      setAuthToken(token);
+      set({ user, token, loading: false });
+    } catch (e: any) {
+      set({ loading: false });
+      throw e;
+    }
+  },
+
+  loginBiometric: async (email) => {
+    set({ loading: true });
+    try {
+      const { data } = await api.post('/auth/login-biometric', { email });
       const { token, user } = data.data;
       await AsyncStorage.setItem('auth_token', token);
       await AsyncStorage.setItem('auth_user', JSON.stringify(user));

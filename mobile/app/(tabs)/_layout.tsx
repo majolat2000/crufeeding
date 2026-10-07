@@ -3,13 +3,18 @@ import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
 import { colors } from '../../src/theme/theme';
 
+import { Home, ClipboardList, ArrowLeftRight, User } from 'lucide-react-native';
+
 function TabIcon({ name, focused }: { name: string; focused: boolean }) {
-  const iconMap: Record<string, string> = {
-    Home: '\u2302',
-    Orders: '\uD83D\uDCCB',
-    Transactions: '\u2261',
-    Profile: '\u263B',
+  const icons: Record<string, any> = {
+    Home,
+    Orders: ClipboardList,
+    Transactions: ArrowLeftRight,
+    Profile: User,
   };
+  
+  const Icon = icons[name];
+
   return (
     <View
       style={{
@@ -21,9 +26,7 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
         backgroundColor: focused ? colors.gold : 'transparent',
       }}
     >
-      <Text style={{ fontSize: 18, color: focused ? colors.surface : colors.textMuted }}>
-        {iconMap[name] ?? '\u2022'}
-      </Text>
+      {Icon && <Icon size={20} color={focused ? colors.surface : colors.textMuted} />}
     </View>
   );
 }

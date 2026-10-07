@@ -58,7 +58,7 @@ export function LoginScreen() {
         if (storedUser) {
           const parsed = JSON.parse(storedUser);
           if (parsed.email) {
-            await loginPin(parsed.email, 'biometric');
+            await useAuthStore.getState().loginBiometric(parsed.email);
             router.replace('/(tabs)');
           }
         }

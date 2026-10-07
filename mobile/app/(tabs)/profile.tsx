@@ -137,57 +137,14 @@ export function ProfileScreen() {
             </View>
           </FlashyCard>
 
-          {/* Change Password */}
-          <TouchableOpacity onPress={() => setShowChangePw(!showChangePw)} style={{ marginTop: 16 }}>
-            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>{showChangePw ? 'Cancel' : 'Change Password'}</Text>
+          {/* Actions */}
+          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to change your password.')} style={{ marginTop: 24 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Change Password</Text>
           </TouchableOpacity>
-          {showChangePw && (
-            <View style={{ marginTop: 8 }}>
-              <TextInput value={currentPw} onChangeText={setCurrentPw} placeholder="Current password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-              <TextInput value={newPw} onChangeText={setNewPw} placeholder="New password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-              <TextInput value={confirmPw} onChangeText={setConfirmPw} placeholder="Confirm new password" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-              <GoldButton title="Update Password" onPress={handleChangePassword} />
-            </View>
-          )}
 
-          {/* Set Transaction PIN */}
-          <TouchableOpacity onPress={() => setShowPinSetup(!showPinSetup)} style={{ marginTop: 16 }}>
-            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>{showPinSetup ? 'Cancel' : 'Set Transaction PIN'}</Text>
+          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to reset or set your PIN.')} style={{ marginTop: 16 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Reset / Set Transaction PIN</Text>
           </TouchableOpacity>
-          {showPinSetup && (
-            <View style={{ marginTop: 8 }}>
-              <TextInput value={pinCode} onChangeText={setPinCode} placeholder="4-6 digit PIN" placeholderTextColor={colors.textMuted} keyboardType="number-pad" maxLength={6} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-              <TextInput value={pinPw} onChangeText={setPinPw} placeholder="Current password to confirm" placeholderTextColor={colors.textMuted} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-              <GoldButton title="Set PIN" onPress={handleSetPin} />
-            </View>
-          )}
-
-          {/* Reset PIN via OTP */}
-          <TouchableOpacity onPress={resetPinFlow} style={{ marginTop: 16 }}>
-            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>{showPinReset ? 'Cancel' : 'Reset PIN'}</Text>
-          </TouchableOpacity>
-          {showPinReset && (
-            <View style={{ marginTop: 8 }}>
-              {pinResetStep === 'email' && (
-                <>
-                  <TextInput value={pinResetEmail} onChangeText={setPinResetEmail} placeholder="Enter your email" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8 }} />
-                  <GoldButton title="Send OTP" onPress={handlePinResetSendOtp} />
-                </>
-              )}
-              {pinResetStep === 'otp' && (
-                <>
-                  <TextInput value={pinResetOtp} onChangeText={setPinResetOtp} placeholder="6-digit OTP" placeholderTextColor={colors.textMuted} keyboardType="number-pad" maxLength={6} style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8, textAlign: 'center', letterSpacing: 4 }} />
-                  <GoldButton title="Verify OTP" onPress={handlePinResetVerifyOtp} />
-                </>
-              )}
-              {pinResetStep === 'newpin' && (
-                <>
-                  <TextInput value={pinResetNewPin} onChangeText={setPinResetNewPin} placeholder="New 4-6 digit PIN" placeholderTextColor={colors.textMuted} keyboardType="number-pad" maxLength={6} secureTextEntry style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.borderSubtle, fontSize: 14, marginBottom: 8, textAlign: 'center', letterSpacing: 4 }} />
-                  <GoldButton title="Set New PIN" onPress={handlePinResetSubmit} />
-                </>
-              )}
-            </View>
-          )}
 
           {/* Biometric Toggle */}
           <TouchableOpacity

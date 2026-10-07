@@ -199,6 +199,18 @@ authRouter.post('/login-pin', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/** POST /api/v1/auth/login-biometric — login with biometric */
+authRouter.post('/login-biometric', async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !user.biometricEnabled) return res.status(401).json({ success: false, message: 'Biometrics not enabled for this account' });
+    const token = signToken(user);
+    res.json({ success: true, data: { token, user: { id: user.id, email: user.email, role: user.role, fullname: user.fullname } } });
+  } catch (e) { next(e); }
+});
+
 /** PUT /api/v1/auth/biometric */
 authRouter.put('/biometric', authenticate, async (req: AuthRequest, res, next) => {
   try {

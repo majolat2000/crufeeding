@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { UtensilsCrossed, Eye, EyeOff, Wallet } from 'lucide-react-native';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -55,7 +56,7 @@ export function HomeScreen() {
       }}
     >
       <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.goldGlow, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-        <Text style={{ fontSize: 24 }}>{item.icon}</Text>
+        {item.name === 'The Cafeteria' ? <UtensilsCrossed size={24} color={colors.gold} /> : <Text style={{ fontSize: 24 }}>{item.icon}</Text>}
       </View>
       <Text style={{ fontSize: 13, fontWeight: '700', color: colors.textPrimary, textAlign: 'center' }} numberOfLines={2}>{item.name}</Text>
       <Text style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>Tap to order</Text>
@@ -86,7 +87,7 @@ export function HomeScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
               <Text style={{ color: colors.textPrimary, fontSize: 38, fontWeight: '900', letterSpacing: -1 }}>{showBalance ? `${'\u20A6'}${balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}` : `${'\u20A6'}****`}</Text>
               <TouchableOpacity onPress={() => setShowBalance(!showBalance)} style={{ padding: 8 }}>
-                <Text style={{ fontSize: 20 }}>{showBalance ? '\uD83D\uDC41' : '\uD83D\uDE48'}</Text>
+                {showBalance ? <Eye size={20} color={colors.textMuted} /> : <EyeOff size={20} color={colors.textMuted} />}
               </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
@@ -108,7 +109,8 @@ export function HomeScreen() {
               flexDirection: 'row', justifyContent: 'center', gap: 8,
             }}
           >
-            <Text style={{ color: colors.emerald, fontWeight: '800', fontSize: 14 }}>💳 Fund Wallet</Text>
+            <Wallet size={18} color={colors.emerald} />
+            <Text style={{ color: colors.emerald, fontWeight: '800', fontSize: 14 }}>Fund Wallet</Text>
             <View style={{ backgroundColor: colors.goldGlow, borderRadius: radius.full, paddingHorizontal: 8, paddingVertical: 2, borderWidth: 1, borderColor: colors.border }}>
               <Text style={{ color: colors.goldText, fontSize: 9, fontWeight: '700' }}>SOON</Text>
             </View>
@@ -131,14 +133,7 @@ export function HomeScreen() {
           />
         </View>
 
-        <FlashyCard glow style={{ marginHorizontal: 20, marginTop: 20 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={{ color: colors.gold, fontSize: 16 }}>{'\u26A1'}</Text>
-            <Text style={{ color: colors.textPrimary, fontSize: 12, flex: 1 }}>
-              Tap The Cafeteria to purchase your food. Swift and Reliable.
-            </Text>
-          </View>
-        </FlashyCard>
+
       </ScrollView>
     </View>
   );
