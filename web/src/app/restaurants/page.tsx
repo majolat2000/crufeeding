@@ -58,13 +58,13 @@ export default function CafeteriaPage() {
             <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Total Purchases</p>
             <p className="text-2xl font-extrabold text-gray-900">{txs.length.toLocaleString()}</p>
           </div>
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-emerald-700">Total Value</p>
-            <p className="text-sm font-bold text-emerald-800 mt-2">₦{totalPurchases.toLocaleString()}</p>
+          <div className="bg-[#F4F5F7] rounded-xl p-4">
+            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Total Value</p>
+            <p className="text-2xl font-extrabold text-gray-900 mt-1">₦{totalPurchases.toLocaleString()}</p>
           </div>
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-700">Merchant</p>
-            <p className="text-sm font-bold text-indigo-800 mt-2">The Cafeteria</p>
+          <div className="bg-[#F4F5F7] rounded-xl p-4">
+            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Merchant</p>
+            <p className="text-2xl font-extrabold text-gray-900 mt-1">The Cafeteria</p>
           </div>
         </div>
 

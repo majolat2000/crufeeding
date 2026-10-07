@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { getDashboard } from '@/lib/api';
 import { useSession } from '@/lib/session-context';
 import { StatsCard } from '@/components/StatsCard';
-import { DollarSign, TrendingUp, ShoppingCart, Users } from 'lucide-react';
+import { TrendingUp, ShoppingCart, Users } from 'lucide-react';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 
 type DashboardData = {
@@ -23,6 +23,8 @@ type DashboardData = {
     allThree: number;
   };
 };
+
+const NairaIcon = ({ className }: { className?: string }) => <span className={`text-lg font-extrabold flex items-center justify-center leading-none ${className || ''}`}>₦</span>;
 
 export default function DashboardPage() {
   const { session } = useSession();
@@ -97,7 +99,7 @@ export default function DashboardPage() {
               title="Session Funding" 
               value={d ? `₦${(d.totalDisbursement/1000000).toFixed(1)}M` : '—'} 
               hint="Total disbursement"
-              icon={DollarSign}
+              icon={NairaIcon}
               iconColor="amber"
               accent={{ value: 'Stable', positive: true }}
             />

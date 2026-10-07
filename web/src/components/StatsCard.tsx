@@ -15,7 +15,7 @@ export function StatsCard({
   value: string | number; 
   hint?: string; 
   accent?: { value: string; positive: boolean }; 
-  icon?: LucideIcon;
+  icon?: React.ElementType;
   iconColor?: 'blue' | 'green' | 'amber' | 'purple';
 }) {
   const colorMap = {

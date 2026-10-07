@@ -2,7 +2,19 @@
 import { useState, useEffect } from 'react';
 import { getTransactions } from '@/lib/api';
 
-type Tx = { id: string; studentId: string; vendorId: string; vendorName: string; type: string; gross: number; balanceAfter: number; status: string; reference?: string; createdAt: string };
+type Tx = { 
+  id: string; 
+  studentId: string; 
+  vendorId: string; 
+  vendorName: string; 
+  type: string; 
+  gross: number; 
+  balanceAfter: number; 
+  status: string; 
+  reference?: string; 
+  createdAt: string;
+  student?: { email?: string; matricNo?: string; fullname?: string };
+};
 
 export default function TransactionsPage() {
   const [txs, setTxs] = useState<Tx[]>([]);
@@ -18,7 +30,8 @@ export default function TransactionsPage() {
   const filtered = txs.filter(r => {
     if (!query) return true;
     const q = query.toLowerCase();
-    return `${r.studentId} ${r.vendorName} ${r.id} ${r.reference || ''}`.toLowerCase().includes(q);
+    const studentStr = `${r.studentId} ${r.student?.email || ''} ${r.student?.matricNo || ''} ${r.student?.fullname || ''}`;
+    return `${studentStr} ${r.vendorName} ${r.id} ${r.reference || ''}`.toLowerCase().includes(q);
   });
 
   return (
@@ -56,7 +69,16 @@ export default function TransactionsPage() {
                 {filtered.map(r => (
                   <tr key={r.id} className="border-t border-gray-100 hover:bg-gray-50/50">
                     <td className="px-4 py-3 text-xs text-gray-500">{new Date(r.createdAt).toLocaleString()}</td>
-                    <td className="px-4 py-3 font-mono text-xs">{r.studentId}</td>
+                    <td className="px-4 py-3">
+                      {r.student ? (
+                        <>
+                          <p className="font-semibold text-gray-900">{r.student.fullname || r.student.email}</p>
+                          <p className="text-xs text-gray-500">{r.student.matricNo || r.studentId.slice(0,8)}</p>
+                        </>
+                      ) : (
+                        <span className="font-mono text-xs">{r.studentId}</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 font-semibold text-gray-900">{r.vendorName || r.vendorId}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${r.type === 'credit' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>

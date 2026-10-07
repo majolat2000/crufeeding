@@ -70,12 +70,12 @@ export default function UsersPage() {
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search email, name, or matric..." className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-h-[60vh] overflow-y-auto">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-auto max-h-[60vh]">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading users from database...</div>
         ) : (
-          <table className="w-full text-sm divide-y divide-gray-100">
-            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500 sticky top-0">
+          <table className="w-full text-sm divide-y divide-gray-100 min-w-[800px]">
+            <thead className="bg-gray-50/80 text-xs uppercase tracking-widest text-gray-500 sticky top-0 z-10">
               <tr>
                 <th className="text-left px-4 py-3">User</th>
                 <th className="text-left px-4 py-3">Matric</th>
@@ -87,7 +87,7 @@ export default function UsersPage() {
             </thead>
             <tbody>
               {filtered.map(u => (
-                <tr key={u.id} className="border-t border-gray-100">
+                <tr key={u.id} className="border-t border-gray-100 hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3">
                     <p className="font-semibold text-gray-900">{u.fullname || u.email}</p>
                     <p className="text-xs text-gray-500">{u.email}</p>
@@ -102,10 +102,10 @@ export default function UsersPage() {
                   </td>
                   <td className="px-4 py-3">
                     {editing === u.id && draftRole === 'student' ? (
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {(['breakfast', 'lunch', 'dinner'] as const).map(m => (
-                          <label key={m} className="flex items-center gap-1 text-xs border rounded-full px-2 py-1">
-                            <input type="checkbox" checked={draftMeals[m]} onChange={() => setDraftMeals({ ...draftMeals, [m]: !draftMeals[m] })} /> {m}
+                          <label key={m} className="flex items-center gap-1 text-xs border rounded-full px-2 py-1 bg-white whitespace-nowrap">
+                            <input type="checkbox" checked={draftMeals[m]} onChange={() => setDraftMeals({ ...draftMeals, [m]: !draftMeals[m] })} className="accent-blue-600" /> {m}
                           </label>
                         ))}
                       </div>
@@ -118,12 +118,12 @@ export default function UsersPage() {
                   <td className="px-4 py-3 text-right font-bold text-sm">₦{Number(u.wallet?.balance ?? 0).toLocaleString()}</td>
                   <td className="px-4 py-3 text-right">
                     {editing === u.id ? (
-                      <>
-                        <button onClick={() => save(u)} className="text-emerald-600 font-bold text-xs mr-2">Save</button>
-                        <button onClick={() => setEditing(null)} className="text-gray-500 text-xs">Cancel</button>
-                      </>
+                      <div className="flex items-center justify-end gap-3">
+                        <button onClick={() => save(u)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-3 py-1 rounded hover:bg-emerald-100 transition-colors">Save</button>
+                        <button onClick={() => setEditing(null)} className="text-gray-500 font-bold text-xs bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 transition-colors">Cancel</button>
+                      </div>
                     ) : (
-                      <button onClick={() => startEdit(u)} className="text-gray-900 font-bold text-xs">Edit</button>
+                      <button onClick={() => startEdit(u)} className="text-blue-600 font-bold text-xs px-3 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors">Edit</button>
                     )}
                   </td>
                 </tr>
