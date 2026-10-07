@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { getSession, clearSession } from '@/lib/auth';
 import { Menu } from 'lucide-react';
 
-const TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+const TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 function getPageTitle(pathname: string) {
   if (pathname === '/') return 'Dashboard';
@@ -25,42 +25,78 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [session, setSession] = useState<{email?: string, role?: string} | null>(null);
 
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
   useEffect(() => {
     setSession(getSession());
   }, [pathname]);
 
   const doLogout = useCallback(() => {
     clearSession();
+    localStorage.removeItem('lastActivity');
     router.replace('/login');
   }, [router]);
 
-  // Inactivity timer — reset on any user interaction
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(doLogout, TIMEOUT_MS);
-  }, [doLogout]);
-
   // Auth guard + inactivity timer
   useEffect(() => {
-    if (isLogin) return;
-
-    const s = getSession();
-    if (!s || (s.role !== 'super_admin' && s.role !== 'bursar')) {
-      router.replace('/login');
+    if (isLogin) {
+      setIsCheckingAuth(false);
       return;
     }
 
-    resetTimer();
+    const s = getSession();
+    if (!s || (s.role !== 'super_admin' && s.role !== 'bursar')) {
+      doLogout();
+      return;
+    }
 
-    const events = ['mousedown', 'keydown', 'touchstart', 'scroll'] as const;
-    const handler = () => resetTimer();
-    events.forEach(e => document.addEventListener(e, handler, { passive: true }));
+    // Initialize lastActivity if not set
+    if (!localStorage.getItem('lastActivity')) {
+      localStorage.setItem('lastActivity', Date.now().toString());
+    }
+
+    setIsCheckingAuth(false);
+
+    const checkIdle = () => {
+      const last = Number(localStorage.getItem('lastActivity') || '0');
+      if (last > 0 && Date.now() - last > TIMEOUT_MS) {
+        doLogout();
+      }
+    };
+
+    const resetIdle = () => {
+      localStorage.setItem('lastActivity', Date.now().toString());
+    };
+
+    // Use interval to check explicitly, bypassing background tab setTimeout throttling
+    const interval = setInterval(checkIdle, 10000); 
+
+    const events = ['mousedown', 'keydown', 'touchstart', 'scroll', 'click'] as const;
+    events.forEach(e => document.addEventListener(e, resetIdle, { passive: true }));
+    
+    // Check immediately on visibility change (when user returns to tab)
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') checkIdle();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      events.forEach(e => document.removeEventListener(e, handler));
+      clearInterval(interval);
+      events.forEach(e => document.removeEventListener(e, resetIdle));
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [isLogin, pathname, router, resetTimer]);
+  }, [isLogin, pathname, router, doLogout]);
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6FA]">
+        <div className="flex flex-col items-center">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-500 text-sm font-medium animate-pulse">Loading workspace...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLogin) return <>{children}</>;
 
