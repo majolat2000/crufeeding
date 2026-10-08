@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import Toast from 'react-native-toast-message';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -219,6 +220,8 @@ export default function RootLayout() {
           )}
         </View>
       </Modal>
+      
+      <Toast />
     </SafeAreaProvider>
   );
 }

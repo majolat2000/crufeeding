@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../../src/store/authStore';
 import { colors, radius } from '../../src/theme/theme';
 import { FlashyCard } from '../../src/components/FlashyCard';
@@ -137,8 +138,7 @@ export function ProfileScreen() {
             </View>
           </FlashyCard>
 
-          {/* Actions */}
-          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to change your password.')} style={{ marginTop: 24 }}>
+          <TouchableOpacity onPress={() => Toast.show({ type: 'info', text1: 'Contact Bursary', text2: 'Please contact the bursary to change your password.' })} style={{ marginTop: 24 }}>
             <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Change Password</Text>
           </TouchableOpacity>
 
@@ -171,7 +171,7 @@ export function ProfileScreen() {
             </View>
           )}
 
-          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to reset your PIN.')} style={{ marginTop: 16 }}>
+          <TouchableOpacity onPress={() => Toast.show({ type: 'info', text1: 'Contact Bursary', text2: 'Please contact the bursary to reset your PIN.' })} style={{ marginTop: 16 }}>
             <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Reset Transaction PIN</Text>
           </TouchableOpacity>
 
