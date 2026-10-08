@@ -142,8 +142,37 @@ export function ProfileScreen() {
             <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Change Password</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to reset or set your PIN.')} style={{ marginTop: 16 }}>
-            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Reset / Set Transaction PIN</Text>
+          <TouchableOpacity onPress={() => setShowPinSetup(!showPinSetup)} style={{ marginTop: 16 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Set Transaction PIN</Text>
+          </TouchableOpacity>
+
+          {showPinSetup && (
+            <View style={{ marginTop: 12, backgroundColor: colors.surfaceOverlay, padding: 16, borderRadius: radius.md, borderWidth: 1, borderColor: colors.borderSubtle }}>
+              <TextInput
+                value={pinCode}
+                onChangeText={setPinCode}
+                placeholder="New PIN (4-6 digits)"
+                placeholderTextColor={colors.textMuted}
+                keyboardType="number-pad"
+                secureTextEntry
+                style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.border, marginBottom: 12, fontSize: 14 }}
+              />
+              <TextInput
+                value={pinPw}
+                onChangeText={setPinPw}
+                placeholder="Current Password"
+                placeholderTextColor={colors.textMuted}
+                secureTextEntry
+                style={{ backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: 16, paddingVertical: 12, color: colors.textPrimary, borderWidth: 1, borderColor: colors.border, marginBottom: 12, fontSize: 14 }}
+              />
+              <TouchableOpacity onPress={handleSetPin} style={{ backgroundColor: colors.gold, borderRadius: radius.md, paddingVertical: 14, alignItems: 'center' }}>
+                <Text style={{ color: colors.surface, fontWeight: '700', fontSize: 13 }}>Save PIN</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <TouchableOpacity onPress={() => Alert.alert('Contact Bursary', 'Please contact the bursary to reset your PIN.')} style={{ marginTop: 16 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700' }}>Reset Transaction PIN</Text>
           </TouchableOpacity>
 
           {/* Biometric Toggle */}
