@@ -1,7 +1,7 @@
 /**
- * Seed — wipes all demo data, creates exactly 2 users:
- * 1. Super Admin: majesty.olatimilehin@crawforduniversity.edu.ng / CRUFEED@1#1
- * 2. Bursary: bursary@crawforduniversity.edu.ng / 12345678
+ * Seed — wipes all demo data, creates initial users:
+ * 1. Super Admin: majesty.olatimilehin@crawforduniversity.edu.ng
+ * 2. Bursary: bursary@crawforduniversity.edu.ng
  * Also seeds: The Cafeteria, GlobalConfig (2025/2026), default levels.
  */
 import { PrismaClient } from '@prisma/client';
@@ -22,8 +22,11 @@ async function main() {
   await prisma.globalConfig.deleteMany();
   console.log('[seed] database wiped clean');
 
-  const hash = await bcrypt.hash('CRUFEED@1#1', 10);
-  const bursaryHash = await bcrypt.hash('12345678', 10);
+  const adminPw = process.env.INITIAL_ADMIN_PASSWORD || 'CRUFEED@1#1';
+  const bursarPw = process.env.INITIAL_BURSARY_PASSWORD || '12345678';
+
+  const hash = await bcrypt.hash(adminPw, 10);
+  const bursaryHash = await bcrypt.hash(bursarPw, 10);
 
   const superAdmin = await prisma.user.create({
     data: {
@@ -77,8 +80,6 @@ async function main() {
   }
 
   console.log('[seed] created 2 users: Super Admin + Bursary');
-  console.log('[seed] majesty.olatimilehin@crawforduniversity.edu.ng / CRUFEED@1#1');
-  console.log('[seed] bursary@crawforduniversity.edu.ng / 12345678');
   console.log('[seed] session: 2025/2026');
 }
 

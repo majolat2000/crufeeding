@@ -1,5 +1,5 @@
 -- Crawford Feeding Schema for Supabase
--- Run this in Supabase SQL Editor: https://supabase.com/dashboard/project/eutikaqjhskiugkjxpvb/sql/new
+-- Run this in your Supabase SQL Editor
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('super_admin', 'bursar', 'hostel_admin', 'student', 'vendor');

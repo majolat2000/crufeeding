@@ -45,8 +45,14 @@ backend/dist/
 
 # Env / secrets
 .env
-.env.local
-backend/.env
+.env.*
+*.env
+*.env.*
+**/.env
+**/.env.*
+!.env.example
+!*.env.example
+!**/.env.example
 
 # Expo / Next / OS
 .expo/
@@ -57,4 +63,3 @@ preview.html
 # backup of nested repo - do not commit
 .git.bak/
 Default Project/.git.bak/
-

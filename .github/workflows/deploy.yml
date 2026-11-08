@@ -11,7 +11,13 @@ jobs:
     steps:
       - name: Trigger Render Deploy Hook
         run: |
-          curl -X POST "https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM" || echo "Deploy hook triggered (or already pending)"
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" || echo "Deploy hook triggered (or already pending)"
+          elif [ -n "${{ secrets.RENDER_DEPLOY_KEY }}" ]; then
+            curl -X POST "https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=${{ secrets.RENDER_DEPLOY_KEY }}" || echo "Deploy hook triggered"
+          else
+            echo "RENDER_DEPLOY_HOOK_URL secret not configured. Skipping manual curl trigger (Render auto-deploy on push handles this)."
+          fi
       - name: Wait for Render cold start
         run: sleep 60
       - name: Verify Health (attempt 1)

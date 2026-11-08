@@ -42,19 +42,20 @@ app.use(errorHandler);
 async function seedDatabase() {
   try {
     // Fix stale meal plans: non-subscribers should have no meals selected
-  const staleUsers = await prisma.user.updateMany({
-    where: { role: { not: 'student' }, OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] },
-    data: { mealBreakfast: false, mealLunch: false, mealDinner: false },
-  });
-  if (staleUsers.count > 0) console.log(`[seed] reset ${staleUsers.count} non-subscriber users to no meal plan`);
+    const staleUsers = await prisma.user.updateMany({
+      where: { role: { not: 'student' }, OR: [{ mealBreakfast: true }, { mealLunch: true }, { mealDinner: true }] },
+      data: { mealBreakfast: false, mealLunch: false, mealDinner: false },
+    });
+    if (staleUsers.count > 0) console.log(`[seed] reset ${staleUsers.count} non-subscriber users to no meal plan`);
 
-  const userCount = await prisma.user.count();
+    const vendorPw = process.env.INITIAL_VENDOR_PASSWORD || 'cafeteria';
+    const userCount = await prisma.user.count();
     if (userCount > 0) {
       console.log(`[seed] ${userCount} users exist — checking vendor...`);
       const vendorExists = await prisma.user.findUnique({ where: { email: 'cafeteria@crawforduniversity.edu.ng' } });
       if (!vendorExists) {
         console.log('[seed] vendor missing — creating vendor account...');
-        const vendorHash = await bcrypt.hash('cafeteria', 4);
+        const vendorHash = await bcrypt.hash(vendorPw, 4);
         const vendor = await prisma.user.create({
           data: { email: 'cafeteria@crawforduniversity.edu.ng', password: vendorHash, fullname: 'The Cafeteria', role: 'vendor', verified: true },
         });
@@ -72,8 +73,11 @@ async function seedDatabase() {
     }
     console.log('[seed] no users found — seeding database...');
 
-    const hash1 = await bcrypt.hash('CRUFEED@1#1', 4);
-    const hash2 = await bcrypt.hash('12345678', 4);
+    const adminPw = process.env.INITIAL_ADMIN_PASSWORD || 'CRUFEED@1#1';
+    const bursarPw = process.env.INITIAL_BURSARY_PASSWORD || '12345678';
+
+    const hash1 = await bcrypt.hash(adminPw, 4);
+    const hash2 = await bcrypt.hash(bursarPw, 4);
 
     const superAdmin = await prisma.user.create({
       data: { email: 'majesty.olatimilehin@crawforduniversity.edu.ng', password: hash1, fullname: 'Majesty Olatimilehin', role: 'bursar', verified: true },
@@ -85,7 +89,7 @@ async function seedDatabase() {
     });
     await prisma.wallet.create({ data: { userId: bursary.id, balance: 0 } });
 
-    const vendorHash = await bcrypt.hash('cafeteria', 4);
+    const vendorHash = await bcrypt.hash(vendorPw, 4);
     const vendor = await prisma.user.create({
       data: { email: 'cafeteria@crawforduniversity.edu.ng', password: vendorHash, fullname: 'The Cafeteria', role: 'vendor', verified: true },
     });

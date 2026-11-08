@@ -1,7 +1,16 @@
 #!/bin/bash
-# Lightweight deploy hook trigger — run: bash scripts/deploy.sh
+# Lightweight deploy hook trigger
+# Usage: RENDER_DEPLOY_HOOK="https://api.render.com/deploy/..." bash scripts/deploy.sh
 set -e
-HOOK="https://api.render.com/deploy/srv-daf8o2id0e5s73bavkag?key=4SfOxm8YWZM"
+
+HOOK="${RENDER_DEPLOY_HOOK:-}"
+
+if [ -z "$HOOK" ]; then
+  echo "Error: RENDER_DEPLOY_HOOK environment variable is not set."
+  echo "Usage: export RENDER_DEPLOY_HOOK=\"https://api.render.com/deploy/...\" && bash scripts/deploy.sh"
+  exit 1
+fi
+
 echo "Triggering Render deploy..."
 curl -X POST "$HOOK"
-echo "Deploy triggered. Check https://dashboard.render.com/web/srv-daf8o2id0e5s73bavkag/logs"
+echo "Deploy triggered."
